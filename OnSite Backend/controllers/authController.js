@@ -40,7 +40,7 @@ const signUp = async(req,res)=>{
             process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
-
+        
         res.status(201).json({
             message: "User created successfully",
             user,
@@ -73,7 +73,7 @@ const login = async(req,res)=>{
         const token = jwt.sign(
             { userId: user.id, email: user.email },
             process.env.JWT_SECRET,
-            { expiresIn: '2s' }
+            { expiresIn: '20s' }
         );
         res.status(200).json({
             message:"Login successful",
@@ -86,4 +86,40 @@ const login = async(req,res)=>{
     }
 }
 
-module.exports = {signUp,login};
+const checkTokenExpiration = async (req, res) => {
+    try {
+        const token = req.headers.authorization?.split(' ')[1]; // Get token from Bearer header
+        
+        if (!token) {
+            return res.status(401).json({ message: "No token provided" });
+        }
+
+        try {
+            // Verify and decode the token
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            
+            // Token is valid
+            return res.status(200).json({
+                valid: true,
+                message: "Token is valid",
+                expiresIn: new Date(decoded.exp * 1000)
+            });
+        } catch (err) {
+            if (err.name === 'TokenExpiredError') {
+                return res.status(401).json({
+                    valid: false,
+                    message: "Token has expired"
+                });
+            }
+            return res.status(401).json({
+                valid: false,
+                message: "Invalid token"
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+};
+
+module.exports = {signUp,login,checkTokenExpiration};
