@@ -1,5 +1,6 @@
 const prisma = require('../utils/prisma.js');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const signUp = async(req,res)=>{
     try {
@@ -33,7 +34,18 @@ const signUp = async(req,res)=>{
                 password: hashPassword
             }
         });
-        res.status(201).json({message:"User created successfully",user});
+           // Generate JWT token
+           const token = jwt.sign(
+            { userId: user.id, email: user.email },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+
+        res.status(201).json({
+            message: "User created successfully",
+            user,
+            token
+        });
     } catch (error) {
         res.status(500).json({message:"Internal server error",error:error.message});
     }
