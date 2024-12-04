@@ -47,7 +47,7 @@ export const onboarding = [
     },
     {
         id: 2,
-        title: "All youe construction task in one app",
+        title: "All your construction task in one app",
         description:
             "Onsite app lets you track your attendance, budgets and projects progress. ",
         image: images.onboarding2,
