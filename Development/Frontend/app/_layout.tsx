@@ -3,7 +3,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
-import { LogBox } from "react-native";
+import { LogBox, StatusBar } from "react-native";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -26,11 +26,18 @@ export default function RootLayout() {
   }
 
   return (
+    <>
+    <StatusBar
+    barStyle="dark-content" 
+    backgroundColor="white" 
+    translucent={false} 
+  />
         <Stack>
-          {/* <Stack.Screen name="index" options={{ headerShown: false }} /> */}
+          <Stack.Screen name="index" options={{ headerShown: false }} />
           {/* <Stack.Screen name="index" options={{ headerShown: false }} /> */}
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           <Stack.Screen name="(root)" options={{ headerShown: false }} />
         </Stack>
+        </>
   );
 }
