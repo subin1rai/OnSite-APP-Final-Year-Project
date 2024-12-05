@@ -126,7 +126,13 @@ const logout = async (req, res) => {
     res.status(200).json({ message: "Logout successful" });
 };
 
+
+const root = async (req, res) => {
+    res.status(200).json({ message: "Welcome to the API" });
+};
+
 module.exports = {
+    root,
     signUp,
     login,
     checkTokenExpiration,
