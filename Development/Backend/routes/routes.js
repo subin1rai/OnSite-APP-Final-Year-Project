@@ -4,6 +4,7 @@ const authController = require('../controllers/authController.js');
 const authMiddleware = require("../middleware/authmiddleware.js");
 
 // Authentication routes
+router.get("/", authController.root);
 router.post("/signUp", authController.signUp);
 router.post("/login", authController.login);
 router.post("/checkTokenExpiration", authController.checkTokenExpiration);
