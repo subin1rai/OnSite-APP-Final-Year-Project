@@ -34,17 +34,16 @@ const SignIn = () => {
     // }
 
     try {
-      const result = await user_login(form.email, form.password)
-      .then((result)=>{
-        console.log(result);
-        if(result.status === 200){
-           SecureStore.setItemAsync("AccessToken", result.data.token);
-          router.replace("/(tabs)/home");
-
-        }
-      });
+      const result = await user_login(form.email, form.password);
       console.log(result);
-
+      console.log("status code : " ,result.status);
+      if (result?.status == 200) {
+        await SecureStore.setItemAsync("AccessToken", result.token);
+        router.replace("../(tabs)/home");
+      
+      } else {
+        Alert.alert("Error", "Invalid credentials");
+      }
     } catch (error) {
       console.error(error);
       Alert.alert("Error", "Login failed. Please try again.");
