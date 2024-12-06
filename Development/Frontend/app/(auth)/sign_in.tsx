@@ -26,13 +26,6 @@ const SignIn = () => {
       return;
     }
 
-    // Validate email format
-    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    // if (!emailRegex.test(form.email)) {
-    //   Alert.alert("Error", "Please enter a valid email address");
-    //   return;
-    // }
-
     try {
       const result = await user_login(form.email, form.password);
       console.log(result);
