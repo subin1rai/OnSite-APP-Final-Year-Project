@@ -1,15 +1,28 @@
 import CustomButton from "@/components/CustomButton";
 import { onboarding } from "@/constants";
 import { router } from "expo-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Text, TouchableOpacity, Image, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Swiper from "react-native-swiper";
+import * as SecureStore from "expo-secure-store";
+
 
 const Onboarding = () => {
   const swiperRef = useRef<Swiper>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const isLastSlide = activeIndex === onboarding.length - 1;
+
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = await SecureStore.getItemAsync("AccessToken");
+      if (token) {
+        router.replace("../(tabs)/home");
+      }
+    };
+    checkToken();
+  }, []);
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       {/* Header Section */}

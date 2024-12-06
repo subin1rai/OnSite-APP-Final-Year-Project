@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const signUp = async(req,res)=>{
     try {
         const {name, email,password,confirmPassword} = req.body;
+        console.log(req.body);
         if(!name || !email || !password || !confirmPassword){
             return res.status(400).json({message:"All fields are required"});
         }
@@ -55,25 +56,27 @@ const signUp = async(req,res)=>{
 const login = async(req,res)=>{
     try {
         const {email,password}= req.body;
+        console.log(req.body);
         if(!email || !password){
-            return res.status(400).json({message:"All fields are required"});
+            return res.status(400).json({error:"All fields are required"});
         }
+        console.log("login : hit");
         const user = await prisma.user.findFirst({
             where:{
                 email:email
             }
         })
         if(!user){
-            return res.status(400).json({message:"User not found"});
+            return res.status(400).json({error:"User not found"});
         }
         const isPasswordValid = await bcrypt.compare(password,user.password);
         if(!isPasswordValid){
-            return res.status(400).json({message:"Invalid password"});
+            return res.status(400).json({error:"Invalid password"});
         }
         const token = jwt.sign(
             { userId: user.id, email: user.email },
             process.env.JWT_SECRET,
-            { expiresIn: '20s' }
+            { expiresIn: '1hr' }
         );
         res.status(200).json({
             message:"Login successful",
@@ -121,9 +124,29 @@ const checkTokenExpiration = async (req, res) => {
         res.status(500).json({ message: "Internal server error", error: error.message });
     }
 };
-
 const logout = async (req, res) => {
-    res.status(200).json({ message: "Logout successful" });
+    try {
+        const token = req.headers.authorization?.split(' ')[1];
+        
+        if (!token) {
+            return res.status(401).json({ message: "No token provided" });
+        }
+
+        // Invalidate the token by setting its expiration to the current time
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        decoded.exp = Math.floor(Date.now() / 1000);
+
+        // Sign a new token with immediate expiration
+        const invalidatedToken = jwt.sign(decoded, process.env.JWT_SECRET);
+
+        return res.status(200).json({ 
+            message: "Logout successful",
+            token: invalidatedToken 
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Internal server error", error: error.message });
+    }
 };
 
 
