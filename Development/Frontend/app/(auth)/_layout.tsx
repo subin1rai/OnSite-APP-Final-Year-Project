@@ -1,6 +1,7 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "react-native";
 import "../../global.css";
+import Toast from "react-native-toast-message";
 
 const Layout = () => {
   return (
@@ -17,6 +18,7 @@ const Layout = () => {
         <Stack.Screen name="sign_up" options={{ headerShown: false }} />
         <Stack.Screen name="sign_in" options={{ headerShown: false }} />
       </Stack>
+<Toast />
     </>
   );
 };
