@@ -5,9 +5,9 @@ const authMiddleware = require("../middleware/authmiddleware.js");
 
 // Authentication routes
 router.get("/", authController.root);
-router.post("/signUp", authController.signUp);
-router.post("/login", authController.login);
-router.post("/checkTokenExpiration", authController.checkTokenExpiration);
+router.post("/user/signUp", authController.signUp);
+router.post("/user/login", authController.login);
+router.post("/user/checkTokenExpiration", authController.checkTokenExpiration);
 router.post("/logout",authMiddleware(), authController.logout);
 
 module.exports = router;

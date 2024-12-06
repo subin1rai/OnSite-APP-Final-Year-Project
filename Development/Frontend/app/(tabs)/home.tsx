@@ -24,7 +24,7 @@ const Home = () => {
     const removeToken = await SecureStore.deleteItemAsync("AccessToken");
     console.log(removeToken);
     setToken(null);
-    router.replace("../../(auth)/welcome");
+    router.replace("../../(auth)/sign_in");
   }
   return (
     <SafeAreaView className="flex-1">
