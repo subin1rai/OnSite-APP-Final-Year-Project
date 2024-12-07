@@ -12,4 +12,51 @@ model User {
   email    String  @unique
   username String?
   password String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  projects Project[]
+}
+
+model Project {
+  id        Int     @id @default(autoincrement())
+  projectName      String
+  ownerName String
+  builderId Int
+  builder   User    @relation(fields: [builderId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  budgets   Budget[]
+}
+
+model Budget {
+  id        Int     @id @default(autoincrement())
+  amount    Int
+  type      String?
+  inHand    Int?
+  projectId Int
+  project   Project @relation(fields: [projectId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model Vendor {
+  id        Int     @id @default(autoincrement())
+  VendorName      String
+  contact   String?
+  profile   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  transactions Transaction[]
+}
+
+
+
+model Transaction {
+  id        Int     @id @default(autoincrement())
+  TransactionName      String
+  amount    Int
+  type      String
+  vendorId  Int
+  vendor    Vendor  @relation(fields: [vendorId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
