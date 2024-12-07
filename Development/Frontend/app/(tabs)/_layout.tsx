@@ -7,24 +7,7 @@ import { Drawer } from 'expo-router/drawer';
 export default function TabLayout() {
   return (
     <GestureHandlerRootView className='flex-1'>
-      <Drawer>
-        <View className='p-4 border-b border-gray-600'>
-          <Text className='text-lg text-black font-bold'>Subin Rai</Text>
-        </View>
-        {/* <Drawer.Screen
-          name="index" // This is the name of the page and must match the url from root
-          options={{
-            drawerLabel: 'Home',
-            title: 'overview',
-          }}
-        />
-        <Drawer.Screen
-          name="user/[id]" // This is the name of the page and must match the url from root
-          options={{
-            drawerLabel: 'User',
-            title: 'overview',
-          }}
-        /> */}
+
         <Tabs
           screenOptions={{
             // tabBarActiveTintColor: 'blue',
@@ -47,7 +30,6 @@ export default function TabLayout() {
             }}
           />
         </Tabs>
-      </Drawer>
     </GestureHandlerRootView>
   );
 }
