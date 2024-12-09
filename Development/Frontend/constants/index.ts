@@ -27,12 +27,14 @@ import onboarding1 from "../assets/images/onboarding1.jpg";
 import onboarding2 from "@/assets/images/onboarding2.jpg";
 import onboarding3 from "@/assets/images/onboarding3.png";
 import construction from "@/assets/images/construction.jpeg";
+import imageProfile from "@/assets/images/profile.png";
 
 export const images = {
     onboarding1,
     onboarding2,
     onboarding3,
-    construction
+    construction,
+    imageProfile
 };
 
 export const icons = {
