@@ -1,176 +1,182 @@
-import React from 'react'
-import { FlatList, ScrollView, Text, View } from 'react-native'
+import React from "react";
+import { FlatList, ScrollView, Text, View } from "react-native";
 
 const Expense = () => {
   return (
-<ScrollView>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-  <Text>HO</Text>
-</ScrollView>
-  )
-}
+    <ScrollView>
+      {/* <View className="bg-white px-4 py-2 "> */}
+      <View className="flex flex-row bg-white justify-between items-center px-4 mx-4 rounded-md mt-2">
+        <View className="gap-2 py-3">
+          <View className="">
+            <Text className="font-semibold text-2xl">AK Breakes</Text>
+            <Text className="font-medium text-[#3C3C43]">AK Trades</Text>
+          </View>
+          <View className="">
+            <Text className="font-normal text-sm text-[#3C3C43]">2024 Dec 06 10:11 AM</Text>
+          </View>
+        </View>
+        <View className="">
+          <Text className="text-[16px] font-medium text-[#FF3B30]">NRP. 50000</Text>
+        </View>
+      </View>
+    
+    
+      <View className="flex flex-row bg-white justify-between items-center px-4 mx-4 rounded-md mt-2">
+        <View className="gap-2 py-3">
+          <View className="">
+            <Text className="font-semibold text-2xl">AK Breakes</Text>
+            <Text className="font-medium text-[#3C3C43]">AK Trades</Text>
+          </View>
+          <View className="">
+            <Text className="font-normal text-sm text-[#3C3C43]">2024 Dec 06 10:11 AM</Text>
+          </View>
+        </View>
+        <View className="">
+          <Text className="text-[16px] font-medium text-[#FF3B30]">NRP. 50000</Text>
+        </View>
+      </View>
+
+    
+      <View className="flex flex-row bg-white justify-between items-center px-4 mx-4 rounded-md mt-2">
+        <View className="gap-2 py-3">
+          <View className="">
+            <Text className="font-semibold text-2xl">AK Breakes</Text>
+            <Text className="font-medium text-[#3C3C43]">AK Trades</Text>
+          </View>
+          <View className="">
+            <Text className="font-normal text-sm text-[#3C3C43]">2024 Dec 06 10:11 AM</Text>
+          </View>
+        </View>
+        <View className="">
+          <Text className="text-[16px] font-medium text-[#FF3B30]">NRP. 50000</Text>
+        </View>
+      </View>
+
+      <View className="flex flex-row bg-white justify-between items-center px-4 mx-4 rounded-md mt-2">
+        <View className="gap-2 py-3">
+          <View className="">
+            <Text className="font-semibold text-2xl">AK Breakes</Text>
+            <Text className="font-medium text-[#3C3C43]">AK Trades</Text>
+          </View>
+          <View className="">
+            <Text className="font-normal text-sm text-[#3C3C43]">2024 Dec 06 10:11 AM</Text>
+          </View>
+        </View>
+        <View className="">
+          <Text className="text-[16px] font-medium text-[#FF3B30]">NRP. 50000</Text>
+        </View>
+      </View>
+
+      <View className="flex flex-row bg-white justify-between items-center px-4 mx-4 rounded-md mt-2">
+        <View className="gap-2 py-3">
+          <View className="">
+            <Text className="font-semibold text-2xl">AK Breakes</Text>
+            <Text className="font-medium text-[#3C3C43]">AK Trades</Text>
+          </View>
+          <View className="">
+            <Text className="font-normal text-sm text-[#3C3C43]">2024 Dec 06 10:11 AM</Text>
+          </View>
+        </View>
+        <View className="">
+          <Text className="text-[16px] font-medium text-[#FF3B30]">NRP. 50000</Text>
+        </View>
+      </View>
+
+      <View className="flex flex-row bg-white justify-between items-center px-4 mx-4 rounded-md mt-2">
+        <View className="gap-2 py-3">
+          <View className="">
+            <Text className="font-semibold text-2xl">AK Breakes</Text>
+            <Text className="font-medium text-[#3C3C43]">AK Trades</Text>
+          </View>
+          <View className="">
+            <Text className="font-normal text-sm text-[#3C3C43]">2024 Dec 06 10:11 AM</Text>
+          </View>
+        </View>
+        <View className="">
+          <Text className="text-[16px] font-medium text-[#FF3B30]">NRP. 50000</Text>
+        </View>
+      </View>
+
+      <View className="flex flex-row bg-white justify-between items-center px-4 mx-4 rounded-md mt-2">
+        <View className="gap-2 py-3">
+          <View className="">
+            <Text className="font-semibold text-2xl">AK Breakes</Text>
+            <Text className="font-medium text-[#3C3C43]">AK Trades</Text>
+          </View>
+          <View className="">
+            <Text className="font-normal text-sm text-[#3C3C43]">2024 Dec 06 10:11 AM</Text>
+          </View>
+        </View>
+        <View className="">
+          <Text className="text-[16px] font-medium text-[#FF3B30]">NRP. 50000</Text>
+        </View>
+      </View>
+
+      <View className="flex flex-row bg-white justify-between items-center px-4 mx-4 rounded-md mt-2">
+        <View className="gap-2 py-3">
+          <View className="">
+            <Text className="font-semibold text-2xl">AK Breakes</Text>
+            <Text className="font-medium text-[#3C3C43]">AK Trades</Text>
+          </View>
+          <View className="">
+            <Text className="font-normal text-sm text-[#3C3C43]">2024 Dec 06 10:11 AM</Text>
+          </View>
+        </View>
+        <View className="">
+          <Text className="text-[16px] font-medium text-[#FF3B30]">NRP. 50000</Text>
+        </View>
+      </View>
+
+      <View className="flex flex-row bg-white justify-between items-center px-4 mx-4 rounded-md mt-2">
+        <View className="gap-2 py-3">
+          <View className="">
+            <Text className="font-semibold text-2xl">AK Breakes</Text>
+            <Text className="font-medium text-[#3C3C43]">AK Trades</Text>
+          </View>
+          <View className="">
+            <Text className="font-normal text-sm text-[#3C3C43]">2024 Dec 06 10:11 AM</Text>
+          </View>
+        </View>
+        <View className="">
+          <Text className="text-[16px] font-medium text-[#FF3B30]">NRP. 50000</Text>
+        </View>
+      </View>
+
+      <View className="flex flex-row bg-white justify-between items-center px-4 mx-4 rounded-md mt-2">
+        <View className="gap-2 py-3">
+          <View className="">
+            <Text className="font-semibold text-2xl">AK Breakes</Text>
+            <Text className="font-medium text-[#3C3C43]">AK Trades</Text>
+          </View>
+          <View className="">
+            <Text className="font-normal text-sm text-[#3C3C43]">2024 Dec 06 10:11 AM</Text>
+          </View>
+        </View>
+        <View className="">
+          <Text className="text-[16px] font-medium text-[#FF3B30]">NRP. 50000</Text>
+        </View>
+      </View>
+
+      <View className="flex flex-row bg-white justify-between items-center px-4 mx-4 rounded-md mt-2">
+        <View className="gap-2 py-3">
+          <View className="">
+            <Text className="font-semibold text-2xl">AK Breakes</Text>
+            <Text className="font-medium text-[#3C3C43]">AK Trades</Text>
+          </View>
+          <View className="">
+            <Text className="font-normal text-sm text-[#3C3C43]">2024 Dec 06 10:11 AM</Text>
+          </View>
+        </View>
+        <View className="">
+          <Text className="text-[16px] font-medium text-[#FF3B30]">NRP. 50000</Text>
+        </View>
+      </View>
+
+
+
+    
+    </ScrollView>
+  );
+};
 
 export default Expense;
-
-const persons = [
-  {
-	id: "1",
-	name: "Earnest Green",
-  },
-  {
-	id: "2",
-	name: "Winston Orn",
-  },
-  {
-	id: "3",
-	name: "Carlton Collins",
-  },
-  {
-	id: "4",
-	name: "Malcolm Labadie",
-  },
-  {
-	id: "5",
-	name: "Michelle Dare",
-  },
-  {
-	id: "6",
-	name: "Carlton Zieme",
-  },
-  {
-	id: "7",
-	name: "Jessie Dickinson",
-  },
-  {
-	id: "8",
-	name: "Julian Gulgowski",
-  },
-  {
-	id: "9",
-	name: "Ellen Veum",
-  },
-  {
-	id: "10",
-	name: "Lorena Rice",
-  },
-  {
-	id: "11",
-	name: "Carlton Zieme",
-  },
-  {
-	id: "12",
-	name: "Jessie Dickinson",
-  },
-  {
-	id: "13",
-	name: "Julian Gulgowski",
-  },
-  {
-	id: "14",
-	name: "Ellen Veum",
-  },
-  {
-	id: "15",
-	name: "Lorena Rice",
-  },
-  {
-  id: "16", 
-  name: "Carlton Zieme",
-  },
-  {
-  id: "17",
-  name: "Jessie Dickinson",
-  },
-  {
-    id: "18",
-  name: "Julian Gulgowski",
-  },
-  {
-    id: "19",
-  name: "Ellen Veum",
-  },
-  {
-    id: "20",
-  name: "Lorena Rice",
-
-  }
-];

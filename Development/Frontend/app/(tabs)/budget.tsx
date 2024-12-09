@@ -141,15 +141,12 @@ const Budget = () => {
         </View>
 
         {/* Content based on Active Tab */}
-        <View className="p-0 m-2 bg-green-400 h-[421px]">
+        <View className="p-0 m-2  h-[421px]">
           {activeTab === "Expense" ? <Expense /> : <Vendors />}
         </View>
       </View>
     </SafeAreaView>
   );
-
-
-
 }
 
 export default Budget;
