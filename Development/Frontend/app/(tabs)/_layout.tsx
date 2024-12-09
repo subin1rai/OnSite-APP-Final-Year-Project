@@ -7,10 +7,9 @@ import { Drawer } from 'expo-router/drawer';
 export default function TabLayout() {
   return (
     <GestureHandlerRootView className='flex-1'>
-
         <Tabs
           screenOptions={{
-            // tabBarActiveTintColor: 'blue',
+            tabBarActiveTintColor: '#FCA311',
             headerShown: false,
             // tabBarStyle: { paddingBottom: 0, height: 50 },  // You can adjust height
           }}
