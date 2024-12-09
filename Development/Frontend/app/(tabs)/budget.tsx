@@ -1,6 +1,7 @@
 import {
   Image,
   SafeAreaView,
+  ScrollView,
   StatusBar,
   Text,
   TouchableOpacity,
@@ -122,7 +123,7 @@ const Budget = () => {
               flex: 1,
               paddingVertical: 10,
               alignItems: "center",
-              borderBottomWidth:2, // Underline for the active tab
+              borderBottomWidth: 2, // Underline for the active tab
               borderBottomColor:
                 activeTab === "Vendors" ? "#ffd700" : "#D9D9D9", // Active tab color
             }}
@@ -140,12 +141,15 @@ const Budget = () => {
         </View>
 
         {/* Content based on Active Tab */}
-        <View style={{ padding: 16, marginTop: 20 }}>
+        <View className="p-0 m-2 bg-green-400 h-[421px]">
           {activeTab === "Expense" ? <Expense /> : <Vendors />}
         </View>
       </View>
     </SafeAreaView>
   );
-};
+
+
+
+}
 
 export default Budget;
