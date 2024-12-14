@@ -48,15 +48,12 @@ model Vendor {
   transactions Transaction[]
 }
 
-
-
 model Transaction {
   id        Int     @id @default(autoincrement())
-  TransactionName      String
+  TransactionName  String
   amount    Int
-  type      String
-  vendorId  Int
-  vendor    Vendor  @relation(fields: [vendorId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  type      String?
+  remarks String?
+  vendorId  Int?
+  vendor    Vendor?  @relation(fields: [vendorId], references: [id])
 }
