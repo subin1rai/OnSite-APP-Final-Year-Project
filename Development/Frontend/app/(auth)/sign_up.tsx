@@ -105,7 +105,7 @@ const SignUp = () => {
               placeholder="Enter name"
               icon={icons.person}
               value={form.name}
-              onChangeText={(value) => setForm({ ...form, name: value })}
+              onChangeText={(value: any) => setForm({ ...form, name: value })}
             />
             {/* Email input field */}
             <InputField
@@ -113,7 +113,7 @@ const SignUp = () => {
               placeholder="Enter email"
               icon={icons.email}
               value={form.email}
-              onChangeText={(value) => setForm({ ...form, email: value })}
+              onChangeText={(value: any) => setForm({ ...form, email: value })}
             />
             {/* Password input field */}
             <InputField
@@ -122,7 +122,7 @@ const SignUp = () => {
               secureTextEntry={true}
               icon={icons.lock}
               value={form.password}
-              onChangeText={(value) => setForm({ ...form, password: value })}
+              onChangeText={(value: any) => setForm({ ...form, password: value })}
             />
             {/* Confirm password input field */}
             <InputField
@@ -131,7 +131,7 @@ const SignUp = () => {
               secureTextEntry={true}
               icon={icons.lock}
               value={form.confirmPassword}
-              onChangeText={(value) =>
+              onChangeText={(value: any) =>
                 setForm({ ...form, confirmPassword: value })
               }
             />
