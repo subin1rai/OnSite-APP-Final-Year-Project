@@ -65,7 +65,7 @@ const SignIn = () => {
             placeholder="Enter email"
             icon={icons.email}
             value={form.email}
-            onChangeText={(value) => setForm({ ...form, email: value })}
+            onChangeText={(value: any) => setForm({ ...form, email: value })}
           />
           {/* Password input field */}
           <InputField
@@ -74,7 +74,7 @@ const SignIn = () => {
             secureTextEntry={true}
             icon={icons.lock}
             value={form.password}
-            onChangeText={(value) => setForm({ ...form, password: value })}
+            onChangeText={(value: any) => setForm({ ...form, password: value })}
           />
 
           {/* Sign in button */}

@@ -12,8 +12,8 @@ import { Platform } from "react-native";
 import { BlurView } from "expo-blur";
 import { images } from "@/constants"; // Assuming images are stored here
 import { useState } from "react";
-import Expense from "../(expenses)/expense";
-import Vendors from "../(expenses)/vendors";
+import Expense from "./expense";
+import Vendors from "./vendors";
 
 const Budget = () => {
   const [activeTab, setActiveTab] = useState("Expense"); // State to track active tab
