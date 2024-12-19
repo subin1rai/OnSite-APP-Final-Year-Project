@@ -28,6 +28,16 @@ import onboarding2 from "@/assets/images/onboarding2.jpg";
 import onboarding3 from "@/assets/images/onboarding3.png";
 import construction from "@/assets/images/construction.jpeg";
 import imageProfile from "@/assets/images/profile.png";
+import worker from "@/assets/icons/worker.png";
+import vendor from "@/assets/icons/vendor.png";
+import threed from "@/assets/icons/3d.png";
+import ai from "@/assets/icons/ai.png";
+import report from "@/assets/icons/report.png";
+import attendance from "@/assets/icons/attendance.png";
+import budget from "@/assets/icons/budget.png";
+import doc from "@/assets/icons/doc.png";
+import bell from "@/assets/icons/bell.png";
+import plus from "@/assets/icons/plus.png";
 
 export const images = {
     onboarding1,
@@ -63,6 +73,16 @@ export const icons = {
     star,
     target,
     to,
+    worker,
+    ai,
+    threed,
+    vendor,
+    report,
+    budget,
+    doc,
+    attendance,
+    plus,
+    bell
 };
 
 export const onboarding = [
