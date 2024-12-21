@@ -11,6 +11,7 @@ router.post("/user/login", authController.login);
 router.post("/logout",authMiddleware(), authController.logout);
 
 // Project routes
+router.get("/project",authMiddleware(), projectController.getProject);
 router.post("/project/create",authMiddleware(), projectController.createProject);
 
 //budget routes
