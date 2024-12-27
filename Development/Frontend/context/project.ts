@@ -10,7 +10,6 @@ export const all_project = async () => {
     };
     // Make the API call with headers
     const response = await apiHandler.get("/project", { headers });
-    console.log(response.data);
       return response.data;
   } catch (error: any) {
     console.error("Error message:", error.message);

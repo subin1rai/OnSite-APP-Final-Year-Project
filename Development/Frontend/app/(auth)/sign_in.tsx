@@ -17,7 +17,7 @@ const SignIn = () => {
     email: "",
     password: "",
   });
-
+  
   // Handle sign in button press
   const onSignInPress = async () => {
     // Validate form fields
@@ -25,8 +25,9 @@ const SignIn = () => {
       Alert.alert("Error", "Please fill in all fields");
       return;
     }
-
+    
     try {
+      console.log(form);
       const result = await user_login(form.email, form.password);
       console.log(result);
       console.log("status code : " ,result.status);
