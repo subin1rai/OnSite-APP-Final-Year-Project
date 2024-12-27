@@ -17,7 +17,6 @@ const More = ()=>{
           console.error("Error getting token:", error);
         }
       };
-  
       getToken();
     }, []);
     
@@ -28,7 +27,7 @@ const More = ()=>{
         router.replace("../../(auth)/sign_in");
       }
     return (
-        <SafeAreaView>
+        <SafeAreaView className="flex-1">
              <View className="flex-1 items-center justify-center">
         <Text>Access Token: {token}</Text>
       </View>

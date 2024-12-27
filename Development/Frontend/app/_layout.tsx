@@ -33,12 +33,14 @@ export default function RootLayout() {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor="white" translucent={false} />
+    
+      <StatusBar barStyle="dark-content" backgroundColor="black" translucent={false} />
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="(expenses)" options={{ headerShown: false }} />
+        <Stack.Screen name="(project)/project_home" options={{ headerShown: false }} />
+        <Stack.Screen name="(expenses)/budget" options={{ headerShown: false }} />
       </Stack>
       <Toast />
     </>

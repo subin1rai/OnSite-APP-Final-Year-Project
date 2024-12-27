@@ -1,10 +1,12 @@
 import { images } from '@/constants';
 import React from 'react'
 import { Image, ScrollView, Text, View } from 'react-native'
+import { FloatingAction } from "react-native-floating-action";
 
 const Vendors = () => {
   return (
-    <ScrollView>
+<View className='flex-1'>
+<ScrollView>
     {/* <View className="bg-white px-4 py-2 "> */}
     <View className="flex flex-row bg-white justify-between items-center px-4 mx-4 rounded-md mt-2 py-2">
       <View className="gap-4 py-3 flex-row items-center">
@@ -26,6 +28,20 @@ const Vendors = () => {
       </View>
     </View>
     </ScrollView>
+
+  {/* Floating Action Button */}
+  <FloatingAction
+
+onPressItem={(name) => {
+  console.log(`selected button: ${name}`);
+}}
+color="#FF9500" // You can change this to any color you want
+position="right" // Position it on the right side
+buttonSize={56} // Size of the button
+overlayColor="#fffff" 
+
+/>
+</View>
   )
 }
 
