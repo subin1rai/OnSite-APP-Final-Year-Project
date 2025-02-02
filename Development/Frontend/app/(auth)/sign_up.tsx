@@ -54,8 +54,6 @@ const SignUp = () => {
 
       const result = await signUp_user(form.name, form.email, form.password , form.confirmPassword);
       if (result?.status == 201) {
-        await SecureStore.setItemAsync("AccessToken", result.token);
-        console.log(result.token);
         Toast.show({
           type: "success", 
           text1: "Success",

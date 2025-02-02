@@ -1,17 +1,17 @@
-// Import Prisma client
 const prisma = require("../utils/prisma.js");
 
-// Controller to create a new project
 const createProject = async (req, res) => {
  try {
-     // Extract project details from request body
-     const { projectName, ownerName, budgetAmount } = req.body;
-   
+     const { projectName, ownerName, budgetAmount, location, startDate, endDate } = req.body;
+     console.log(req.body);
+   const user = req.user;
      // Validate that all required fields are present
-     if (!projectName || !ownerName || !budgetAmount) {
+     if (!projectName || !ownerName || !budgetAmount || !location || !startDate || !endDate) {
        return res.status(400).json({ message: "All fields are required" });
      }
-   
+   if(user.role != "builder"){
+      return res.status(403).json({ message: "User not valid !"});
+   }
      // Check if project with same name already exists
      const project = await prisma.project.findFirst({
        where: {
@@ -19,22 +19,21 @@ const createProject = async (req, res) => {
        }
      });
    
-     // Return error if project exists
      if (project) {
        return res.status(400).json({ "message": "Project already exists!" });
      }
    
-     // Find owner by username
-     const owner = await prisma.user.findFirst({
-       where: {
-         username: ownerName
-       }
-     });
+    //  // Find owner by username
+    //  const owner = await prisma.user.findFirst({
+    //    where: {
+    //      username: ownerName
+    //    }
+    //  });
    
-     // Return error if owner not found
-     if (!owner) {
-       return res.status(400).json({ "message": "Owner not found!" });
-     }
+    //  // Return error if owner not found
+    //  if (!owner) {
+    //    return res.status(400).json({ "message": "Owner not found!" });
+    //  }
    
      // Create project and budget in a transaction
      const result = await prisma.$transaction(async (prisma) => {
@@ -43,7 +42,11 @@ const createProject = async (req, res) => {
          data: {
            projectName,
            ownerName: owner.username,
-           builderId: req.user.userId // Get builder ID from authenticated user
+           builderId: req.user.userId,
+           location,
+           startDate: new Date(startDate),
+           endDate: new Date(endDate),
+           status: "onGoing"
          }
        });
    
@@ -73,10 +76,12 @@ const createProject = async (req, res) => {
 
 const getProject = async (req, res) => {
   try {
-    console.log("prok: " );
+    const user = req.user;
+    console.log("user id ho :",user);
+    console.log(req.params.projectId);
     const project = await prisma.project.findMany({
       where: {
-        builderId: req.params.projectId 
+        builderId: user.userId
       },
     });
     return res.status(200).json(project);
@@ -85,6 +90,8 @@ const getProject = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
 
 module.exports = {
   createProject,

@@ -4,6 +4,7 @@ const authController = require('../controllers/authController.js');
 const authMiddleware = require("../middleware/authmiddleware.js");
 const projectController = require("../controllers/projectController.js");
 const budgetController = require("../controllers/budgetController.js");
+
 // Authentication routes
 router.get("/", authController.root);
 router.post("/user/signUp", authController.signUp);
@@ -16,4 +17,7 @@ router.post("/project/create",authMiddleware(), projectController.createProject)
 
 //budget routes
 router.get("/project/:id/budget", budgetController.getBudget);
+router.get("/budget", authMiddleware(),(req,res)=>{
+    res.send("This is the budget route");
+});
 module.exports = router;

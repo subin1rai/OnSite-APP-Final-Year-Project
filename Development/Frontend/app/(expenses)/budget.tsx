@@ -1,8 +1,6 @@
 import {
   Image,
   SafeAreaView,
-  ScrollView,
-  StatusBar,
   Text,
   TouchableOpacity,
   View,

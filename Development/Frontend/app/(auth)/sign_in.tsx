@@ -27,10 +27,7 @@ const SignIn = () => {
     }
     
     try {
-      console.log(form);
       const result = await user_login(form.email, form.password);
-      console.log(result);
-      console.log("status code : " ,result.status);
       if (result?.status == 200) {
         await SecureStore.setItemAsync("AccessToken", result.token);
         router.replace("../(tabs)/home");
