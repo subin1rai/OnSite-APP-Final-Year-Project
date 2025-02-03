@@ -7,7 +7,6 @@ import { Image, ScrollView, Text, View, KeyboardAvoidingView, Platform, Alert } 
 import { useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
 import { signUp_user } from "@/context/user_api";
-import * as SecureStore from "expo-secure-store";
 
 const SignUp = () => {
   const router = useRouter();

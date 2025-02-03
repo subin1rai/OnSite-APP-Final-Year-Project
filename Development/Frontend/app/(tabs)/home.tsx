@@ -6,14 +6,17 @@ import {
   TouchableOpacity,
   View,
   RefreshControl,
+  StyleSheet,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { icons, images } from "@/constants";
 import { all_project } from "@/context/project";
 import AuthService from "@/context/AuthContext";
 import useUser from "@/context/User";
-import Icon  from "react-native-vector-icons/MaterialIcons";
+import Icon from "react-native-vector-icons/MaterialIcons";
+import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import ProjectDetails from "@/components/ProjectDetails";
 
 type Project = {
   id: number;
@@ -30,43 +33,57 @@ const Home = () => {
   const { user } = useUser();
   const [project, setProject] = useState<Project[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  
+  const snapPoints = ["40%"];
+  const bottomSheetRef = useRef<BottomSheet>(null);
 
+  const handleOpenPress = useCallback((index: number) => {
+    bottomSheetRef.current?.expand();
+    setIsOpen(true);
+  }, []);
+
+  const handleClosePress = () => {
+    bottomSheetRef.current?.close();
+    setIsOpen(false);
+  };
   const getProject = async () => {
-    setLoading(true); 
+    setLoading(true);
     try {
       const result = await all_project();
-      setProject(result); 
+      setProject(result);
     } catch (error) {
       console.error("Error fetching projects:", error);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
-      const isExpired = await AuthService.isTokenExpired(); 
+      const isExpired = await AuthService.isTokenExpired();
       if (isExpired) {
         console.log("Token expired. Redirecting to login...");
         await AuthService.removeToken(); // Remove token
         router.replace("../(auth)/sign_in"); // Redirect to login
         return;
       }
-      await getProject(); 
-      setRefreshing(false); 
+      await getProject();
+      setRefreshing(false);
     } catch (error) {
       console.error("Error during refresh:", error);
-    } 
-  }, [ getProject]);
+    }
+  }, [getProject]);
 
   useEffect(() => {
     getProject();
-  }, []); 
+  }, []);
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white z-0">
+       {isOpen && <View style={styles.redOverlay} onTouchStart={handleClosePress} />}
       <View className="mx-4">
         {/* Header Section */}
         <View className="flex flex-row gap-2 justify-between items-center">
@@ -145,10 +162,11 @@ const Home = () => {
         {/* Project Section Header */}
         <View className="flex-row justify-between mt-4 items-center">
           <Text className="pt-4 font-medium text-[24px]">All</Text>
-          <TouchableOpacity className="flex-row items-center" onPress={()=>(
-              router.push("/(project)/create_project")
-          )}>
-            <Icon name="add" size={24} color={"#FCAC29"}/>
+          <TouchableOpacity
+            className="flex-row items-center"
+            onPress={() => router.push("/(project)/create_project")}
+          >
+            <Icon name="add" size={24} color={"#FCAC29"} />
             <Text className="text-[20px] font-normal text-[#FCAC29]">
               Projects
             </Text>
@@ -185,7 +203,7 @@ const Home = () => {
                   <View className="flex-row justify-between items-center pb-2">
                     <Text className="text-[22px]">0%</Text>
                     <TouchableOpacity
-                      onPress={() => console.log("clicked")}
+                      onPress={()=>handleOpenPress(0)}
                       className="p-2"
                     >
                       <Image source={icons.ellipsis} className="w-1 h-4" />
@@ -200,7 +218,9 @@ const Home = () => {
             </View>
           );
         }}
-        ListEmptyComponent={() => <Text className="p-40 m-auto">No projects found</Text>}
+        ListEmptyComponent={() => (
+          <Text className="p-40 m-auto">No projects found</Text>
+        )}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -210,8 +230,31 @@ const Home = () => {
           />
         }
       />
+      {/* BottomSheet */}
+      <BottomSheet
+        ref={bottomSheetRef}
+        snapPoints={snapPoints}
+        enablePanDownToClose={true}
+        onClose={handleClosePress}
+        containerStyle={{zIndex:20}}
+      >
+        <BottomSheetView>
+          <ProjectDetails />
+        </BottomSheetView>
+      </BottomSheet>
     </SafeAreaView>
   );
 };
 
+const styles = StyleSheet.create({
+  redOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    zIndex: 10,
+  },
+});
 export default Home;
