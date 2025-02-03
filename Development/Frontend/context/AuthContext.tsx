@@ -4,7 +4,7 @@ import { jwtDecode } from 'jwt-decode';
 
 interface DecodedToken {
   exp: number; // Expiration timestamp in seconds
-  [key: string]: any; // Other token payload fields
+  [key: string]: any; 
 }
 
 const AuthService = {
@@ -30,12 +30,12 @@ const AuthService = {
     }
   },
 
-  checkAndRedirect: async (): Promise<void> => {
-    const router = useRouter();
+  checkAndRedirect: async (router: any): Promise<void> => {
     const isExpired = await AuthService.isTokenExpired();
     if (isExpired) {
-      await AuthService.removeToken(); // Remove the expired token
-      router.replace('../(auth)/sign_in'); // Redirect to login page immediately
+      console.log("Token expired");
+      await AuthService.removeToken();
+      router.replace("../(auth)/sign_in"); // Redirect to login
     }
   },
 };

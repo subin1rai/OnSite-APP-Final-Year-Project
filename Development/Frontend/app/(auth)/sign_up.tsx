@@ -7,7 +7,6 @@ import { Image, ScrollView, Text, View, KeyboardAvoidingView, Platform, Alert } 
 import { useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
 import { signUp_user } from "@/context/user_api";
-import * as SecureStore from "expo-secure-store";
 
 const SignUp = () => {
   const router = useRouter();
@@ -54,8 +53,6 @@ const SignUp = () => {
 
       const result = await signUp_user(form.name, form.email, form.password , form.confirmPassword);
       if (result?.status == 201) {
-        await SecureStore.setItemAsync("AccessToken", result.token);
-        console.log(result.token);
         Toast.show({
           type: "success", 
           text1: "Success",

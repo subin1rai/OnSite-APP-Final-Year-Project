@@ -35,16 +35,9 @@ const signUp = async (req, res) => {
         password: hashPassword,
       },
     });
-    // Generate JWT token
-    const token = jwt.sign(
-      { userId: user.id, email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
+  
     const result = res.status(201).json({
       message: "User created successfully",
-      user, 
-      token,
       status: 201,
     });
     return result;
@@ -59,12 +52,9 @@ const signUp = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    console.log(req.body);
     if (!email || !password) {
       return res.status(400).json({ error: "All fields are required" });
     }
-    console.log("login : hit");
     const user = await prisma.user.findFirst({
       where: {
         email: email,
@@ -78,10 +68,11 @@ const login = async (req, res) => {
       return res.status(400).json({ error: "Invalid password" });
     }
     const token = jwt.sign(
-      { userId: user.id, email: user.email, username: user.username},
+      { userId: user.id, email: user.email, username: user.username, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "1hr" }
+      { expiresIn: "2hrs" }   
     );
+    
     return res.status(200).json({
       message: "Login successful",
       user,

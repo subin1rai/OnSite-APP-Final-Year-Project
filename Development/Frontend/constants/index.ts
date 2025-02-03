@@ -38,6 +38,7 @@ import budget from "@/assets/icons/budget.png";
 import doc from "@/assets/icons/doc.png";
 import bell from "@/assets/icons/bell.png";
 import plus from "@/assets/icons/plus.png";
+import ellipsis from "@/assets/icons/ellipsis.png";
 
 export const images = {
     onboarding1,
@@ -82,7 +83,8 @@ export const icons = {
     doc,
     attendance,
     plus,
-    bell
+    bell,
+    ellipsis
 };
 
 export const onboarding = [

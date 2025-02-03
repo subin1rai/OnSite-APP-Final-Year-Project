@@ -2,6 +2,7 @@ const prisma = require("../utils/prisma.js");
 
 const getBudget = async (req, res) => {
   const { id } = req.params; // Extract the project ID from the request parameters
+  console.log(id);
   try {
     // Fetch the project with its related budgets
     const project = await prisma.project.findUnique({
