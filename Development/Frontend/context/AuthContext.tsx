@@ -1,6 +1,6 @@
-import { useRouter } from 'expo-router';
+// AuthService.ts
 import * as SecureStore from 'expo-secure-store';
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 
 interface DecodedToken {
   exp: number; // Expiration timestamp in seconds
@@ -22,7 +22,7 @@ const AuthService = {
 
     try {
       const decoded: DecodedToken = jwtDecode(token);
-      const currentTime = Date.now() / 1000; // Current time in seconds
+      const currentTime = Date.now() / 1000;
       return decoded.exp < currentTime;
     } catch (error) {
       console.error('Error decoding token:', error);
@@ -35,7 +35,8 @@ const AuthService = {
     if (isExpired) {
       console.log("Token expired");
       await AuthService.removeToken();
-      router.replace("../(auth)/sign_in"); // Redirect to login
+      // Use an absolute path for redirection.
+      router.replace("/(auth)/sign_in");
     }
   },
 };
