@@ -11,28 +11,25 @@ const Layout = () => {
 
   return (
     <>
-      {/* Set StatusBar globally */}
       <StatusBar barStyle="dark-content" backgroundColor="white" translucent={false} />
 
-      {/* Define Stack Navigator */}
       <Stack>
-        {/* Customize header for the Create Project screen */}
         <Stack.Screen
           name="create_project"
           options={{
             title: "Create Project",
             headerStyle: {
-              backgroundColor: "#FDB541", // Header background color
+              backgroundColor: "#FDB541", 
             },
             headerTitleStyle: {
               fontSize: 20,
               fontWeight: "semibold",
-              color: "#fff", // Title text color
+              color: "#fff", 
             },
-            headerTintColor: "#fff", // Back button color
+            headerTintColor: "#fff",
             headerLeft: () => (
               <TouchableOpacity
-                onPress={() => router.back()} // Navigates back
+                onPress={() => router.back()} 
                 style={{ marginLeft: 15 }}
               >
                 <Ionicons name="arrow-back" size={24} color="white" />
@@ -40,6 +37,8 @@ const Layout = () => {
             ),
           }}
         />
+        <Stack.Screen  name="project_home" options={{ headerShown: false }}/>
+
       </Stack>
 
       <Toast />

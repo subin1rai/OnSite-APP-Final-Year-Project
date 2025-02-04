@@ -9,7 +9,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { useEffect, useState, useCallback, useRef, useMemo } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { icons, images } from "@/constants";
 import { all_project } from "@/context/project";
 import AuthService from "@/context/AuthContext";
@@ -17,7 +17,7 @@ import useUser from "@/context/User";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import ProjectDetails from "@/components/ProjectDetails";
-
+import { useProjectStore } from "@/store/projectStore"; // adjust path accordingly
 type Project = {
   id: number;
   projectName: string;
@@ -35,21 +35,25 @@ const Home = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
-  
-  const snapPoints = ["40%"];
+
+  const snapPoints = ["30%"];
   const bottomSheetRef = useRef<BottomSheet>(null);
 
-  const handleOpenPress = useCallback((index: number) => {
-    bottomSheetRef.current?.expand();
-    setIsOpen(true);
-  }, []);
+  const handleOpenPress = useCallback((index:number) => {
+    if (!isOpen) {
+      bottomSheetRef.current?.expand();
+      setIsOpen(true);
+    }
+  }, [isOpen]);
 
   const handleClosePress = () => {
     bottomSheetRef.current?.close();
     setIsOpen(false);
   };
+
   const getProject = async () => {
     setLoading(true);
+    setIsOpen(false);
     try {
       const result = await all_project();
       setProject(result);
@@ -60,6 +64,13 @@ const Home = () => {
     }
   };
 
+  const handleProjectClick = (selectedProject: Project) => {
+    setIsOpen(false);
+    // Save the project data in the Zustand store.
+    useProjectStore.getState().setSelectedProject(selectedProject);
+    router.push("/(project)/project_home");
+  };
+
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
@@ -67,7 +78,7 @@ const Home = () => {
       if (isExpired) {
         console.log("Token expired. Redirecting to login...");
         await AuthService.removeToken(); // Remove token
-        router.replace("../(auth)/sign_in"); // Redirect to login
+        router.replace("/(auth)/sign_in"); 
         return;
       }
       await getProject();
@@ -75,15 +86,18 @@ const Home = () => {
     } catch (error) {
       console.error("Error during refresh:", error);
     }
-  }, [getProject]);
+  }, []);
 
   useEffect(() => {
     getProject();
+    setIsOpen(false);
   }, []);
 
   return (
     <SafeAreaView className="flex-1 bg-white z-0">
-       {isOpen && <View style={styles.redOverlay} onTouchStart={handleClosePress} />}
+      {isOpen && (
+        <View style={styles.redOverlay} onTouchStart={handleClosePress} />
+      )}
       <View className="mx-4">
         {/* Header Section */}
         <View className="flex flex-row gap-2 justify-between items-center">
@@ -179,43 +193,43 @@ const Home = () => {
         data={project}
         keyExtractor={(item: Project) => String(item.id)}
         renderItem={({ item, index }: { item: Project; index: number }) => {
-          const isLastItem = index === project.length - 1; // Check if last item
-
+          const isLastItem = index === project.length - 1;
           return (
-            <View
-              className="mx-4"
-              style={{
-                marginBottom: isLastItem ? 20 : 0, // Extra margin for last project
-                paddingBottom: isLastItem ? 20 : 0, // Extra padding for last project
-              }}
-            >
-              <View className="flex-row justify-between items-center p-3 border mt-3 rounded-md border-[#E8E8E8]">
-                <View>
-                  <Text className="text-[20px] font-semibold">
-                    {item.projectName}
-                  </Text>
-                  <Text className="text-[16px] pt-1">
-                    {item.location ? item.location : "No location available"}
-                  </Text>
-                </View>
-
-                <View>
-                  <View className="flex-row justify-between items-center pb-2">
-                    <Text className="text-[22px]">0%</Text>
-                    <TouchableOpacity
-                      onPress={()=>handleOpenPress(0)}
-                      className="p-2"
-                    >
-                      <Image source={icons.ellipsis} className="w-1 h-4" />
-                    </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleProjectClick(item)}>
+              <View
+                className="mx-4"
+                style={{
+                  marginBottom: isLastItem ? 20 : 0,
+                  paddingBottom: isLastItem ? 20 : 0,
+                }}
+              >
+                <View className="flex-row justify-between items-center p-3 border mt-3 rounded-md border-[#E8E8E8]">
+                  <View>
+                    <Text className="text-[20px] font-semibold">
+                      {item.projectName}
+                    </Text>
+                    <Text className="text-[16px] pt-1">
+                      {item.location ? item.location : "No location available"}
+                    </Text>
                   </View>
-                  <View className="flex-row gap-2 items-center">
-                    <View className="bg-[#FCA311] h-3 w-3 rounded-xl"></View>
-                    <Text>On Going</Text>
+                  <View>
+                    <View className="flex-row justify-between items-center pb-2">
+                      <Text className="text-[22px]">0%</Text>
+                      <TouchableOpacity
+                        onPress={() => handleOpenPress(0)}
+                        className="p-2"
+                      >
+                        <Image source={icons.ellipsis} className="w-1 h-4" />
+                      </TouchableOpacity>
+                    </View>
+                    <View className="flex-row gap-2 items-center">
+                      <View className="bg-[#FCA311] h-3 w-3 rounded-xl"></View>
+                      <Text>On Going</Text>
+                    </View>
                   </View>
                 </View>
               </View>
-            </View>
+            </TouchableOpacity>
           );
         }}
         ListEmptyComponent={() => (
@@ -230,17 +244,17 @@ const Home = () => {
           />
         }
       />
+
       {/* BottomSheet */}
       <BottomSheet
         ref={bottomSheetRef}
+        index={-1} // Ensure BottomSheet starts closed
         snapPoints={snapPoints}
         enablePanDownToClose={true}
         onClose={handleClosePress}
-        containerStyle={{zIndex:20}}
+        containerStyle={{ zIndex: 20 }}
       >
-        <BottomSheetView>
-          <ProjectDetails />
-        </BottomSheetView>
+        <BottomSheetView>{isOpen && <ProjectDetails />}</BottomSheetView>
       </BottomSheet>
     </SafeAreaView>
   );

@@ -1,3 +1,4 @@
+// RootLayout.tsx
 import React, { useEffect, useState } from "react";
 import { useFonts } from "expo-font";
 import { Stack, useRouter } from "expo-router";
@@ -5,9 +6,9 @@ import * as SplashScreen from "expo-splash-screen";
 import "react-native-reanimated";
 import { LogBox, StatusBar, Text, View, ActivityIndicator } from "react-native";
 import Toast from "react-native-toast-message";
-import AuthService from "@/context/AuthContext"; // Import AuthService
+import AuthService from "@/context/AuthContext"; // Adjust path if needed
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
+// Prevent the splash screen from auto-hiding.
 SplashScreen.preventAutoHideAsync();
 LogBox.ignoreLogs(["Clerk:"]);
 
@@ -24,32 +25,48 @@ export default function RootLayout() {
     "Jakarta-SemiBold": require("../assets/fonts/PlusJakartaSans-SemiBold.ttf"),
   });
 
+  // Hide the splash screen when fonts are loaded.
   useEffect(() => {
     if (fontsLoaded) {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
 
-  // Function to check token status and redirect if necessary
+  // Function to check authentication status and redirect if needed.
   const checkAuthStatus = async () => {
-    console.log("Checking authentication...");
-    const isExpired = await AuthService.isTokenExpired();
-    console.log("Token expired:", isExpired);
+    try {
+      console.log("Checking authentication...");
+      const isExpired = await AuthService.isTokenExpired();
+      console.log("Token expired:", isExpired);
 
-    if (isExpired) {
+      if (isExpired) {
+        await AuthService.removeToken();
+        setIsAuthenticated(false);
+        // Delay navigation to ensure the Root Layout is mounted.
+        setTimeout(() => {
+          router.replace("/(auth)/sign_in");
+        }, 0);
+      } else {
+        setIsAuthenticated(true);
+      }
+    } catch (error) {
+      console.error("Error checking authentication:", error);
       await AuthService.removeToken();
       setIsAuthenticated(false);
-      router.replace("../(auth)/sign_in"); 
-    } else {
-      setIsAuthenticated(true);
+      setTimeout(() => {
+        router.replace("/(auth)/sign_in");
+      }, 0);
     }
   };
 
-  // Check authentication status when the app starts
+  // Run the auth check after the first render.
   useEffect(() => {
-    checkAuthStatus();
+    setTimeout(() => {
+      checkAuthStatus();
+    }, 0);
   }, []);
 
+  // While fonts or auth status are loading, show a loading indicator.
   if (!fontsLoaded || isAuthenticated === null) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#fff" }}>
