@@ -125,7 +125,6 @@ const getProject = async (req, res) => {
 
 const projectById = async (req, res) => {
   try {
-    // Safely extract projectId from query params
     const projectId = req.query?.id;
 
     if (!projectId) {
@@ -134,8 +133,7 @@ const projectById = async (req, res) => {
 
     console.log("Project ID:", projectId);
 
-    // Fetch project along with workers and attendance
-    const project = await prisma.project.findFirst({
+    const projectData = await prisma.project.findFirst({
       where: { id: parseInt(projectId) },
       include: {
         projectWorkers: {
@@ -147,47 +145,41 @@ const projectById = async (req, res) => {
       },
     });
 
-    if (!project) {
+    if (!projectData) {
       return res.status(404).json({ message: "Project not found" });
     }
 
-    // Extract first worker (assuming you want to show one worker at a time)
-    const workers = project.projectWorkers.map((pw) => ({
-      id: pw.worker.id,
-      name: pw.worker.name,
-      contact: pw.worker.contact,
-      profile: pw.worker.profile,
-      designation: pw.worker.designation,
-      attendance: pw.attendance.map((a) => ({
-        id: a.id,
-        projectWorkerId: a.projectWorkerId,
-        date: a.date,
-        status: a.status,
-      })),
-    }));
-
-    // Construct the final response
-    return res.status(200).json({
+    // Transform the data structure
+    const transformedProject = {
       project: {
-        id: project.id,
-        projectName: project.projectName,
-        ownerName: project.ownerName,
-        location: project.location,
-        startDate: project.startDate,
-        endDate: project.endDate,
-        status: project.status,
-        builderId: project.builderId,
-        createdAt: project.createdAt,
-        updatedAt: project.updatedAt,
-        workers, // Restructured worker data
-      },
-    });
+        id: projectData.id,
+        projectName: projectData.projectName,
+        ownerName: projectData.ownerName,
+        location: projectData.location,
+        startDate: projectData.startDate,
+        endDate: projectData.endDate,
+        status: projectData.status,
+        builderId: projectData.builderId,
+        createdAt: projectData.createdAt,
+        updatedAt: projectData.updatedAt,
+        worker: projectData.projectWorkers.map(pw => ({
+          id: pw.worker.id,
+          projectWorkerId: pw.id,
+          name: pw.worker.name,
+          contact: pw.worker.contact,
+          profile: pw.worker.profile,
+          designation: pw.worker.designation,
+          attendance: pw.attendance
+        }))
+      }
+    };
+
+    return res.status(200).json(transformedProject);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 const addWorkerToProject = async (req, res) => {
   try {

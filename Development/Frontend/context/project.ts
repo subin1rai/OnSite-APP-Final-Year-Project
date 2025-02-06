@@ -74,4 +74,36 @@ export const create_project = async (
 
 
 
+// export const record_attendance = async (
+//   projectWorkerId: string,
+//   status: string,
+//   location: string
+// ) => {
+//   try {
+//     const token = await SecureStore.getItemAsync("AccessToken");
+
+//     const response = await apiHandler.post(
+//       "/project/create",
+//       {
+//         id: projectWorkerId,
+//         date: formatDate(date),
+//         status,
+//       },
+//       {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//           "Content-Type": "application/json",
+//         },
+//       }
+//     );
+
+//     console.log("Project Created Successfully:", response, );
+//     return response.data;
+//   } catch (error: any) {
+//     console.error("Error Creating Project:", error);
+//   }
+// };
+
+
+
 
