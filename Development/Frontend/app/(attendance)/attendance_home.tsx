@@ -6,55 +6,50 @@ import {
   TouchableOpacity,
   FlatList,
   RefreshControl,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
 import { useProjectStore } from "@/store/projectStore";
 import { single_project } from "@/context/project";
 import AuthService from "@/context/AuthContext";
 import { router } from "expo-router";
+import apiHandler from "@/context/ApiHandler";
 
-// Define a type for attendance records
 interface AttendanceRecord {
   id: number;
   projectWorkerId: number;
-  date: string; // Expected in "YYYY-MM-DD" format
-  status: string; // "present" or "absent"
+  date: string;
+  status: string;
 }
 
-// Define a type for workers
 interface Worker {
   id: number;
   name: string;
   contact: string;
   profile: string | null;
   designation: string;
+  projectWorkerId: number;
   attendance: AttendanceRecord[];
 }
 
 const AttendanceHome = () => {
   const { selectedProject } = useProjectStore();
-  const [date, setDate] = useState(new Date("2024-02-04")); // Default date
+  const [date, setDate] = useState(new Date());
   const [loading, setLoading] = useState(false);
   const [workers, setWorkers] = useState<Worker[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
-  // Fetch the single project and extract its workers array from result.project.workers
   const fetchSingleProject = async () => {
-    if (!selectedProject || !selectedProject.id) {
+    if (!selectedProject?.id) {
       console.warn("No selected project available.");
       return;
     }
     setLoading(true);
     try {
-      console.log("Fetching Project ID:", selectedProject.id);
       const result = await single_project(selectedProject.id.toString());
-      console.log("Result from single_project:", result);
-      // Check if result has a project object with a workers array
-      if (result && result.project && result.project.workers) {
-        setWorkers(result.project.workers);
+      if (result?.project?.worker) {
+        setWorkers(result.project.worker);
       } else {
-        console.warn("No workers found in the project result.");
         setWorkers([]);
       }
     } catch (error) {
@@ -64,13 +59,105 @@ const AttendanceHome = () => {
     }
   };
 
-  // Handle pull-to-refresh
+  const formatDate = (dateObj: Date) => {
+    const year = dateObj.getFullYear();
+    const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
+    const day = dateObj.getDate().toString().padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const recordAttendance = async (projectWorkerId: number, status: string) => {
+    try {
+      console.log("Recording attendance:", projectWorkerId, status);
+  
+      // ✅ Optimistic UI update before hitting API
+      setWorkers((prevWorkers) =>
+        prevWorkers.map((worker) =>
+          worker.projectWorkerId === projectWorkerId
+            ? {
+                ...worker,
+                attendance: worker.attendance.some(
+                  (a) => formatDate(new Date(a.date)) === formatDate(date)
+                )
+                  ? worker.attendance.map((a) =>
+                      formatDate(new Date(a.date)) === formatDate(date)
+                        ? { ...a, status } // ✅ Update existing attendance record
+                        : a
+                    )
+                  : [...worker.attendance, { id: Date.now(), projectWorkerId, date: formatDate(date), status }], // ✅ Add new record
+              }
+            : worker
+        )
+      );
+  
+      // ✅ Send API request to update attendance
+      const response = await apiHandler.post(
+        "/attendance",
+        {
+          id: projectWorkerId,
+          date: formatDate(date),
+          status,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
+      if (!response) {
+        throw new Error("Failed to record attendance");
+      }
+  
+      console.log("Attendance recorded successfully");
+  
+      // ✅ Fetch the latest attendance immediately after the API call
+      await fetchSingleProject();
+    } catch (error) {
+      console.error("Error recording attendance:", error);
+      Alert.alert("Error", "Failed to record attendance");
+    }
+  };
+  
+  
+  const getAttendanceStatus = (worker: Worker) => {
+    const currentDateStr = formatDate(date);
+    const todayAttendance = worker.attendance.find(
+      (a) => formatDate(new Date(a.date)) === currentDateStr
+    );
+    return todayAttendance?.status || "unmarked"; // ✅ Show the latest status
+  };
+  
+
+  const getPresentCount = useCallback(() => {
+    const currentDateStr = formatDate(date);
+    return workers.reduce((count, worker) => {
+      const isPresent = worker.attendance.some(
+        (a) =>
+          formatDate(new Date(a.date)) === currentDateStr &&
+          a.status === "present"
+      );
+      return isPresent ? count + 1 : count;
+    }, 0);
+  }, [workers, date, formatDate]);
+
+  const getAbsentCount = useCallback(() => {
+    const currentDateStr = formatDate(date);
+    return workers.reduce((count, worker) => {
+      const isAbsent = worker.attendance.some(
+        (a) =>
+          formatDate(new Date(a.date)) === currentDateStr &&
+          a.status === "absent"
+      );
+      return isAbsent ? count + 1 : count;
+    }, 0);
+  }, [workers, date, formatDate]);
+
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
       const isExpired = await AuthService.isTokenExpired();
       if (isExpired) {
-        console.log("Token expired. Redirecting to login...");
         await AuthService.removeToken();
         router.replace("/(auth)/sign_in");
         return;
@@ -83,51 +170,79 @@ const AttendanceHome = () => {
     }
   }, []);
 
-  // Fetch data when selectedProject is available or changes
   useEffect(() => {
     if (selectedProject) {
       fetchSingleProject();
+      onRefresh();
     }
   }, [selectedProject]);
 
-  // Helper: format date to "YYYY-MM-DD"
-  const formatDate = (dateObj: Date) => {
-    const year = dateObj.getFullYear();
-    const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
-    const day = dateObj.getDate().toString().padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
-
-  const currentDateKey = formatDate(date);
-
-  // Placeholder for current attendance status
-  const currentAttendance: { [key: number]: string } = {};
-
-  // Change date by a given number of days
   const changeDate = (days: number) => {
     const newDate = new Date(date);
     newDate.setDate(newDate.getDate() + days);
     setDate(newDate);
   };
 
-  // Compute attendance counts based on the current date
-  const presentCount = workers.filter((worker) =>
-    worker.attendance.some(
-      (record) =>
-        record.date === currentDateKey && record.status.toLowerCase() === "present"
-    )
-  ).length;
+  const renderWorker = ({ item }: { item: Worker }) => {
+    const status = getAttendanceStatus(item);
+    
+    return (
+      <View>
+        <View className="flex-row items-center justify-between px-4 mt-2">
+          <View className="flex-row items-center gap-2">
+            <View className="w-8 h-8 bg-red-400 rounded-full" />
+            <View className="flex-row items-center">
+              <Text>{item.name}</Text>
+              <Ionicons
+                name="chevron-forward"
+                size={24}
+                color="#FDB43D"
+              />
+            </View>
+          </View>
+          <Text>1.0 Shift</Text>
+        </View>
 
-  const absentCount = workers.filter((worker) =>
-    worker.attendance.some(
-      (record) =>
-        record.date === currentDateKey && record.status.toLowerCase() === "absent"
-    )
-  ).length;
+        <View className="px-4 py-2 flex-row items-center justify-between">
+          <Text className="text-xl">{item.designation}</Text>
+          <View className="flex-row items-center gap-2">
+            <TouchableOpacity
+              disabled={loading}
+              className={`border px-4 py-2 rounded-md ${
+                status === "present" ? "bg-green-100" : ""
+              }`}
+              style={{ borderColor: "#C2C2C2" }}
+              onPress={() => recordAttendance(item.projectWorkerId, "present")}
+            >
+              <Text>Present</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              disabled={loading}
+              className={`border px-4 py-2 rounded-md ${
+                status === "absent" ? "bg-red-100" : ""
+              }`}
+              style={{ borderColor: "#C2C2C2" }}
+              onPress={() => recordAttendance(item.projectWorkerId, "absent")}
+            >
+              <Text>Absent</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              className="border rounded-md"
+              style={{ borderColor: "#C2C2C2", padding: 4 }}
+            >
+              <Ionicons name="chevron-down" size={20} color="#FCA311" />
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View className="border-b border-gray-300 mx-4" />
+      </View>
+    );
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      {/* Header with date changer */}
       <View className="flex-row justify-between p-4">
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Ionicons
@@ -139,9 +254,7 @@ const AttendanceHome = () => {
           <View className="flex items-center py-2 px-4 rounded-lg bg-[#FEEDCF]">
             <Text className="text-2xl font-bold">{date.getDate()}</Text>
             <Text className="text-2xl font-bold">
-              {date
-                .toLocaleString("default", { month: "short" })
-                .toUpperCase()}
+              {date.toLocaleString("default", { month: "short" }).toUpperCase()}
             </Text>
           </View>
           <Ionicons
@@ -153,16 +266,17 @@ const AttendanceHome = () => {
         </View>
         <View className="flex justify-end items-end gap-2">
           <Text className="text-green-600 text-2xl font-semibold">
-            {presentCount} Present
+            {getPresentCount()} Present
           </Text>
           <View className="flex-row gap-2 items-center">
             <View className="w-4 h-4 bg-red-400 rounded-sm" />
-            <Text className="text-red-500 text-lg">{absentCount} Absent</Text>
+            <Text className="text-red-500 text-lg">
+              {getAbsentCount()} Absent
+            </Text>
           </View>
         </View>
       </View>
 
-      {/* Add Worker Section */}
       <View className="border-b border-gray-300 mx-4" />
       <TouchableOpacity className="flex-row justify-between">
         <View />
@@ -173,83 +287,27 @@ const AttendanceHome = () => {
           }}
         >
           <Ionicons name="add" size={24} color="#FDB43D" />
-          <Text
-            className="text-lg font-medium"
-            style={{ color: "#FDB43D" }}
-          >
+          <Text className="text-lg font-medium" style={{ color: "#FDB43D" }}>
             Add Worker
           </Text>
         </TouchableOpacity>
       </TouchableOpacity>
       <View className="border-b border-gray-300 mx-4" />
 
-      {/* Workers Heading */}
       <Text className="font-bold text-2xl px-4 py-2">Workers</Text>
 
-      {/* Worker List */}
       <FlatList
         data={workers}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => {
-          // Get current attendance status for this worker (defaulting to "Unmarked")
-          const status = currentAttendance[item.id] || "Unmarked";
-          return (
-            <View>
-              <View className="flex-row items-center justify-between px-4 mt-2">
-                <View className="flex-row items-center gap-2">
-                  <View className="w-8 h-8 bg-red-400 rounded-full" />
-                  <View className="flex-row items-center">
-                    <Text>{item.name}</Text>
-                    <Ionicons
-                      name="chevron-forward"
-                      size={24}
-                      color="#FDB43D"
-                    />
-                  </View>
-                </View>
-                <Text>1.0 Shift</Text>
-              </View>
-
-              <View className="px-4 py-2 flex-row items-center justify-between">
-                <Text className="text-xl">{item.designation}</Text>
-                <View className="flex-row items-center gap-2">
-                  <TouchableOpacity
-                    className="border px-4 py-2 rounded-md"
-                    style={{ borderColor: "#C2C2C2" }}
-                  >
-                    <Text>Present</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    className="border px-4 py-2 rounded-md"
-                    style={{ borderColor: "#C2C2C2" }}
-                  >
-                    <Text>Absent</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    className="border rounded-md"
-                    style={{ borderColor: "#C2C2C2", padding: 4 }}
-                  >
-                    <Ionicons
-                      name="chevron-down"
-                      size={20}
-                      color="#FCA311"
-                      onPress={() => changeDate(1)}
-                    />
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <View className="border-b border-gray-300 mx-4" />
-            </View>
-          );
-        }}
-         refreshControl={
-                  <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                    tintColor="#FCA311"
-                    colors={["#FCA311"]}
-                  />
-                }
+        renderItem={renderWorker}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#FCA311"
+            colors={["#FCA311"]}
+          />
+        }
       />
     </SafeAreaView>
   );
