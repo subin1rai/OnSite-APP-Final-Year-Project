@@ -40,8 +40,22 @@ const addWorker = async (req, res) => {
       .end(req.file.buffer);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Server Error" });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-module.exports = { upload, addWorker };
+const updateWorkerShifts = async (req,res)=>{
+
+}
+
+const allWorkers = async(req,res)=>{
+  try {
+    const workers = await prisma.worker.findMany();
+    return res.status(200).json({message:"All workers",status:200,workers});
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error" });  
+  }
+}
+
+module.exports = { upload, addWorker, allWorkers };

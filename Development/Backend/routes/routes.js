@@ -32,6 +32,7 @@ router.get("/budget", authMiddleware(), (req, res) => {
 router.post("/attendance", attendanceController.recordAttendance);
 
 // Worker route (Fixing upload middleware)
-router.post("/worker", upload.single("image"), workerController.addWorker);
+router.post("/worker/addWorker", upload.single("image"), workerController.addWorker);
+router.get("/worker", workerController.allWorkers);
 
 module.exports = router;
