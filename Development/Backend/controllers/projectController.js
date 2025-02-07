@@ -60,13 +60,11 @@ const createProject = async (req, res) => {
       return res.status(400).json({ message: "Project already exists!" });
     }
 
-    // Create project and budget in a transaction
     const result = await prisma.$transaction(async (prisma) => {
-      // Create new project in database
       const newProject = await prisma.project.create({
         data: {
           projectName,
-          ownerName: "subin", // Static value for ownerName
+          ownerName: "subin", 
           builderId: req.user.userId,
           location,
           startDate: new Date(startDate),
