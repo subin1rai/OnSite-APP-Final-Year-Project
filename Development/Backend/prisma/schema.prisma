@@ -19,18 +19,18 @@ model User {
 }
 
 model Project {
-  id          Int       @id @default(autoincrement())
-  projectName String
-  ownerName   String
-  location    String?
-  startDate   DateTime?
-  endDate     DateTime?
-  status      String    @default("onGoing")
-  builderId   Int
-  builder     User      @relation(fields: [builderId], references: [id])
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  budgets     Budget[]
+  id             Int             @id @default(autoincrement())
+  projectName    String
+  ownerName      String
+  location       String?
+  startDate      DateTime?
+  endDate        DateTime?
+  status         String          @default("onGoing")
+  builderId      Int
+  builder        User            @relation(fields: [builderId], references: [id])
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  budgets        Budget[]
   projectWorkers ProjectWorker[]
 }
 
@@ -40,27 +40,28 @@ model Worker {
   contact     String?
   profile     String?
   designation String?
+  salary      String?
+  shifts      Float?
   projectWorkers ProjectWorker[]
 }
 
 model ProjectWorker {
-  id         Int      @id @default(autoincrement())
-  project    Project  @relation(fields: [projectId], references: [id])
+  id         Int          @id @default(autoincrement())
+  project    Project      @relation(fields: [projectId], references: [id])
   projectId  Int
-  worker     Worker   @relation(fields: [workerId], references: [id])
+  worker     Worker       @relation(fields: [workerId], references: [id])
   workerId   Int
-  createdAt  DateTime @default(now())
-  attendance   Attendance[]
+  createdAt  DateTime     @default(now())
+  attendance Attendance[]
 }
 
 model Attendance {
-  id         Int      @id @default(autoincrement())
-  projectWorkerId  Int
-  date       DateTime @default(now()) // Ensures attendance is recorded daily
-  status     String   // "Present" or "Absent"
-  projectWorker     ProjectWorker   @relation(fields: [projectWorkerId], references: [id])
+  id              Int           @id @default(autoincrement())
+  projectWorkerId Int
+  date            DateTime      @default(now())
+  status          String
+  projectWorker   ProjectWorker @relation(fields: [projectWorkerId], references: [id])
 }
-
 
 model Budget {
   id        Int      @id @default(autoincrement())
