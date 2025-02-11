@@ -82,7 +82,7 @@ const Home = () => {
       const isExpired = await AuthService.isTokenExpired();
       if (isExpired) {
         console.log("Token expired. Redirecting to login...");
-        await AuthService.removeToken(); // Remove token
+        await AuthService.removeToken();
         router.replace("/(auth)/sign_in"); 
         return;
       }
