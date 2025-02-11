@@ -41,7 +41,6 @@ model Worker {
   profile     String?
   designation String?
   salary      String?
-  shifts      Float?
   projectWorkers ProjectWorker[]
 }
 
@@ -60,6 +59,7 @@ model Attendance {
   projectWorkerId Int
   date            DateTime      @default(now())
   status          String
+  shifts      Float?
   projectWorker   ProjectWorker @relation(fields: [projectWorkerId], references: [id])
 }
 

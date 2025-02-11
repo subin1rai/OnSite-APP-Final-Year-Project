@@ -8,7 +8,7 @@ const upload = multer({ storage: storage });
 
 const addWorker = async (req, res) => {
   try {
-    const { name, contact, designation, salary, shift } = req.body;
+    const { name, contact, designation, salary} = req.body;
     console.log(req.body);
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
@@ -27,8 +27,7 @@ const addWorker = async (req, res) => {
             contact: contact,
             profile: result.secure_url,
             designation: designation,
-            salary: salary,
-            shifts: parseFloat(shift),
+            salary: salary
           },
         });
 
