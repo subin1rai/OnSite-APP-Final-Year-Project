@@ -15,11 +15,16 @@ export default function TabLayout() {
           // tabBarStyle: { paddingBottom: 0, height: 50 },  // You can adjust height
         }}
       >
+        <StatusBar
+          barStyle="dark-content"
+          backgroundColor="white"
+          translucent={false}
+        />
         <Tabs.Screen
           name="home"
           options={{
             title: "Home",
-            tabBarIcon: ({ color }) => (  
+            tabBarIcon: ({ color }) => (
               <FontAwesome size={28} name="home" color={color} />
             ),
           }}
@@ -38,7 +43,7 @@ export default function TabLayout() {
           options={{
             title: "More",
             tabBarIcon: ({ color }) => (
-          <FontAwesome size={28} name="bars" color={color} />
+              <FontAwesome size={28} name="bars" color={color} />
             ), // Use a valid icon name
           }}
         />

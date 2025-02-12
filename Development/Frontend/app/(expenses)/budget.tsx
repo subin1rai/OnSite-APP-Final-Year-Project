@@ -1,3 +1,4 @@
+// @/screens/Budget.tsx (or wherever your Budget component is located)
 import {
   Image,
   SafeAreaView,
@@ -11,42 +12,37 @@ import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { images } from "@/constants";
 import { useEffect, useState, useCallback } from "react";
-import Expense from "./expense";
-import Vendors from "./vendors";
-import { useRoute } from "@react-navigation/native";
+import Expense from "@/components/expense";
+import Vendors from "@/components/vendors";
 import apiHandler from "@/context/ApiHandler";
 import AuthService from "@/context/AuthContext";
-import * as SecureStore from "expo-secure-store";
 import { router } from "expo-router";
-
-type BudgetType = {
-  ownerName: string;
-  projectName: string;
-  budgets: {
-    id: number;
-    amount: number;
-    inHand: number | null;
-    type: string | null;
-    createdAt: string;
-    updatedAt: string;
-    projectId: number;
-  }[];
-};
+import { useProjectStore } from "@/store/projectStore";
+import { useBudgetStore, BudgetType } from "@/store/budgetStore";
 
 type TabName = "Expense" | "Vendors";
 
 const Budget = () => {
-  const route = useRoute();
+  const { selectedProject } = useProjectStore();
+  // Use the budget store from Zustand
+  const { budget, setBudget } = useBudgetStore();
+
   const [activeTab, setActiveTab] = useState<TabName>("Expense");
-  const [budget, setBudget] = useState<BudgetType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const { projectId } = route.params as { projectId: string };
-  
+
+  useEffect(() => {
+    if (selectedProject) {
+      fetchBudget();
+    }
+  }, [selectedProject]);
+
   const fetchBudget = async () => {
     try {
-      const response = await apiHandler.get(`/project/${projectId}/budget`);
+      if (!selectedProject) return;
+      const response = await apiHandler.get(`/project/${selectedProject.id}/budget`);
       if (!response || !response.data) throw new Error("Failed to fetch budget");
+      // Store the fetched budget in Zustand
       setBudget(response.data);
     } catch (error) {
       console.error("Error fetching budget:", error);
@@ -54,32 +50,30 @@ const Budget = () => {
       setIsLoading(false);
     }
   };
+
   const checkTokenAndFetchData = async () => {
     const isExpired = await AuthService.isTokenExpired();
     if (isExpired) {
       await AuthService.removeToken();
-      router.replace('../(auth)/sign_in');  // Redirect to login if expired
+      router.replace("../(auth)/sign_in");
       return;
     }
   };
-  useEffect(() => {
-    fetchBudget();
-  }, [projectId]);
-
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    try {
-      await checkTokenAndFetchData();
-      await fetchBudget();
-    } finally {
-      setRefreshing(false);
-    }
-    setRefreshing(false);
-  }, [projectId]);
 
   const handleTabChange = (tabName: TabName) => {
     setActiveTab(tabName);
   };
+
+  // Uncomment and use this if you want to support pull-to-refresh
+  // const onRefresh = useCallback(async () => {
+  //   setRefreshing(true);
+  //   try {
+  //     await checkTokenAndFetchData();
+  //     await fetchBudget();
+  //   } finally {
+  //     setRefreshing(false);
+  //   }
+  // }, [selectedProject]);
 
   if (isLoading) {
     return (
@@ -91,25 +85,23 @@ const Budget = () => {
     );
   }
 
-  const formatCurrency = (amount: number) => {
-    return `NRP. ${amount.toLocaleString()}`;
-  };
-  
+  const formatCurrency = (amount: number) => `NRP. ${amount.toLocaleString()}`;
+
   return (
     <SafeAreaView className="bg-[#ffb133]">
       <View>
-      <View className="bg-[#ffb133] h-[180px] w-full z-0 flex">
-        <View className="flex-row justify-between mx-4 items-center">
-          <Ionicons name="arrow-back" size={24} color="white" />
-          <Text className="text-2xl text-white font-semibold tracking-wider">
-            Budget
-          </Text>
-          <Image
-            source={images.imageProfile}
-            className="w-10 h-10 rounded-full"
-          />
-        </View>
-        {budget && (
+        <View className="bg-[#ffb133] h-[180px] w-full z-0 flex">
+          <View className="flex-row justify-between mx-4 items-center">
+            <Ionicons name="arrow-back" size={24} color="white" />
+            <Text className="text-2xl text-white font-semibold tracking-wider">
+              Budget
+            </Text>
+            <Image
+              source={images.imageProfile}
+              className="w-10 h-10 rounded-full"
+            />
+          </View>
+          {budget && (
             <BlurView
               className="z-10 w-[91%] h-[173px] mt-5 mx-auto rounded-lg border border-neutral-200/25"
               style={{
@@ -129,7 +121,9 @@ const Budget = () => {
                 </Text>
                 <View className="flex flex-row justify-between">
                   <View>
-                    <Text className="font-medium text-2xl text-white">Budget</Text>
+                    <Text className="font-medium text-2xl text-white">
+                      Budget
+                    </Text>
                     <Text className="font-medium text-2xl text-[#C17800]">
                       {formatCurrency(budget.budgets[0]?.amount || 0)}
                     </Text>
@@ -168,70 +162,67 @@ const Budget = () => {
             </BlurView>
           )}
 
-        {/* Custom Tabs Navigation */}
-        <View className="flex flex-row mt-4">
-          <TouchableOpacity
-            onPress={() => handleTabChange("Expense")}
-            style={{
-              flex: 1,
-              paddingVertical: 10,
-              alignItems: "center",
-              borderBottomWidth: 2,
-              borderBottomColor:
-                activeTab === "Expense" ? "#ffd700" : "#D9D9D9", // Active tab color
-            }}
-          >
-            <Text
+          {/* Custom Tabs Navigation */}
+          <View className="flex flex-row mt-4">
+            <TouchableOpacity
+              onPress={() => handleTabChange("Expense")}
               style={{
-                fontSize: 16,
-                fontWeight: "500",
-                color: activeTab === "Expense" ? "#FCA311" : "#3C3C43",
+                flex: 1,
+                paddingVertical: 10,
+                alignItems: "center",
+                borderBottomWidth: 2,
+                borderBottomColor:
+                  activeTab === "Expense" ? "#ffd700" : "#D9D9D9",
               }}
             >
-              Expense
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => handleTabChange("Vendors")}
-            style={{
-              flex: 1,
-              paddingVertical: 10,
-              alignItems: "center",
-              borderBottomWidth: 2, // Underline for the active tab
-              borderBottomColor:
-                activeTab === "Vendors" ? "#ffd700" : "#D9D9D9", // Active tab color
-            }}
-          >
-            <Text
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: "500",
+                  color: activeTab === "Expense" ? "#FCA311" : "#3C3C43",
+                }}
+              >
+                Expense
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => handleTabChange("Vendors")}
               style={{
-                fontSize: 16,
-                fontWeight: "500",
-                color: activeTab === "Vendors" ? "#FCA311" : "#3C3C43",
+                flex: 1,
+                paddingVertical: 10,
+                alignItems: "center",
+                borderBottomWidth: 2,
+                borderBottomColor:
+                  activeTab === "Vendors" ? "#ffd700" : "#D9D9D9",
               }}
             >
-              Vendors
-            </Text>
-          </TouchableOpacity>
-        </View>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: "500",
+                  color: activeTab === "Vendors" ? "#FCA311" : "#3C3C43",
+                }}
+              >
+                Vendors
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-        {/* Content based on Active Tab */}
-        <View className="p-0 m-2  h-[500px]">
-          {activeTab === "Expense" ? <Expense /> : <Vendors />}
+          {/* Content based on Active Tab */}
+          <View className="p-0 m-2 h-[500px]">
+            {activeTab === "Expense" ? <Expense /> : <Vendors />}
+          </View>
         </View>
       </View>
-      </View>
-      refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor="#FCA311"
-            colors={["#FCA311"]}
-          />
-        }
+      {/* Uncomment below if you want pull-to-refresh support */}
+      {/* <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          tintColor="#FCA311"
+          colors={["#FCA311"]}
+        /> */}
     </SafeAreaView>
   );
-  
-}
-
+};
 
 export default Budget;

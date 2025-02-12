@@ -35,12 +35,12 @@ model Project {
 }
 
 model Worker {
-  id          Int     @id @default(autoincrement())
-  name        String
-  contact     String?
-  profile     String?
-  designation String?
-  salary      String?
+  id             Int             @id @default(autoincrement())
+  name           String
+  contact        String?
+  profile        String?
+  designation    String?
+  salary         String?
   projectWorkers ProjectWorker[]
 }
 
@@ -59,19 +59,21 @@ model Attendance {
   projectWorkerId Int
   date            DateTime      @default(now())
   status          String
-  shifts      Float?
+  shifts          Float?
   projectWorker   ProjectWorker @relation(fields: [projectWorkerId], references: [id])
 }
 
 model Budget {
   id        Int      @id @default(autoincrement())
-  amount    Int
-  type      String?
-  inHand    Int?
+  amount    Float
+  inHand    Float?
   projectId Int
   project   Project  @relation(fields: [projectId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+
+  Transaction Transaction[]
 }
 
 model Vendor {
@@ -85,11 +87,13 @@ model Vendor {
 }
 
 model Transaction {
-  id              Int     @id @default(autoincrement())
-  TransactionName String
+  id              Int      @id @default(autoincrement())
   amount          Int
   type            String?
-  remarks         String?
+  note         String?
   vendorId        Int?
-  vendor          Vendor? @relation(fields: [vendorId], references: [id])
+  vendor          Vendor?  @relation(fields: [vendorId], references: [id])
+  budgetId        Int
+  budget          Budget   @relation(fields: [budgetId], references: [id])
+  createdAt       DateTime @default(now())
 }
