@@ -110,18 +110,18 @@ const Project_home = () => {
             </View>
             <Text>Attendance</Text>
           </TouchableOpacity>
-          <View className="items-center gap-2">
+          <TouchableOpacity className="items-center gap-2">
             <View className="bg-[#FEEDCF] p-6 rounded-md items-center gap-2">
               <Image source={icons.threed} className="w-10 h-10" />
             </View>
             <Text>3D</Text>
-          </View>
-          <View className="items-center gap-2">
+          </TouchableOpacity>
+          <TouchableOpacity className="items-center gap-2"  onPress={()=>router.push('../(expenses)/budget')}>
             <View className="bg-[#FEEDCF] p-6 rounded-md items-center gap-2">
               <Image source={icons.budget} className="w-10 h-10" />
             </View>
             <Text>Budget</Text>
-          </View>
+          </TouchableOpacity>
           <View className="items-center gap-2">
             <View className="bg-[#FEEDCF] p-6 rounded-md items-center gap-2">
               <Image source={icons.doc} className="w-10 h-10" />
@@ -130,7 +130,6 @@ const Project_home = () => {
           </View>
         </View>
         </View>
-
         {/* Custom Tab Bar */}
         <View style={{ borderBottomWidth: 1, borderBottomColor: "#ccc" }}>
           <View style={{ flexDirection: "row" }}>

@@ -380,7 +380,7 @@ const AttendanceHome = () => {
         containerStyle={{ zIndex: 20 }}
       >
         <BottomSheetView>
-          {isAddWorkerSheetOpen && <AddWorkers />}
+          {isAddWorkerSheetOpen && <AddWorkers handleAddWorkerClose={handleAddWorkerClose}/>}
         </BottomSheetView>
       </BottomSheet>
 
