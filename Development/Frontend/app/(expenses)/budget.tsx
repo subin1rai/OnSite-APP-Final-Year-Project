@@ -151,7 +151,7 @@ const Budget = () => {
                   </View>
                   <View>
                     <Text className="font-medium text-2xl text-white">
-                      Remaining Amount
+                      Remain Amount
                     </Text>
                     <Text className="font-medium text-2xl text-[#FF9500]">
                       {formatCurrency(budget.budgets[0]?.inHand || 0)}

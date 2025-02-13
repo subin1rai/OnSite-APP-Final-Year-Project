@@ -35,6 +35,26 @@ const Layout = () => {
                       </TouchableOpacity>
                     ),
                   }} />
+        <Stack.Screen name="paymentOut"  options={{
+                    title: "Payment Out",
+                    headerStyle: {
+                      backgroundColor: "#FDB541", 
+                    },
+                    headerTitleStyle: {
+                      fontSize: 17,
+                      fontWeight: "medium",
+                      color: "white", 
+                    },
+                    headerTintColor: "#fff",
+                    headerLeft: () => (
+                      <TouchableOpacity
+                        onPress={() => router.back()}
+                        style={{ marginLeft: 12 }}
+                      >
+                        <Ionicons name="arrow-back" size={24} color="white" />
+                      </TouchableOpacity>
+                    ),
+                  }} />
       </Stack>
       <Toast />
     </GestureHandlerRootView>

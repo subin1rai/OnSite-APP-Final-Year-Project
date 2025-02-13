@@ -24,9 +24,11 @@ router.post("/singleProject", authMiddleware(), projectController.projectById);
 // Budget routes
 router.get("/project/:id/budget", budgetController.getBudget);
 router.post("/budget/add-transaction", authMiddleware(), budgetController.addTransaction);
+router.post("/budget/transaction", authMiddleware(), budgetController.allTransaction);
 
 // Attendance routes
 router.post("/attendance", attendanceController.recordAttendance);
+router.put("/attendace/updateShift", attendanceController.updateShift);
 
 // Worker route (Fixing upload middleware)
 router.post("/worker/addWorker", upload.single("image"), workerController.addWorker);
