@@ -12,8 +12,8 @@ import apiHandler from "@/context/ApiHandler";
 import { images } from "@/constants";
 import { useProjectStore } from "@/store/projectStore";
 import * as SecureStore from "expo-secure-store";
+import { useAttendanceStore } from "@/store/attendanceStore";
 
-// ✅ Define Props Type
 interface AddWorkerProps {
   handleAddWorkerClose: () => void;
 }
@@ -24,9 +24,10 @@ const AddWorkers: React.FC<AddWorkerProps> = ({ handleAddWorkerClose }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedWorkers, setSelectedWorkers] = useState<number[]>([]);
   const { selectedProject } = useProjectStore();
+  const { fetchWorkers } = useAttendanceStore(); // Get the global fetch function
 
   // Fetch all workers from your API
-  const fetchWorkers = async () => {
+  const fetchAllWorkers = async () => {
     try { 
       setLoading(true);
       const response = await apiHandler.get("/worker");
@@ -39,7 +40,7 @@ const AddWorkers: React.FC<AddWorkerProps> = ({ handleAddWorkerClose }) => {
   }; 
 
   useEffect(() => {
-    fetchWorkers();
+    fetchAllWorkers();
   }, []);
 
   const toggleWorkerSelection = (workerId: number) => {
@@ -73,8 +74,9 @@ const AddWorkers: React.FC<AddWorkerProps> = ({ handleAddWorkerClose }) => {
         );
       }
       setSelectedWorkers([]);
-
-      // ✅ Close BottomSheet after adding workers successfully
+      // Refresh the global workers list so AttendanceHome shows the new changes
+      await fetchWorkers();
+      // Close the bottom sheet after adding workers successfully
       handleAddWorkerClose();
     } catch (error) {
       console.error("Error adding workers to project:", error);

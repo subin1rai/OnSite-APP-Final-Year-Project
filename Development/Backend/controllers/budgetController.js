@@ -2,7 +2,6 @@ const prisma = require("../utils/prisma.js");
 
 const getBudget = async (req, res) => {
   const { id } = req.params;
-  console.log(id);
   try {
     // Fetch the project with its related budgets
     const project = await prisma.project.findUnique({
@@ -34,8 +33,6 @@ const getBudget = async (req, res) => {
 const addTransaction = async (req, res) => {
   try {
     const { budgetId, vendorId, note, amount, type } = req.body;
-    console.log("Received transaction data:", req.body);
-
     // Validate input
     if (!budgetId || !amount || !type) {
       return res.status(400).json({ error: "Missing required fields" });
@@ -86,7 +83,38 @@ const addTransaction = async (req, res) => {
   }
 };
 
+const allTransaction = async (req, res) => {
+  try {
+    const {budgetId} = req.body;
+    console.log(budgetId);
+    const transactions = await prisma.budget.findFirst({
+      where:{
+        id:parseInt(budgetId),
+      },
+      include: {
+        Transaction: {
+          include:{
+            vendor:{
+              select:{
+                VendorName: true,
+                contact:true
+              }
+            }
+          }
+        }
+      },
+    });
+    
+    console.log("All transactions:", transactions);
+    return res.status(200).json({ message: "All transactions", transactions });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error!"});
+  }
+} 
+
 module.exports = {
   getBudget,
-  addTransaction
+  addTransaction,
+  allTransaction
 };

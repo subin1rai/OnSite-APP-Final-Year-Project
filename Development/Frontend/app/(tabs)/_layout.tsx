@@ -14,17 +14,14 @@ export default function TabLayout() {
           headerShown: false,
           // tabBarStyle: { paddingBottom: 0, height: 50 },  // You can adjust height
         }}
+        
       >
-        <StatusBar
-          barStyle="dark-content"
-          backgroundColor="white"
-          translucent={false}
-        />
+              <StatusBar barStyle="dark-content" backgroundColor="white" translucent={false} />
         <Tabs.Screen
           name="home"
           options={{
-            title: "Home",
-            tabBarIcon: ({ color }) => (
+            title: "",
+            tabBarIcon: ({ color }) => (  
               <FontAwesome size={28} name="home" color={color} />
             ),
           }}
@@ -32,7 +29,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="chat"
           options={{
-            title: "Chat",
+            title: "",
             tabBarIcon: ({ color }) => (
               <FontAwesome size={28} name="comments" color={color} />
             ), // Use a valid icon name
@@ -41,9 +38,9 @@ export default function TabLayout() {
         <Tabs.Screen
           name="more"
           options={{
-            title: "More",
+            title: "",
             tabBarIcon: ({ color }) => (
-              <FontAwesome size={28} name="bars" color={color} />
+          <FontAwesome size={28} name="bars" color={color} />
             ), // Use a valid icon name
           }}
         />

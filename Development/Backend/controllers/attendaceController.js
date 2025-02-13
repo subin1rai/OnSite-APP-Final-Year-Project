@@ -46,6 +46,7 @@ const recordAttendance = async (req, res) => {
   const updateShift = async(req,res)=>{
     try {
       const { id, shifts} = req.body;
+      console.log(req.body);
       if (!id ||!shifts) {
         return res.status(400).json({ message: "All fields are required" });
       }
@@ -53,6 +54,7 @@ const recordAttendance = async (req, res) => {
         where: { id: parseInt(id) },
         data: { shifts: parseFloat(shifts) },
       });
+      console.log(updatedShift);
       return res
         .status(201)
         .json({ message: "Attendance updated", updatedShift });

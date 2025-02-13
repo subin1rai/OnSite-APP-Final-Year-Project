@@ -22,7 +22,7 @@ const AddExpenses: React.FC<AddExpensesProps> = ({ handleCloseBottomSheet }) => 
           className="flex-1 bg-green-300 py-4 rounded-lg"
           onPress={() => navigateTo('../(expenses)/paymentIn')}
         >
-          <Text className="text-green-500 text-center text-lg font-medium">
+          <Text className="text-green-70000 text-center text-lg font-medium">
             Payment In
           </Text>
         </TouchableOpacity>
