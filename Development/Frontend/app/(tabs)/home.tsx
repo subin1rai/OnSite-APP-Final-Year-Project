@@ -16,7 +16,7 @@ import AuthService from "@/context/AuthContext";
 import useUser from "@/context/User";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import ProjectDetails from "@/components/ProjectDetails";
+import ProjectDetails from "@/Components/ProjectDetails";
 import { useProjectStore } from "@/store/projectStore"; // adjust path accordingly
 type Project = {
   id: number;
@@ -124,12 +124,12 @@ const Home = () => {
 
         {/* First row of actions */}
         <View className="flex-row justify-between mt-4">
-          <View className="items-center gap-2">
+          <TouchableOpacity className="items-center gap-2" onPress={()=>{router.push('../(worker)/worker_list')}}>
             <View className="bg-[#FEEDCF] p-6 rounded-md items-center gap-2">
               <Image source={icons.worker} className="w-10 h-10" />
             </View>
             <Text>Worker</Text>
-          </View>
+          </TouchableOpacity>
           <View className="items-center gap-2 justify-center">
             <View className="bg-[#FEEDCF] p-6 rounded-md items-center gap-2">
               <Image source={icons.vendor} className="w-10 h-10" />
@@ -208,7 +208,7 @@ const Home = () => {
                   paddingBottom: isLastItem ? 20 : 0,
                 }}
               >
-                <View className="flex-row justify-between items-center p-3 border mt-3 rounded-md border-[#E8E8E8]">
+                <View className="flex-row justify-between items-center p-3 border mt-3 rounded-md border-[#E8E8E8] bg-white ">
                   <View>
                     <Text className="text-[20px] font-semibold">
                       {item.projectName}

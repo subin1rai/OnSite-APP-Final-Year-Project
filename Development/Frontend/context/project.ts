@@ -46,7 +46,7 @@ export const create_project = async (
 ) => {
   try {
     const token = await SecureStore.getItemAsync("AccessToken");
-
+    console.log("Project Name:", projectName);
     const response = await apiHandler.post(
       "/project/create",
       {
@@ -65,7 +65,7 @@ export const create_project = async (
       }
     );
 
-    console.log("Project Created Successfully:", response, );
+    console.log("Project Created Successfully:", response);
     return response.data;
   } catch (error: any) {
     console.error("Error Creating Project:", error);

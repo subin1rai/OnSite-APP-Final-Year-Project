@@ -14,9 +14,9 @@ import { useProjectStore } from "@/store/projectStore";
 import { router } from "expo-router";
 import AuthService from "@/context/AuthContext";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import AddWorkers from "@/components/AddWorkers";
+import AddWorkers from "@/Components/AddWorkers";
 import { images } from "@/constants";
-import UpdateWorkerSheet from "@/components/UpdateWorkerSheet";
+import UpdateWorkerSheet from "@/Components/UpdateWorkerSheet";
 import { useAttendanceStore, AttendanceRecord, Worker } from "@/store/attendanceStore";
 import apiHandler from "@/context/ApiHandler";
 

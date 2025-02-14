@@ -16,7 +16,7 @@ import BottomSheet, {
   BottomSheetView,
   BottomSheetBackdrop,
 } from "@gorhom/bottom-sheet";
-import VendorList from "@/components/VendorList";
+import VendorList from "@/Components/VendorList";
 import { useVendorStore } from "@/store/vendorStore";
 import DateTimePicker from "react-native-ui-datepicker";
 import dayjs from "dayjs";
