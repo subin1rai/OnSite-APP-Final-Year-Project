@@ -154,7 +154,6 @@ const AttendanceHome = () => {
     setDate(newDate);
   };
 
-  // When a worker is clicked, store the selected worker (using zustand) and open the update sheet.
   const handleWorkerClick = (selectedWorker: AttendanceRecord) => {
     useAttendanceStore.getState().setSelectedWorker(selectedWorker);
     handleUpdateWorkerOpen();
