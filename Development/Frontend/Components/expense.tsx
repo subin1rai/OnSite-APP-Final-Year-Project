@@ -11,7 +11,7 @@ import BottomSheet, {
   BottomSheetBackdrop,
 } from "@gorhom/bottom-sheet";
 import { FloatingAction } from "react-native-floating-action";
-import AddExpenses from "@/components/AddExpenses";
+import AddExpenses from "@/Components/AddExpenses";
 import apiHandler from "@/context/ApiHandler";
 import { useBudgetStore } from "@/store/budgetStore";
 import * as SecureStore from "expo-secure-store";

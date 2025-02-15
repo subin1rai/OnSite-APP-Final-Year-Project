@@ -1,5 +1,5 @@
-import CustomButton from "@/components/CustomButton";
-import InputField from "@/components/InputField";
+import CustomButton from "@/Components/CustomButton";
+import InputField from "@/Components/InputField";
 import { icons, images } from "@/constants";
 import { Link } from "expo-router";
 import { useState } from "react";

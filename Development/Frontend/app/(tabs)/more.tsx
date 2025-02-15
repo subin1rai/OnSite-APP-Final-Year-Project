@@ -1,4 +1,4 @@
-import CustomButton from "@/components/CustomButton";
+import CustomButton from "@/Components/CustomButton";
 import { SafeAreaView, Text, View } from "react-native"
 import * as SecureStore from "expo-secure-store";
 import { Link, router } from "expo-router";

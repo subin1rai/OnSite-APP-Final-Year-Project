@@ -20,6 +20,7 @@
 // export default Chat;
 
 import AuthService from "@/context/AuthContext";
+import { router } from "expo-router";
 import { useEffect } from "react";
 import { SafeAreaView, Text } from "react-native";
 
@@ -27,7 +28,7 @@ const Chat = () => {
   useEffect(() => {
     // Call AuthService to check the token status and redirect if necessary
     const checkToken = async () => {
-      await AuthService.checkAndRedirect();
+      await AuthService.checkAndRedirect(router);
     };
 
     checkToken();
