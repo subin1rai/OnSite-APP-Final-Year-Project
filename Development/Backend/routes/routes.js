@@ -31,8 +31,8 @@ router.post("/attendance", attendanceController.recordAttendance);
 router.put("/attendace/updateShift", attendanceController.updateShift);
 
 // Worker route (Fixing upload middleware)
-router.post("/worker/addWorker", upload.single("image"), workerController.addWorker);
-router.get("/worker", workerController.allWorkers);
+router.post("/worker/addWorker", authMiddleware(), upload.single("image"), workerController.addWorker);
+router.get("/worker", authMiddleware(), workerController.allWorkers);
 router.get("/vendor", vendorController.allVendors);
 
 module.exports = router;

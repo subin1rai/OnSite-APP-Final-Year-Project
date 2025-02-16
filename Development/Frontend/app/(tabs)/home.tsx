@@ -150,34 +150,6 @@ const Home = () => {
           </View>
         </View>
 
-        {/* Second row of actions */}
-        <View className="flex-row justify-between mt-4">
-          <View className="items-center gap-2">
-            <View className="bg-[#FEEDCF] p-6 rounded-md items-center gap-2">
-              <Image source={icons.threed} className="w-10 h-10" />
-            </View>
-            <Text>3D</Text>
-          </View>
-          <View className="items-center gap-2 justify-center">
-            <View className="bg-[#FEEDCF] p-6 rounded-md items-center gap-2">
-              <Image source={icons.vendor} className="w-10 h-10" />
-            </View>
-            <Text>Attendance</Text>
-          </View>
-          <View className="items-center gap-2">
-            <View className="bg-[#FEEDCF] p-6 rounded-md items-center gap-2">
-              <Image source={icons.budget} className="w-10 h-10" />
-            </View>
-            <Text>Budget</Text>
-          </View>
-          <View className="items-center gap-2">
-            <View className="bg-[#FEEDCF] p-6 rounded-md items-center gap-2">
-              <Image source={icons.doc} className="w-10 h-10" />
-            </View>
-            <Text>Document</Text>
-          </View>
-        </View>
-
         {/* Project Section Header */}
         <View className="flex-row justify-between mt-4 items-center">
           <Text className="pt-4 font-medium text-[24px]">All</Text>

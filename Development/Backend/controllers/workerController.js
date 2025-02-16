@@ -9,6 +9,7 @@ const upload = multer({ storage: storage });
 const addWorker = async (req, res) => {
   try {
     const { name, contact, designation, salary} = req.body;
+    const user = req.user.userId;
     console.log(req.body);
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
@@ -27,7 +28,8 @@ const addWorker = async (req, res) => {
             contact: contact,
             profile: result.secure_url,
             designation: designation,
-            salary: salary
+            salary: salary,
+            builderId: user
           },
         });
 
@@ -49,7 +51,13 @@ const updateWorkerShifts = async (req,res)=>{
 
 const allWorkers = async(req,res)=>{
   try {
-    const workers = await prisma.worker.findMany();
+    const user = req.user.userId;
+    console.log(user);
+    const workers = await prisma.worker.findMany({
+      where: {
+        builderId: user,
+      }
+    });
     return res.status(200).json({message:"All workers",status:200,workers});
   } catch (error) {
     console.error(error);
