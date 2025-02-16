@@ -7,6 +7,7 @@ const budgetController = require("../controllers/budgetController.js");
 const attendanceController = require("../controllers/attendaceController.js");
 const workerController = require("../controllers/workerController.js");
 const vendorController = require("../controllers/vendorController.js");
+const threeDModelController = require("../controllers/threeDModelController.js");
 const upload = workerController.upload;  
 
 // Authentication routes
@@ -30,9 +31,12 @@ router.post("/budget/transaction", authMiddleware(), budgetController.allTransac
 router.post("/attendance", attendanceController.recordAttendance);
 router.put("/attendace/updateShift", attendanceController.updateShift);
 
-// Worker route (Fixing upload middleware)
+// Worker route
 router.post("/worker/addWorker", authMiddleware(), upload.single("image"), workerController.addWorker);
 router.get("/worker", authMiddleware(), workerController.allWorkers);
 router.get("/vendor", vendorController.allVendors);
+
+//3D model
+router.post("/upload3dmodel", authMiddleware(), threeDModelController.addModel);
 
 module.exports = router;
