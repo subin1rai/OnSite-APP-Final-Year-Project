@@ -11,7 +11,7 @@ const WorkerList = () => {
   const [filteredWorkers, setFilteredWorkers] = useState(workers);
   const [isOpen, setIsOpen] = useState(false);
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = ["80%"];
+  const snapPoints = ["75%"];
 
   useEffect(() => {
     fetchWorkers(); // Fetch workers on mount
@@ -46,8 +46,8 @@ const WorkerList = () => {
     <View className="flex-1 bg-white">
       {/* Header */}
       <SafeAreaView className="bg-[#ffb133]">
-        <View className="bg-[#ffb133] mt-16 flex-row justify-between items-center px-4 pb-[10px]"
-          style={{ paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0 }}>
+        <View className="bg-[#ffb133] flex-row justify-between items-center px-4 pb-[10px]"
+          style={{ marginTop: Platform.OS === "ios" ? 60 : StatusBar.currentHeight }}>
           <Ionicons name="arrow-back" size={24} color="white" />
           <Text className="text-white text-2xl font-medium tracking-widest">Workers</Text>
           <TouchableOpacity onPress={openBottomSheet}>

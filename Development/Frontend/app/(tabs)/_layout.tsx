@@ -16,7 +16,7 @@ export default function TabLayout() {
         }}
         
       >
-              <StatusBar barStyle="dark-content" backgroundColor="white" translucent={false} />
+        <StatusBar barStyle="light-content" backgroundColor="white" translucent={false} />
         <Tabs.Screen
           name="home"
           options={{

@@ -1,7 +1,14 @@
 import React, { useState } from "react";
-import { 
-    Text, TextInput, TouchableOpacity, View, Image, Alert, 
-    Keyboard, TouchableWithoutFeedback, ScrollView 
+import {
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  Image,
+  Alert,
+  Keyboard,
+  TouchableWithoutFeedback,
+  ScrollView,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useWorkerStore } from "@/store/workerStore";
@@ -42,7 +49,10 @@ const MainWorker: React.FC<MainWorkerProps> = ({ onWorkerAdded }) => {
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-      Alert.alert("Permission required", "Allow access to media library to upload images.");
+      Alert.alert(
+        "Permission required",
+        "Allow access to media library to upload images."
+      );
       return;
     }
 
@@ -60,11 +70,17 @@ const MainWorker: React.FC<MainWorkerProps> = ({ onWorkerAdded }) => {
 
   // Upload Worker Data
   const handleSubmit = async () => {
-    if (!form.workerName || !form.contact || !form.designation || !form.salary || !form.image) {
+    if (
+      !form.workerName ||
+      !form.contact ||
+      !form.designation ||
+      !form.salary ||
+      !form.image
+    ) {
       Alert.alert("Missing Fields", "All fields including image are required.");
       return;
     }
-  
+
     setUploading(true);
     try {
       const data = new FormData();
@@ -72,16 +88,25 @@ const MainWorker: React.FC<MainWorkerProps> = ({ onWorkerAdded }) => {
       data.append("contact", form.contact);
       data.append("designation", form.designation);
       data.append("salary", form.salary);
-  
+
       if (form.image) {
         const imageName = form.image.split("/").pop() || "worker.jpg";
         const imageExt = imageName.split(".").pop() || "jpg";
-        data.append("image", { uri: form.image, name: `worker.${imageExt}`, type: `image/${imageExt}` } as any);
+        data.append("image", {
+          uri: form.image,
+          name: `worker.${imageExt}`,
+          type: `image/${imageExt}`,
+        } as any);
       }
-  
+
       const token = await SecureStore.getItemAsync("AccessToken");
-      const response = await apiHandler.post("/worker/addWorker", data, { headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" } });
-  
+      const response = await apiHandler.post("/worker/addWorker", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
       if (response.status === 200) {
         Alert.alert("Success", "Worker added successfully!");
         useWorkerStore.getState().addWorker(response.data.savedWorker);
@@ -93,20 +118,19 @@ const MainWorker: React.FC<MainWorkerProps> = ({ onWorkerAdded }) => {
       setUploading(false);
     }
   };
-  
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <ScrollView 
-        className="px-4 pt-2"
-        keyboardShouldPersistTaps="handled"
-      >
+      <ScrollView className="px-4 pt-2" keyboardShouldPersistTaps="handled">
         {/* Upload Image */}
         <TouchableOpacity onPress={pickImage}>
-          <Text className="text-center mb-2">Upload Image</Text>
-          <View className="h-32 w-32 border border-neutral-400 rounded-lg m-auto bg-neutral-200 flex items-center justify-center">
+          <Text className="mb-2">Upload Image</Text>
+          <View className="h-32 w-32 border border-neutral-200 rounded-lg m-auto bg-neutral-200 flex items-center justify-center">
             {form.image ? (
-              <Image source={{ uri: form.image }} className="h-full w-full rounded-lg" />
+              <Image
+                source={{ uri: form.image }}
+                className="h-full w-full rounded-lg"
+              />
             ) : (
               <Text className="text-gray-500">Select Image</Text>
             )}
@@ -117,11 +141,12 @@ const MainWorker: React.FC<MainWorkerProps> = ({ onWorkerAdded }) => {
         <View className="mt-4">
           <Text>Worker Name</Text>
           <TextInput
-            placeholder="Worker Name"
+            placeholder="Enter Worker Name"
             value={form.workerName}
             onChangeText={(text) => handleChange("workerName", text)}
-            className="mt-2 border border-gray-300 rounded-md py-2 px-3 text-gray-700"
+            className="mt-2 border border-gray-300 rounded-md py-4 px-3 text-gray-700"
             returnKeyType="done"
+            placeholderTextColor="#888"
           />
         </View>
 
@@ -129,11 +154,12 @@ const MainWorker: React.FC<MainWorkerProps> = ({ onWorkerAdded }) => {
         <View className="mt-4">
           <Text>Designation</Text>
           <TextInput
-            placeholder="Designation"
+            placeholder="Enter Designation"
             value={form.designation}
             onChangeText={(text) => handleChange("designation", text)}
-            className="mt-2 border border-gray-300 rounded-md py-2 px-3 text-gray-700"
+            className="mt-2 border border-gray-300 rounded-md py-4 px-3 text-gray-700"
             returnKeyType="done"
+            placeholderTextColor="#888"
           />
         </View>
 
@@ -141,12 +167,13 @@ const MainWorker: React.FC<MainWorkerProps> = ({ onWorkerAdded }) => {
         <View className="mt-4">
           <Text>Contact</Text>
           <TextInput
-            placeholder="Contact"
+            placeholder="Enter Contact"
             value={form.contact}
             onChangeText={(text) => handleChange("contact", text)}
-            className="mt-2 border border-gray-300 rounded-md py-2 px-3 text-gray-700"
+            className="mt-2 border border-gray-300 rounded-md py-4 px-3 text-gray-700"
             keyboardType="phone-pad"
             returnKeyType="done"
+            placeholderTextColor="#888"
           />
         </View>
 
@@ -154,18 +181,25 @@ const MainWorker: React.FC<MainWorkerProps> = ({ onWorkerAdded }) => {
         <View className="mt-4">
           <Text>Salary</Text>
           <TextInput
-            placeholder="Salary"
+            placeholder="Enter Salary"
             value={form.salary}
             onChangeText={(text) => handleChange("salary", text)}
-            className="mt-2 border border-gray-300 rounded-md py-2 px-3 text-gray-700"
+            className="mt-2 border border-gray-300 rounded-md py-4 px-3 text-gray-700"
             keyboardType="numeric"
             returnKeyType="done"
+            placeholderTextColor="#888"
           />
         </View>
 
         {/* Submit Button */}
-        <TouchableOpacity onPress={handleSubmit} disabled={uploading} className="mt-6 bg-[#ffb133] py-3 rounded-md">
-          <Text className="text-white text-center text-lg">{uploading ? "Uploading..." : "Add Worker"}</Text>
+        <TouchableOpacity
+          onPress={handleSubmit}
+          disabled={uploading}
+          className="mt-6 bg-[#ffb133] py-4 rounded-md"
+        >
+          <Text className="text-white text-center text-lg">
+            {uploading ? "Uploading..." : "Add Worker"}
+          </Text>
         </TouchableOpacity>
       </ScrollView>
     </TouchableWithoutFeedback>
