@@ -34,9 +34,14 @@ router.put("/attendace/updateShift", attendanceController.updateShift);
 // Worker route
 router.post("/worker/addWorker", authMiddleware(), upload.single("image"), workerController.addWorker);
 router.get("/worker", authMiddleware(), workerController.allWorkers);
-router.get("/vendor", vendorController.allVendors);
+
+//vendor route
+router.get("/vendor", vendorController.getAllVendors);
+router.post("/addVendor", upload.single("image"), vendorController.addVendor);
+
 
 //3D model
 router.post("/upload3dmodel", authMiddleware(), threeDModelController.addModel);
+router.post("/all3dModel",authMiddleware(), threeDModelController.getAllModel);
 
 module.exports = router;

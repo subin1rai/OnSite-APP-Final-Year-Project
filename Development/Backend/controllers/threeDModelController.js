@@ -36,4 +36,19 @@ const addModel = async (req, res) => {
   }
 };
 
-module.exports = { addModel };
+const getAllModel = async (req, res) => {
+    try {
+        const {projectId} = req.body;
+        const models = await prisma.threeDModel.findMany({
+            where: {
+                projectId: parseInt(projectId)
+            }
+        })
+        return res.status(200).json({ message: "All models", models });
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+};
+
+module.exports = { addModel, getAllModel };

@@ -83,8 +83,11 @@ model Budget {
 model Vendor {
   id           Int           @id @default(autoincrement())
   VendorName   String
+  address     String?
+  email        String?
   contact      String?
   profile      String?
+  companyName String?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   transactions Transaction[]
