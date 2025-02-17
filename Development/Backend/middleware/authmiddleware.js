@@ -14,7 +14,7 @@ const authMiddleware = (roles = []) => {
 
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = decoded;
+    req.user = decoded;
       console.log(req.user);
       if (roles.length && !roles.includes(req.user.role)) {
         return res.status(403).send("Forbidden");

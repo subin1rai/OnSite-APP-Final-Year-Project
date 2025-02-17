@@ -36,9 +36,8 @@ router.post("/worker/addWorker", authMiddleware(), upload.single("image"), worke
 router.get("/worker", authMiddleware(), workerController.allWorkers);
 
 //vendor route
-router.get("/vendor", vendorController.getAllVendors);
-router.post("/addVendor", upload.single("image"), vendorController.addVendor);
-
+router.get("/vendor", authMiddleware(), vendorController.getAllVendors);
+router.post("/addVendor",authMiddleware(), upload.single("image"), vendorController.addVendor);
 
 //3D model
 router.post("/upload3dmodel", authMiddleware(), threeDModelController.addModel);
