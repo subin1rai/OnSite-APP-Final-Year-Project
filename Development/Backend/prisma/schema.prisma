@@ -8,15 +8,16 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
-  role      String    @default("client")
-  username  String?
-  password  String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now()) @updatedAt
-  projects  Project[]
-  Worker    Worker[]
+  id          Int           @id @default(autoincrement())
+  email       String        @unique
+  role        String        @default("client")
+  username    String?
+  password    String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now()) @updatedAt
+  projects    Project[]
+  Worker      Worker[]
+  threeDModel threeDModel[]
 }
 
 model Project {
@@ -33,6 +34,7 @@ model Project {
   updatedAt      DateTime        @updatedAt
   budgets        Budget[]
   projectWorkers ProjectWorker[]
+  threeDModel    threeDModel[]
 }
 
 model Worker {
@@ -75,28 +77,41 @@ model Budget {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-
   Transaction Transaction[]
 }
 
 model Vendor {
   id           Int           @id @default(autoincrement())
   VendorName   String
+  address     String?
+  email        String?
   contact      String?
   profile      String?
+  companyName String?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   transactions Transaction[]
 }
 
 model Transaction {
-  id              Int      @id @default(autoincrement())
-  amount          Int
-  type            String?
-  note         String?
-  vendorId        Int?
-  vendor          Vendor?  @relation(fields: [vendorId], references: [id])
-  budgetId        Int
-  budget          Budget   @relation(fields: [budgetId], references: [id])
-  createdAt       DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  amount    Int
+  type      String?
+  note      String?
+  vendorId  Int?
+  vendor    Vendor?  @relation(fields: [vendorId], references: [id])
+  budgetId  Int
+  budget    Budget   @relation(fields: [budgetId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model threeDModel {
+  id        Int      @id @default(autoincrement())
+  modelName String
+  modelUrl  String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  projectId Int
+  project   Project  @relation(fields: [projectId], references: [id])
+  createdAt DateTime @default(now())
 }

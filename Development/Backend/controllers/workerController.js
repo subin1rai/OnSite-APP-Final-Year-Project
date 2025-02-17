@@ -52,12 +52,13 @@ const updateWorkerShifts = async (req,res)=>{
 const allWorkers = async(req,res)=>{
   try {
     const user = req.user.userId;
-    console.log(user);
+    console.log("hello",user);
     const workers = await prisma.worker.findMany({
       where: {
         builderId: user,
       }
     });
+    
     return res.status(200).json({message:"All workers",status:200,workers});
   } catch (error) {
     console.error(error);
