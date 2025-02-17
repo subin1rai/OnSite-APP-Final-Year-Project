@@ -2,7 +2,7 @@ const prisma = require("../utils/prisma");
 
 const addModel = async (req, res) => {
   try {
-    const { projectId, modelName, modelUrl } = req.body;
+const { projectId, modelName, modelUrl } = req.body;
     const userId = req.user.userId;
     if (!userId || !projectId || !modelName || !modelUrl) {
       return res.status(400).json({ message: "All fields are required" });

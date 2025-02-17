@@ -18,6 +18,7 @@ model User {
   projects    Project[]
   Worker      Worker[]
   threeDModel threeDModel[]
+  Vendor      Vendor[]
 }
 
 model Project {
@@ -83,11 +84,13 @@ model Budget {
 model Vendor {
   id           Int           @id @default(autoincrement())
   VendorName   String
-  address     String?
+  address      String?
   email        String?
   contact      String?
   profile      String?
-  companyName String?
+  companyName  String?
+  builderId    Int
+  builder      User          @relation(fields: [builderId], references: [id])
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   transactions Transaction[]
