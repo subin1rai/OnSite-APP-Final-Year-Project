@@ -85,6 +85,7 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="(project)" options={{ headerShown: false }} />
         <Stack.Screen name="(worker)" options={{ headerShown: false }} />
+        <Stack.Screen name="(vendor)" options={{ headerShown: false }} />
         <Stack.Screen name="(attendance)" options={{ headerShown: false }} />
         <Stack.Screen name="(expenses)" options={{ headerShown: false }} />
       </Stack>

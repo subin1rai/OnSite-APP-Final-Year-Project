@@ -30,7 +30,13 @@ const AddWorkers: React.FC<AddWorkerProps> = ({ handleAddWorkerClose }) => {
   const fetchAllWorkers = async () => {
     try { 
       setLoading(true);
-      const response = await apiHandler.get("/worker");
+      const token = await SecureStore.getItemAsync("AccessToken");
+      const response = await apiHandler.get("/worker",{
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
       setWorkers(response?.data?.workers || []);
     } catch (error) {
       console.error("Error fetching workers:", error);
@@ -73,10 +79,8 @@ const AddWorkers: React.FC<AddWorkerProps> = ({ handleAddWorkerClose }) => {
           }
         );
       }
-      setSelectedWorkers([]);
-      // Refresh the global workers list so AttendanceHome shows the new changes
+    setSelectedWorkers([]);
       await fetchWorkers();
-      // Close the bottom sheet after adding workers successfully
       handleAddWorkerClose();
     } catch (error) {
       console.error("Error adding workers to project:", error);
