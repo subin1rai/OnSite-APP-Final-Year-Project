@@ -129,23 +129,9 @@ const Add3DModel: React.FC<Add3DModelProps> = ({ onModelAdded }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <ScrollView className="px-4 pt-2" keyboardShouldPersistTaps="handled">
-        {/* Upload Image */}
-        <TouchableOpacity onPress={pickImage}>
-          <Text className="mb-2">Upload Model Preview</Text>
-          <View className="h-40 w-full border border-neutral-200 rounded-lg bg-neutral-200 flex items-center justify-center">
-            {form.image ? (
-              <Image
-                source={{ uri: form.image }}
-                className="h-full w-full rounded-lg"
-              />
-            ) : (
-              <Text className="text-gray-500">Select Image</Text>
-            )}
-          </View>
-        </TouchableOpacity>
-
-        {/* Model Name */}
-        <View className="mt-4">
+        
+         {/* Model Name */}
+         <View className="mt-4">
           <Text>Model Name</Text>
           <TextInput
             placeholder="Enter Model Name"
@@ -170,6 +156,21 @@ const Add3DModel: React.FC<Add3DModelProps> = ({ onModelAdded }) => {
             placeholderTextColor="#888"
           />
         </View>
+        {/* Upload Image */}
+        <TouchableOpacity onPress={pickImage}>
+          <Text className="mb-2">Upload Model Preview</Text>
+          <View className="h-40 w-full border border-neutral-200 rounded-lg bg-neutral-200 flex items-center justify-center">
+            {form.image ? (
+              <Image
+                source={{ uri: form.image }}
+                className="h-full w-full rounded-lg"
+              />
+            ) : (
+              <Text className="text-gray-500">Select Image</Text>
+            )}
+          </View>
+        </TouchableOpacity>
+
 
         {/* Submit Button */}
         <TouchableOpacity

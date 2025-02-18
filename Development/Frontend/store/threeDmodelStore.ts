@@ -15,24 +15,26 @@ interface ThreeDModel {
   createdAt: string;
 }
 
-// Store Type
+// Store Type including selectedModel state
 interface ThreeDModelStore {
   threeDModels: ThreeDModel[];
+  selectedModel: ThreeDModel | null;
   fetchThreeDModels: () => Promise<void>;
-  clearThreeDModels: () => void;  // ✅ Function to clear models before fetching new ones
+  clearThreeDModels: () => void;
   addThreeDModel: (newModel: ThreeDModel) => void;
+  setSelectedModel: (model: ThreeDModel) => void;
 }
 
-// Zustand Store with Persistence
 export const useThreeDModelStore = create<ThreeDModelStore>()(
   persist(
     (set, get) => ({
       threeDModels: [],
+      selectedModel: null,
 
-      // ✅ Clears models before fetching new ones
+      // Clearing models before fetching new ones
       clearThreeDModels: () => set({ threeDModels: [] }),
 
-      // Fetch 3D Models Using `selectedProject` from ProjectStore
+      // Fetch 3D Models
       fetchThreeDModels: async () => {
         const projectStore = useProjectStore.getState();
         const selectedProject = projectStore.selectedProject;
@@ -45,9 +47,13 @@ export const useThreeDModelStore = create<ThreeDModelStore>()(
         try {
           const token = await SecureStore.getItemAsync("AccessToken");
 
-          const response = await apiHandler.post("/all3dModel", { projectId: selectedProject.id }, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          const response = await apiHandler.post(
+            "/all3dModel",
+            { projectId: selectedProject.id },
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
 
           if (response.status === 200) {
             set({ threeDModels: response.data.models });
@@ -57,10 +63,13 @@ export const useThreeDModelStore = create<ThreeDModelStore>()(
         }
       },
 
-      // Add 3D Model to State
-      addThreeDModel: (newModel) => {
+      // Adds a new 3D Model to state
+      addThreeDModel: (newModel: ThreeDModel) => {
         set((state) => ({ threeDModels: [newModel, ...state.threeDModels] }));
       },
+
+      // Saves the selected model
+      setSelectedModel: (model: ThreeDModel) => set({ selectedModel: model }),
     }),
     { name: "threeDModel-storage" }
   )
