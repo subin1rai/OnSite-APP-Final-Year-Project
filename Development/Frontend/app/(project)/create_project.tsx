@@ -12,20 +12,21 @@ import {
   Modal,
   Alert,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons"; 
-import DateTimePicker from "react-native-ui-datepicker"; 
+import { Ionicons } from "@expo/vector-icons";
+import DateTimePicker from "react-native-ui-datepicker";
 import dayjs from "dayjs";
 // import { create_project } from "@/context/project";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
+import * as SecureStore from "expo-secure-store";
 import apiHandler from "@/context/ApiHandler";
 
 const CreateProject = () => {
-  const [startDate, setStartDate] = useState(dayjs()); 
+  const [startDate, setStartDate] = useState(dayjs());
   const [endDate, setEndDate] = useState(dayjs());
-  const [openStartPicker, setOpenStartPicker] = useState(false); 
+  const [openStartPicker, setOpenStartPicker] = useState(false);
   const [openEndPicker, setOpenEndPicker] = useState(false);
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
 
   // Form State
   const [form, setForm] = useState({
@@ -34,7 +35,7 @@ const CreateProject = () => {
     budgetAmount: "",
     location: "",
     startDate: startDate.toISOString(),
-    endDate: endDate.toISOString(), 
+    endDate: endDate.toISOString(),
   });
 
   // Handle Input Changes
@@ -66,22 +67,38 @@ const CreateProject = () => {
       Alert.alert("Error", "Please fill in all fields.");
       return;
     }
-  
+
+    const token = await SecureStore.getItemAsync("AccessToken");
     try {
       setLoading(true);
-      const result = await apiHandler.post("/project/create",
-      
+      const result = await apiHandler.post(
+        "/project/create",
+        {
+          projectName: form.projectName,
+          ownerName: form.ownerName,
+          budgetAmount: Number(form.budgetAmount),
+          location: form.location,
+          startDate: form.startDate,
+          endDate: form.endDate
+
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
- 
+
       if (result?.status === 201) {
         Toast.show({
-          type: "success", 
+          type: "success",
           text1: "Success",
           text2: "Project created successfully!",
           visibilityTime: 500,
           onHide: () => {
             router.replace("../(tabs)/home");
-          }
+          },
         });
       } else {
         throw new Error("Failed to create project.");
@@ -176,7 +193,9 @@ const CreateProject = () => {
             <TouchableOpacity
               onPress={handleSubmit}
               disabled={loading}
-              className={`mt-6 py-3 rounded-md mx-4 ${loading ? "bg-gray-400" : "bg-[#FCA311]"} `}
+              className={`mt-6 py-3 rounded-md mx-4 ${
+                loading ? "bg-gray-400" : "bg-[#FCA311]"
+              } `}
             >
               <Text className="text-center text-white font-semibold text-lg ">
                 {loading ? "Creating..." : "Create Project"}
@@ -186,45 +205,48 @@ const CreateProject = () => {
 
           {/* Start Date Picker Modal */}
           <Modal visible={openStartPicker} transparent animationType="slide">
-  <TouchableWithoutFeedback onPress={() => setOpenStartPicker(false)}>
-    <View className="flex-1 justify-center items-center">
-      {/* Modal Content with Border and Shadow */}
-      <View className="bg-white p-5 rounded-lg w-11/12 border border-gray-300 shadow-lg">
-        <Text className="mb-4 text-lg font-semibold">Select Start Date</Text>
-        <DateTimePicker
-          mode="single"
-          date={startDate.toDate()}
-          onChange={(params) => {
-            if (params.date) {
-              handleStartDateChange(dayjs(params.date));
-            }
-          }}
-        />
-      </View>
-    </View>
-  </TouchableWithoutFeedback>
-</Modal>
+            <TouchableWithoutFeedback onPress={() => setOpenStartPicker(false)}>
+              <View className="flex-1 justify-center items-center">
+                {/* Modal Content with Border and Shadow */}
+                <View className="bg-white p-5 rounded-lg w-11/12 border border-gray-300 shadow-lg">
+                  <Text className="mb-4 text-lg font-semibold">
+                    Select Start Date
+                  </Text>
+                  <DateTimePicker
+                    mode="single"
+                    date={startDate.toDate()}
+                    onChange={(params) => {
+                      if (params.date) {
+                        handleStartDateChange(dayjs(params.date));
+                      }
+                    }}
+                  />
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
+          </Modal>
 
-<Modal visible={openEndPicker} transparent animationType="slide">
-  <TouchableWithoutFeedback onPress={() => setOpenEndPicker(false)}>
-    <View className="flex-1 justify-center items-center">
-      {/* Modal Content with Border and Shadow */}
-      <View className="bg-white p-5 rounded-lg w-11/12 border-2 border-gray-300 shadow-md">
-        <Text className="mb-4 text-lg font-semibold">Select End Date</Text>
-        <DateTimePicker
-          mode="single"
-          date={endDate.toDate()}
-          onChange={(params) => {
-            if (params.date) {
-              handleEndDateChange(dayjs(params.date));
-            }
-          }}
-        />
-      </View>
-    </View>
-  </TouchableWithoutFeedback>
-</Modal>
-
+          <Modal visible={openEndPicker} transparent animationType="slide">
+            <TouchableWithoutFeedback onPress={() => setOpenEndPicker(false)}>
+              <View className="flex-1 justify-center items-center">
+                {/* Modal Content with Border and Shadow */}
+                <View className="bg-white p-5 rounded-lg w-11/12 border-2 border-gray-300 shadow-md">
+                  <Text className="mb-4 text-lg font-semibold">
+                    Select End Date
+                  </Text>
+                  <DateTimePicker
+                    mode="single"
+                    date={endDate.toDate()}
+                    onChange={(params) => {
+                      if (params.date) {
+                        handleEndDateChange(dayjs(params.date));
+                      }
+                    }}
+                  />
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
+          </Modal>
         </ScrollView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
