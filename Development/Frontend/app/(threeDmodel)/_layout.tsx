@@ -11,15 +11,36 @@ const Layout = () => {
   const router = useRouter();
 
   return (
-        <GestureHandlerRootView className="flex-1">
-      <StatusBar barStyle="dark-content" backgroundColor="white" translucent={false} />
-
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor="white"
+        translucent={false}
+      />
       <Stack>
-        <Stack.Screen  name="mainModel" options={{ headerShown: false }}/>
+        <Stack.Screen
+          name="mainModel"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="viewModel"
+          options={{
+            headerTransparent: true,
+            headerTitle: "",
+            headerTintColor: "#000",
+            headerBackTitle: "",
+            headerLeft: () => (
+              <TouchableOpacity onPress={() => router.back()}>
+                <Ionicons name="arrow-back" size={24} color="#000" />
+              </TouchableOpacity>
+            ),
+          }}
+        />
       </Stack>
       <Toast />
     </GestureHandlerRootView>
-
   );
 };
 

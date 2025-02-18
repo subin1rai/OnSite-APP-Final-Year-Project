@@ -17,6 +17,7 @@ import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { useThreeDModelStore } from "@/store/threeDmodelStore";
 import { useProjectStore } from "@/store/projectStore";
 import Add3Dmodel from "@/Components/Add3Dmodel";
+import { router } from "expo-router";
 
 const MainModel = () => {
   const { threeDModels, fetchThreeDModels, clearThreeDModels } = useThreeDModelStore();
@@ -56,6 +57,13 @@ const MainModel = () => {
     setTimeout(() => setIsOpen(false), 300);
   }, []);
 
+  
+const handleModelClick = (selectedModelData: any) => {
+    console.log("selected model :",selectedModelData);
+    useThreeDModelStore.getState().setSelectedModel(selectedModelData);
+    router.push("/(threeDmodel)/viewModel");
+  };
+
   return (
     <View className="flex-1 bg-[#DODODO]">
       {/* Header */}
@@ -68,7 +76,7 @@ const MainModel = () => {
         >
           <Ionicons name="arrow-back" size={24} color="white" />
           <Text className="text-white text-2xl font-medium tracking-widest">
-           3D Model
+            3D Model
           </Text>
           <TouchableOpacity onPress={openBottomSheet}>
             <Ionicons name="add" size={24} color="white" />
@@ -86,21 +94,37 @@ const MainModel = () => {
         <ScrollView
           className="mx-4 mt-4"
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#FCA311" colors={["#FCA311"]} />
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor="#FCA311"
+              colors={["#FCA311"]}
+            />
           }
         >
           {threeDModels.length > 0 ? (
             <View className="flex-row flex-wrap justify-between">
               {threeDModels.map((model) => (
-                <View key={model.id} className="bg-white rounded-lg mt-2 drop-shadow-lg w-[48%]">
-                  <Image source={{ uri: model.image }} className="w-full h-32 rounded-t-lg" />
-                  <Text className="text-xl font-medium p-2">{model.modelName}</Text>
-                </View>
+                <TouchableOpacity
+                  key={model.id}
+                  onPress={() => handleModelClick(model)}
+                  className="bg-white rounded-lg mt-2 drop-shadow-lg w-[48%]"
+                >
+                  <Image
+                    source={{ uri: model.image }}
+                    className="w-full h-32 rounded-t-lg"
+                  />
+                  <Text className="text-xl font-medium p-2">
+                    {model.modelName}
+                  </Text>
+                </TouchableOpacity>
               ))}
             </View>
           ) : (
             <View className="flex-1 justify-center items-center h-[500px]">
-              <Text className="text-gray-500 text-lg text-center">No 3D Models Available</Text>
+              <Text className="text-gray-500 text-lg text-center">
+                No 3D Models Available
+              </Text>
             </View>
           )}
         </ScrollView>
@@ -121,8 +145,8 @@ const MainModel = () => {
         snapPoints={snapPoints}
         enablePanDownToClose={true}
         onClose={handleClosePress}
-        detached={true} 
-        style={{ flex: 1 }} 
+        detached={true}
+        style={{ flex: 1 }}
       >
         <BottomSheetView style={{ flex: 1 }}>
           <Add3Dmodel />
