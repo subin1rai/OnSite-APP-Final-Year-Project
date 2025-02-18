@@ -70,9 +70,6 @@ const AttendanceHome = () => {
 
   const recordAttendance = async (projectWorkerId: number, status: string) => {
     try {
-      // Update attendance locally (optional; you can also call fetchWorkers after API call)
-      // ...
-      // Call your API
       const response = await apiHandler.post(
         "/attendance",
         {

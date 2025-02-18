@@ -112,6 +112,7 @@ model threeDModel {
   id        Int      @id @default(autoincrement())
   modelName String
   modelUrl  String
+  image     String
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
   projectId Int

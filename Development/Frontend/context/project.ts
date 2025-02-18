@@ -35,43 +35,7 @@ export const single_project = async (id: string) => {
 };
 
 
-
-export const create_project = async (
-  projectName: string,
-  ownerName: string,
-  budgetAmount: number, 
-  location: string,
-  startDate: string,
-  endDate: string
-) => {
-  try {
-    const token = await SecureStore.getItemAsync("AccessToken");
-    console.log("Project Name:", projectName);
-    const response = await apiHandler.post(
-      "/project/create",
-      {
-        projectName: projectName,
-        ownerName: ownerName,
-        budgetAmount: budgetAmount,
-        location: location,
-        startDate: new Date(startDate).toISOString(), 
-        endDate: new Date(endDate).toISOString()
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    console.log("Project Created Successfully:", response);
-    return response.data;
-  } catch (error: any) {
-    console.error("Error Creating Project:", error);
-  }
-};
-
+ 
 
 
 // export const record_attendance = async (

@@ -12,7 +12,7 @@ export default function TabLayout() {
         screenOptions={{
           tabBarActiveTintColor: "#FCA311",
           headerShown: false,
-          // tabBarStyle: { paddingBottom: 0, height: 50 },  // You can adjust height
+          // tabBarStyle: { paddingBottom: 0, height: 50 }
         }}
         
       >
@@ -32,7 +32,7 @@ export default function TabLayout() {
             title: "",
             tabBarIcon: ({ color }) => (
               <FontAwesome size={28} name="comments" color={color} />
-            ), // Use a valid icon name
+            ),
           }}
         />
         <Tabs.Screen
@@ -41,7 +41,7 @@ export default function TabLayout() {
             title: "",
             tabBarIcon: ({ color }) => (
           <FontAwesome size={28} name="bars" color={color} />
-            ), // Use a valid icon name
+            ), 
           }}
         />
       </Tabs>

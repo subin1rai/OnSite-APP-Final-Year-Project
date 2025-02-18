@@ -90,7 +90,7 @@ const Budget = () => {
   return (
     <SafeAreaView className="bg-[#ffb133]">
       <View>
-        <View className="bg-[#ffb133] h-[180px] w-full z-0 flex">
+      <View className="bg-[#ffb133] h-[180px] w-full z-0 flex">
           <View className="flex-row justify-between mx-4 items-center">
             <Ionicons name="arrow-back" size={24} color="white" />
             <Text className="text-2xl text-white font-semibold tracking-wider">

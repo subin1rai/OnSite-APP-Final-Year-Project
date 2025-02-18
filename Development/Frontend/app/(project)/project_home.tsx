@@ -23,12 +23,11 @@ const Project_home = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
 
-  // Explicitly type the ref so TS knows it has a scrollTo method.
+  // Explicitly type the ref
   const horizontalScrollRef = useRef<ScrollView | null>(null);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    // Add your refresh logic here (e.g., re-fetch project details)
     setTimeout(() => {
       setRefreshing(false);
     }, 1000);
@@ -44,7 +43,7 @@ const Project_home = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      {/* Vertical ScrollView with RefreshControl for pull-to-refresh */}
+      {/*ScrollView with RefreshControl */}
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={{ flexGrow: 1 }}
@@ -110,7 +109,7 @@ const Project_home = () => {
             </View>
             <Text>Attendance</Text>
           </TouchableOpacity>
-          <TouchableOpacity className="items-center gap-2">
+          <TouchableOpacity className="items-center gap-2" onPress={()=>router.push('../(threeDmodel)/mainModel')}>
             <View className="bg-[#FEEDCF] p-6 rounded-md items-center gap-2">
               <Image source={icons.threed} className="w-10 h-10" />
             </View>

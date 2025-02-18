@@ -40,7 +40,7 @@ router.get("/vendor", authMiddleware(), vendorController.getAllVendors);
 router.post("/addVendor",authMiddleware(), upload.single("image"), vendorController.addVendor);
 
 //3D model
-router.post("/upload3dmodel", authMiddleware(), threeDModelController.addModel);
+router.post("/upload3dmodel", authMiddleware(), upload.single("image"), threeDModelController.addModel);
 router.post("/all3dModel",authMiddleware(), threeDModelController.getAllModel);
 
 module.exports = router;

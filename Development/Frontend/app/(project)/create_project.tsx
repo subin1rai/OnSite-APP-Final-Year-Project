@@ -15,9 +15,10 @@ import {
 import { Ionicons } from "@expo/vector-icons"; 
 import DateTimePicker from "react-native-ui-datepicker"; 
 import dayjs from "dayjs";
-import { create_project } from "@/context/project";
+// import { create_project } from "@/context/project";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
+import apiHandler from "@/context/ApiHandler";
 
 const CreateProject = () => {
   const [startDate, setStartDate] = useState(dayjs()); 
@@ -68,13 +69,8 @@ const CreateProject = () => {
   
     try {
       setLoading(true);
-      const result = await create_project(
-        form.projectName,
-        form.ownerName,
-        Number(form.budgetAmount),
-        form.location,
-        startDate.toISOString(),
-        endDate.toISOString()
+      const result = await apiHandler.post("/project/create",
+      
       );
  
       if (result?.status === 201) {

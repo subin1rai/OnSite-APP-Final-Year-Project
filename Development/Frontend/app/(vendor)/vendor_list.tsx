@@ -2,43 +2,44 @@ import React, { useEffect, useRef, useState } from "react";
 import { FlatList, SafeAreaView, Text, TextInput, TouchableOpacity, View, Pressable, StatusBar, Platform, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import MainWorker from "@/Components/MainWorker";
-import { useWorkerStore } from "@/store/workerStore";
+import MainVendor from "@/Components/MainVendor";
+import { useVendorsStore } from "@/store/mainVendorStore";
 
-const WorkerList = () => {
-  const { workers, fetchWorkers } = useWorkerStore();
+const VendorList = () => {
+  const { vendors, fetchVendors } = useVendorsStore();
   const [searchText, setSearchText] = useState<string>("");
-  const [filteredWorkers, setFilteredWorkers] = useState(workers);
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [filteredVendors, setFilteredVendors] = useState(vendors);
+  const [isOpen, setIsOpen] = useState(false);
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = ["75%"];
+  const snapPoints = ["55%"];
 
   useEffect(() => {
-    fetchWorkers(); 
+    fetchVendors();
   }, []);
 
   useEffect(() => {
-    setFilteredWorkers(
-      searchText.trim()
-        ? workers.filter(worker => worker.name.toLowerCase().includes(searchText.toLowerCase()))
-        : workers
-    );
-  }, [searchText, workers]);
+    if (!searchText.trim()) {
+      setFilteredVendors(vendors);
+    } else {
+      setFilteredVendors(
+        vendors.filter(vendor =>
+          vendor.VendorName.toLowerCase().includes(searchText.toLowerCase())
+        )
+      );
+    }
+  }, [searchText, vendors]);
 
-  // Open BottomSheet
   const openBottomSheet = () => {
-    setIsBottomSheetOpen(true);
-    setTimeout(() => bottomSheetRef.current?.snapToIndex(0), 10); 
+    setIsOpen(true);
+    bottomSheetRef.current?.snapToIndex(0);
   };
 
-  // Close BottomSheet
   const handleClosePress = () => {
     bottomSheetRef.current?.close();
-    setTimeout(() => setIsBottomSheetOpen(false), 300); 
+    setIsOpen(false);
   };
 
-  // Close BottomSheet after Worker is added
-  const handleWorkerAdded = () => {
+  const handleVendorAdded = () => {
     handleClosePress();
   };
 
@@ -46,10 +47,12 @@ const WorkerList = () => {
     <View className="flex-1 bg-white">
       {/* Header */}
       <SafeAreaView className="bg-[#ffb133]">
-        <View className="bg-[#ffb133] flex-row justify-between mt-16 items-center px-4 pb-[10px]"
-          style={{ marginTop: Platform.OS === "ios" ? 60 : StatusBar.currentHeight }}>
+        <View
+          className="bg-[#ffb133] flex-row justify-between mt-16 items-center px-4 pb-[10px]"
+          style={{ marginTop: Platform.OS === "ios" ? 60 : StatusBar.currentHeight }}
+        >
           <Ionicons name="arrow-back" size={24} color="white" />
-          <Text className="text-white text-2xl font-medium tracking-widest">Workers</Text>
+          <Text className="text-white text-2xl font-medium tracking-widest">Vendors</Text>
           <TouchableOpacity onPress={openBottomSheet}>
             <Ionicons name="add" size={24} color="white" />
           </TouchableOpacity>
@@ -61,7 +64,7 @@ const WorkerList = () => {
         <Ionicons name="search" size={22} color="#333" />
         <TextInput
           className="flex-1 px-3 h-10 text-xl text-gray-900"
-          placeholder="Search workers..."
+          placeholder="Search vendors..."
           value={searchText}
           onChangeText={setSearchText}
           placeholderTextColor="#888"
@@ -73,47 +76,46 @@ const WorkerList = () => {
         )}
       </View>
 
-      {/* Worker List */}
+      {/* Vendor List */}
       <FlatList
-        data={filteredWorkers}
+        data={filteredVendors}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View className="py-3 px-4 flex-row justify-between items-center mx-4 mt-3 bg-white rounded-md shadow-sm">
             <View className="flex-row gap-4 items-center">
               <Image source={{ uri: item.profile }} className="h-12 w-12 rounded-full" />
               <View>
-                <Text className="text-[12px] text-gray-500">{item.designation || "Worker"}</Text>
-                <Text className="text-xl font-medium">{item.name}</Text>
+                <Text className="text-[12px] text-gray-500">{item.companyName || "Vendor"}</Text>
+                <Text className="text-xl font-medium">{item.VendorName}</Text>
                 <Text className="text-sm text-gray-500">{item.contact}</Text>
               </View>
             </View>
-            <Text className="text-xl text-red-500">रु {item.salary}</Text>
           </View>
         )}
       />
 
-      {/* Dim Background BottomSheet */}
-      {isBottomSheetOpen && (
-        <Pressable 
+      {/* Dim Background when BottomSheet is open */}
+      {isOpen && (
+        <Pressable
           className="absolute top-0 left-0 w-full h-full bg-black opacity-50"
-          onPress={handleClosePress} 
+          onPress={handleClosePress}
         />
       )}
 
-      {/* BottomSheet */}
-      <BottomSheet 
-        ref={bottomSheetRef} 
-        index={-1}  
-        snapPoints={snapPoints} 
-        enablePanDownToClose={true} 
+      {/* BottomSheet for Adding Vendor */}
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={-1}
+        snapPoints={snapPoints}
+        enablePanDownToClose={true}
         onClose={handleClosePress}
       >
         <BottomSheetView>
-          <MainWorker onWorkerAdded={handleWorkerAdded} />
+          <MainVendor onVendorAdded={handleVendorAdded} />
         </BottomSheetView>
       </BottomSheet>
     </View>
   );
 };
 
-export default WorkerList;
+export default VendorList;

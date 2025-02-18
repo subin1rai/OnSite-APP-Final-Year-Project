@@ -70,7 +70,7 @@ const Home = () => {
 
   const handleProjectClick = (selectedProject: Project) => {
     setIsOpen(false);
-    // Save the project data in the Zustand store.
+    // Saving the project data in the Zustand store.
     console.log(selectedProject);
     useProjectStore.getState().setSelectedProject(selectedProject);
     router.push("/(project)/project_home");
@@ -130,12 +130,12 @@ const Home = () => {
             </View>
             <Text>Worker</Text>
           </TouchableOpacity>
-          <View className="items-center gap-2 justify-center">
+          <TouchableOpacity className="items-center gap-2 justify-center" onPress={()=>{router.push('../(vendor)/vendor_list')}}>
             <View className="bg-[#FEEDCF] p-6 rounded-md items-center gap-2">
               <Image source={icons.vendor} className="w-10 h-10" />
             </View>
             <Text>Vendor</Text>
-          </View>
+          </TouchableOpacity>
           <View className="items-center gap-2">
             <View className="bg-[#FEEDCF] p-6 rounded-md items-center gap-2">
               <Image source={icons.ai} className="w-10 h-10" />
@@ -158,7 +158,7 @@ const Home = () => {
             onPress={() => router.push("/(project)/create_project")}
           >
             <Icon name="add" size={24} color={"#FCAC29"} />
-            <Text className="text-[20px] font-normal text-[#FCAC29]">
+            <Text className="text-[20px] font-normal text-[#FCAC29]">       
               Projects
             </Text>
           </TouchableOpacity>

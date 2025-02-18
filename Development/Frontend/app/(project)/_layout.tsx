@@ -13,7 +13,6 @@ const Layout = () => {
   return (
         <GestureHandlerRootView className="flex-1">
       <StatusBar barStyle="dark-content" backgroundColor="white" translucent={false} />
-
       <Stack>
         <Stack.Screen
           name="create_project"
