@@ -80,7 +80,7 @@ const MainVendor: React.FC<MainVendorProps> = ({ onVendorAdded }) => {
       });
 
       if (response.data.success) {
-        addVendor(response.data.vendor); // Add vendor to store
+        addVendor(response.data.vendor); 
         Alert.alert("Success", "Vendor added successfully!");
         setImage(null);
         if (onVendorAdded) onVendorAdded();

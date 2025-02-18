@@ -70,7 +70,7 @@ const Home = () => {
 
   const handleProjectClick = (selectedProject: Project) => {
     setIsOpen(false);
-    // Save the project data in the Zustand store.
+    // Saving the project data in the Zustand store.
     console.log(selectedProject);
     useProjectStore.getState().setSelectedProject(selectedProject);
     router.push("/(project)/project_home");
