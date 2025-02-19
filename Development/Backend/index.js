@@ -1,10 +1,10 @@
 const express = require("express");
 const routes = require("./routes/routes");
+const bodyParser = require("body-parser");
 require("dotenv").config();
 const app = express();
 
 app.use(express.json());
-
 
 // Use the routes
 app.use("/api", routes);

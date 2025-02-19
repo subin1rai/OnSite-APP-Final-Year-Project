@@ -89,6 +89,7 @@ export default function RootLayout() {
         <Stack.Screen name="(attendance)" options={{ headerShown: false }} />
         <Stack.Screen name="(expenses)" options={{ headerShown: false }} />
         <Stack.Screen name="(threeDmodel)" options={{ headerShown: false }} />
+        <Stack.Screen name="(chat)" options={{ headerShown: false }} />
       </Stack>
       <Toast />
     </>
