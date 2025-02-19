@@ -5,6 +5,7 @@ const authMiddleware = require("../middleware/authmiddleware.js");
 const projectController = require("../controllers/projectController.js");
 const budgetController = require("../controllers/budgetController.js");
 const attendanceController = require("../controllers/attendaceController.js");
+const chatController = require("../controllers/chatController.js");
 const workerController = require("../controllers/workerController.js");
 const vendorController = require("../controllers/vendorController.js");
 const threeDModelController = require("../controllers/threeDModelController.js");
@@ -42,5 +43,12 @@ router.post("/addVendor",authMiddleware(), upload.single("image"), vendorControl
 //3D model
 router.post("/upload3dmodel", authMiddleware(), upload.single("image"), threeDModelController.addModel);
 router.post("/all3dModel",authMiddleware(), threeDModelController.getAllModel);
+
+//chat
+router.get("/chat/users",authMiddleware(), chatController.getChatUser);
+router.post("/chat/sendRequest",authMiddleware(), chatController.sendRequest);
+router.get("/chat/getRequest", authMiddleware(), chatController.getRequest);
+router.post("/chat/acceptRequest", authMiddleware(), chatController.acceptRequest);
+
 
 module.exports = router;

@@ -13,12 +13,21 @@ model User {
   role        String        @default("client")
   username    String?
   password    String?
+  friends     User[]        @relation("UserFriends")
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @default(now()) @updatedAt
+  requests    Request[]
   projects    Project[]
   Worker      Worker[]
   threeDModel threeDModel[]
   Vendor      Vendor[]
+
+  Message          Message[] @relation("Sender")
+  receivedMessages Message[] @relation("Receiver")
+  User             User[]    @relation("UserFriends")
+
+  Requestfrom Request[] @relation("RequestFrom")
+  Requestuser Request[] @relation("RequestUser")
 }
 
 model Project {
@@ -118,4 +127,36 @@ model threeDModel {
   projectId Int
   project   Project  @relation(fields: [projectId], references: [id])
   createdAt DateTime @default(now())
+}
+
+model Request {
+  id        Int      @id @default(autoincrement())
+  fromId    Int
+  from      User     @relation("RequestFrom", fields: [fromId], references: [id])
+  message   String
+  status    status   @default(pending)
+  userId    Int
+  user      User     @relation("RequestUser", fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  User User[]
+}
+
+model Message {
+  id         Int      @id @default(autoincrement())
+  senderId   Int
+  sender     User     @relation("Sender", fields: [senderId], references: [id])
+  receiverId Int
+  receiver   User     @relation("Receiver", fields: [receiverId], references: [id])
+  message    String?
+  timeStamp  DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+enum status {
+  pending
+  accepted
+  rejected
 }
