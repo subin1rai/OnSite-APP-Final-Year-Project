@@ -59,6 +59,9 @@ const getRequest = async (req, res) => {
       where: {
         userId: parseInt(userId),
       },
+      include:{
+        user: true,
+      }
      
     });
 
