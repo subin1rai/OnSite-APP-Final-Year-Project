@@ -58,7 +58,7 @@ const RequestChatRoom = () => {
         <KeyboardAvoidingView
           className="flex-1"
           behavior={Platform.OS === "ios" ? "padding" : "height"}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 70} // Adjust if needed
+          keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 70}
         >
           <ScrollView 
             keyboardShouldPersistTaps="handled"
