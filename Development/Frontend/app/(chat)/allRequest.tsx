@@ -43,6 +43,25 @@ const AllRequest = () => {
       console.error("Error fetching requests:", error);
     }
   };
+  
+  const acceptRequest = async (requestId: number) => {
+    try {
+    const token = await SecureStore.getItemAsync("AccessToken");
+    const response = await apiHandler.post("/chat/acceptRequest",{
+      requestId,
+    },{
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    if (response.status === 200) {
+      await getRequests();
+    }
+  } catch (error) {
+    console.error("Error accepting request:", error);
+  }
+ }
 
   useEffect(() => {
     getRequests();
@@ -60,14 +79,14 @@ const AllRequest = () => {
     
           {/* User Info */}
           <View className="flex-1 ml-4">
-            <Text className="text-base font-medium text-gray-800">{item.user.username}</Text>
-            <Text className="text-sm text-gray-600">{item.message}</Text>
+            <Text className="text-gray-800 text-lg font-medium">{item.user.username}</Text>
+            <Text className="text-lg text-gray-600">{item.message}</Text>
           </View>
     
           {/* Accept & Reject Buttons */}
           <View className="flex-row gap-2">
-            <TouchableOpacity className="bg-green-500 px-4 py-2 rounded-md">
-              <Text className="text-white">Accept</Text>
+            <TouchableOpacity className="bg-[#ffb133] px-4 py-2 rounded-md" onPress={()=>{acceptRequest(item?.id)}}>
+              <Text className="text-white" >Accept</Text>
             </TouchableOpacity>
             <TouchableOpacity className="px-4 py-2 rounded-md" style={{ borderWidth: 1, borderColor: "red" }}>
               <Text className="text-red-500">Reject</Text>

@@ -75,18 +75,17 @@ const getRequest = async (req, res) => {
 
 const acceptRequest = async (req, res) => {
   try {
-    // Extract userId from authenticated request & requestId from request body
+   
     const userId = req.user.userId; 
     const { requestId } = req.body; 
 
     console.log(req.body);
-    // Validate requestId
     if (!requestId || isNaN(requestId)) {
       return res.status(400).json({ message: "Invalid request ID" });
     }
 
     // Check if the request exists
-    const request = await prisma.request.findUnique({
+    const request = await prisma.request.findFirst({
       where: { id: Number(requestId) },
       include: { from: true, user: true },
     });
@@ -132,10 +131,37 @@ const acceptRequest = async (req, res) => {
   }
 };
 
+const getFriends = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const user = await prisma.user.findFirst({
+      where: { id: parseInt(userId) },
+      include: { friends: {
+        select:{
+          id: true,
+          username: true,
+          email: true
+        }
+      } },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({ friends: user.friends });
+  } catch (error) {
+    console.error("Error fetching friends:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+    
+  }
+}
+
 
 module.exports = {
   getChatUser,
   sendRequest,
   getRequest,
-  acceptRequest
+  acceptRequest,
+  getFriends
 };

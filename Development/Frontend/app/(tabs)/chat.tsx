@@ -7,37 +7,62 @@ import {
   View,
 } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { router } from 'expo-router';
+import * as SecureStore from "expo-secure-store";
+import apiHandler from '@/context/ApiHandler';
+import ChatItem from '@/Components/Chat';
 
-const Chat = () => {
-  const [chats, setChats] = useState([
-  ]);
+// Define types for chat user
+interface ChatUser {
+  id: string;
+  username: string;
+  profileImage?: string;
+}
+
+const Chat: React.FC = () => {
+  const [chats, setChats] = useState<ChatUser[]>([]);
+  
+  const getUsers = async () => {
+    try {
+      const token = await SecureStore.getItemAsync("AccessToken");
+      if (!token) {
+        console.error("No access token found");
+        return;
+      }
+  
+      const response = await apiHandler.get<{ friends: ChatUser[] }>("/chat/getfriends", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+  
+      console.log("API Response:", response.data); // Debugging
+      setChats(response.data.friends || []);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+  
 
   useEffect(() => {
+    getUsers();
   }, []);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <View style={styles.header}>
-       
         <Text style={styles.headerTitle}>Chats</Text>
         <View style={styles.headerIcons}>
-          
           <MaterialIcons
-          onPress={()=>{
-            router.push('../(chat)/usersScreen');
-          }}
+            onPress={() => router.push('../(chat)/usersScreen')}
             name="person-outline"
             size={26}
             color="black"
           />
-          
           <MaterialIcons
-           onPress={()=>{
-            router.push('../(chat)/allRequest');
-          }}
+            onPress={() => router.push('../(chat)/allRequest')}
             name="person-outline"
             size={26}
             color="black"
@@ -47,7 +72,9 @@ const Chat = () => {
 
       <View style={styles.chatContainer}>
         {chats.length > 0 ? (
-          chats.map((item) => <Text key={item.id}>{item.username}</Text>)
+          chats.map((item) => (
+            <ChatItem item={item} key={item.id} /> // Ensure item is passed correctly
+          ))
         ) : (
           <View style={styles.noChats}>
             <Text style={styles.noChatsText}>No Chats yet</Text>
@@ -65,11 +92,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
-  profileImage: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
   },
   headerTitle: {
     fontSize: 15,

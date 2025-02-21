@@ -49,6 +49,7 @@ router.get("/chat/users",authMiddleware(), chatController.getChatUser);
 router.post("/chat/sendRequest",authMiddleware(), chatController.sendRequest);
 router.get("/chat/getRequest", authMiddleware(), chatController.getRequest);
 router.post("/chat/acceptRequest", authMiddleware(), chatController.acceptRequest);
+router.get("/chat/getfriends", authMiddleware(), chatController.getFriends);
 
 
 module.exports = router;
