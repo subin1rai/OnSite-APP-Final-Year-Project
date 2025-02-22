@@ -68,7 +68,7 @@ const login = async (req, res) => {
       return res.status(400).json({ error: "Invalid password" });
     }
     const token = jwt.sign(
-      { userId: user.id, email: user.email, username: user.username, role: user.role },
+      { userId: user.id, email: user.email, username: user.username, role: user.role,image: user.image },
       process.env.JWT_SECRET,
       { expiresIn: "2hrs" }   
     );

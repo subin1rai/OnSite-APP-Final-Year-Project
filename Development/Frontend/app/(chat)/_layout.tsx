@@ -11,15 +11,13 @@ import useChatStore from "@/store/chatStore";
 const Layout = () => {
   const router = useRouter();
   const { selectedChat } = useChatStore();
-  const params = useLocalSearchParams(); // Get params from navigation
+  const params = useLocalSearchParams();
 
   return (
     <GestureHandlerRootView className="flex-1">
       <StatusBar barStyle="dark-content" backgroundColor="white" translucent={false} />
-
       <Stack>
         <Stack.Screen name="usersScreen" options={{ title: "Users" }} />
-
         <Stack.Screen
           name="requestChatRoom"
           options={{

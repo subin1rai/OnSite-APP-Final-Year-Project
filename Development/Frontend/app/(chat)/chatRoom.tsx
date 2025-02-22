@@ -10,6 +10,7 @@ import {
   View,
   Alert,
   Text,
+  Image,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { TouchableOpacity } from "react-native";
@@ -19,6 +20,7 @@ import { useSocketContext } from "@/socketContext";
 import * as SecureStore from "expo-secure-store";
 import { jwtDecode } from "jwt-decode";
 import { Socket } from "socket.io-client";
+import { icons, images } from "@/constants";
 
 interface DecodedToken {
   userId: string;
@@ -87,7 +89,6 @@ const ChatRoom: React.FC = () => {
     };
   }, [socket]);
 
-  // ✅ Fix: Listen for New Messages and Auto Scroll
   useEffect(() => {
     if (!socket) return;
 
@@ -95,7 +96,6 @@ const ChatRoom: React.FC = () => {
       newMessage.timestamp = new Date().toISOString();
       setMessages((prevMessages) => [...prevMessages, newMessage]);
 
-      // ✅ Auto Scroll to Bottom When New Message Arrives
       setTimeout(() => {
         scrollViewRef.current?.scrollToEnd({ animated: true });
       }, 100);
@@ -135,7 +135,6 @@ const ChatRoom: React.FC = () => {
 
       setMessages(formattedMessages);
 
-      // ✅ Auto Scroll to Bottom on First Load
       setTimeout(() => {
         scrollViewRef.current?.scrollToEnd({ animated: false });
       }, 100);
@@ -181,7 +180,6 @@ const ChatRoom: React.FC = () => {
       setMessages((prevMessages) => [...prevMessages, newMessage]);
       setMessage("");
 
-      // ✅ Auto Scroll After Sending Message
       setTimeout(() => {
         scrollViewRef.current?.scrollToEnd({ animated: true });
       }, 100);
@@ -199,9 +197,8 @@ const ChatRoom: React.FC = () => {
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 70}
         >
-          {/* ✅ Chat Messages with Auto-Scroll */}
           <ScrollView
-            ref={scrollViewRef} // ✅ Attach ref
+            ref={scrollViewRef} 
             keyboardShouldPersistTaps="handled"
             className="flex-1 px-3 py-2"
             contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-end" }}
@@ -222,7 +219,7 @@ const ChatRoom: React.FC = () => {
           </ScrollView>
 
           {/* Message Input Section */}
-          <View className="bg-white flex-row items-center px-3 py-3 gap-4 border-t border-gray-300">
+          <View className="bg-white flex-row items-center px-3 py-3 gap-4 border-t border-gray-300 mt-4">
             <Entypo name="emoji-happy" size={24} color="gray" />
             <TextInput
               placeholder="Type a message..."
@@ -232,7 +229,7 @@ const ChatRoom: React.FC = () => {
               className="flex-1 h-10 px-3 border border-gray-300 rounded-full"
             />
             <TouchableOpacity className="py-2 rounded-full" onPress={sendMessage} disabled={!isConnected || !socket}>
-              <Ionicons name="send" size={24} color={isConnected && socket ? "#FCAC29" : "gray"} />
+              <Image source={icons.plane} />
             </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>

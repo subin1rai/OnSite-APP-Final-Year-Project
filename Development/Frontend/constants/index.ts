@@ -32,12 +32,15 @@ import worker from "@/assets/icons/worker.png";
 import vendor from "@/assets/icons/vendor.png";
 import threed from "@/assets/icons/3d.png";
 import ai from "@/assets/icons/ai.png";
+import conversation from "@/assets/icons/conversation.png";
 import report from "@/assets/icons/report.png";
 import attendance from "@/assets/icons/attendance.png";
 import budget from "@/assets/icons/budget.png";
 import doc from "@/assets/icons/doc.png";
 import bell from "@/assets/icons/bell.png";
 import plus from "@/assets/icons/plus.png";
+import plane from "@/assets/icons/plane.png";
+import addprofile from "@/assets/icons/add-profile.png";
 import ellipsis from "@/assets/icons/ellipsis.png";
 import edit from "@/assets/icons/edit.png";
 import dropdown from "@/assets/icons/dropdown.png";
@@ -53,9 +56,11 @@ export const images = {
 export const icons = {
     arrowDown,
     arrowUp,
+    addprofile,
     backArrow,
     chat,
     checkmark,
+    conversation,
     close,
     dollar,
     email,
@@ -63,6 +68,7 @@ export const icons = {
     google,
     home,
     list,
+    plane,
     lock,
     map,
     marker,
