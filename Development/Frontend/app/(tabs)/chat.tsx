@@ -13,7 +13,7 @@ import * as SecureStore from "expo-secure-store";
 import apiHandler from '@/context/ApiHandler';
 import ChatItem from '@/Components/Chat';
 
-// Define types for chat user
+
 interface ChatUser {
   id: string;
   username: string;
@@ -38,7 +38,7 @@ const Chat: React.FC = () => {
         },
       });
   
-      console.log("API Response:", response.data); // Debugging
+      console.log("API Response:", response.data); 
       setChats(response.data.friends || []);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -73,7 +73,7 @@ const Chat: React.FC = () => {
       <View style={styles.chatContainer}>
         {chats.length > 0 ? (
           chats.map((item) => (
-            <ChatItem item={item} key={item.id} /> // Ensure item is passed correctly
+            <ChatItem item={item} key={item.id} />
           ))
         ) : (
           <View style={styles.noChats}>

@@ -1,4 +1,3 @@
-// RootLayout.tsx
 import React, { useEffect, useState } from "react";
 import { useFonts } from "expo-font";
 import { Stack, useRouter } from "expo-router";
@@ -7,6 +6,7 @@ import "react-native-reanimated";
 import { LogBox, StatusBar, Text, View, ActivityIndicator } from "react-native";
 import Toast from "react-native-toast-message";
 import AuthService from "@/context/AuthContext"; // Adjust path if needed
+import { SocketProvider } from "@/socketContext"; // Import SocketProvider
 
 // Prevent the splash screen from auto-hiding.
 SplashScreen.preventAutoHideAsync();
@@ -25,14 +25,12 @@ export default function RootLayout() {
     "Jakarta-SemiBold": require("../assets/fonts/PlusJakartaSans-SemiBold.ttf"),
   });
 
-  // Hide the splash screen when fonts are loaded.
   useEffect(() => {
     if (fontsLoaded) {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded]);
 
-  // Function to check authentication status and redirect if needed.
   const checkAuthStatus = async () => {
     try {
       console.log("Checking authentication...");
@@ -42,7 +40,6 @@ export default function RootLayout() {
       if (isExpired) {
         await AuthService.removeToken();
         setIsAuthenticated(false);
-        // Delay navigation to ensure the Root Layout is mounted.
         setTimeout(() => {
           router.replace("/(auth)/sign_in");
         }, 0);
@@ -59,14 +56,12 @@ export default function RootLayout() {
     }
   };
 
-  // Run the auth check after the first render.
   useEffect(() => {
     setTimeout(() => {
       checkAuthStatus();
     }, 0);
   }, []);
 
-  // While fonts or auth status are loading, show a loading indicator.
   if (!fontsLoaded || isAuthenticated === null) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#fff" }}>
@@ -77,21 +72,23 @@ export default function RootLayout() {
   }
 
   return (
-    <>
-      <StatusBar barStyle="dark-content" backgroundColor="black" translucent={false} />
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="(project)" options={{ headerShown: false }} />
-        <Stack.Screen name="(worker)" options={{ headerShown: false }} />
-        <Stack.Screen name="(vendor)" options={{ headerShown: false }} />
-        <Stack.Screen name="(attendance)" options={{ headerShown: false }} />
-        <Stack.Screen name="(expenses)" options={{ headerShown: false }} />
-        <Stack.Screen name="(threeDmodel)" options={{ headerShown: false }} />
-        <Stack.Screen name="(chat)" options={{ headerShown: false }} />
-      </Stack>
-      <Toast />
-    </>
+    <SocketProvider> 
+      <>
+        <StatusBar barStyle="dark-content" backgroundColor="black" translucent={false} />
+        <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="(project)" options={{ headerShown: false }} />
+          <Stack.Screen name="(worker)" options={{ headerShown: false }} />
+          <Stack.Screen name="(vendor)" options={{ headerShown: false }} />
+          <Stack.Screen name="(attendance)" options={{ headerShown: false }} />
+          <Stack.Screen name="(expenses)" options={{ headerShown: false }} />
+          <Stack.Screen name="(threeDmodel)" options={{ headerShown: false }} />
+          <Stack.Screen name="(chat)" options={{ headerShown: false }} />
+        </Stack>
+        <Toast />
+      </>
+    </SocketProvider>
   );
 }

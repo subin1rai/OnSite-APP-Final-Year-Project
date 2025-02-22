@@ -50,6 +50,10 @@ router.post("/chat/sendRequest",authMiddleware(), chatController.sendRequest);
 router.get("/chat/getRequest", authMiddleware(), chatController.getRequest);
 router.post("/chat/acceptRequest", authMiddleware(), chatController.acceptRequest);
 router.get("/chat/getfriends", authMiddleware(), chatController.getFriends);
+router.post("/chat/sendMessage", authMiddleware(), chatController.sendMessage);
+router.post("/chat/getMessage", authMiddleware(), chatController.getMessage);
+
+
 
 
 module.exports = router;
