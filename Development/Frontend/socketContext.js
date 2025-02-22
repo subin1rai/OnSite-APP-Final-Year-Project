@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import io from "socket.io-client";
 import * as SecureStore from "expo-secure-store";
-import jwtDecode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
+
 // Create Socket Context
 const SocketContext = createContext({ socket: null });
 
@@ -34,7 +35,7 @@ export const SocketProvider = ({ children }) => {
         console.log("Extracted UserId:", decoded.userId);
 
         // Initialize Socket Connection
-        const socket = io("http://localhost:3099", {
+        const socket = io("https://4bca-2400-1a00-bd11-e95a-a88a-ed53-c0fa-ed8c.ngrok-free.app", {
           query: {
             userId: decoded.userId,
           },

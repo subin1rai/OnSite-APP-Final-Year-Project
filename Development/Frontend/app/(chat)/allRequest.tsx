@@ -20,6 +20,7 @@ interface Request {
   createdAt: string;
   updatedAt: string;
   user: User;
+  from: User;
 }
 
 const AllRequest = () => {
@@ -79,7 +80,7 @@ const AllRequest = () => {
     
           {/* User Info */}
           <View className="flex-1 ml-4">
-            <Text className="text-gray-800 text-lg font-medium">{item.user.username}</Text>
+            <Text className="text-gray-800 text-lg font-medium">{item.from.username}</Text>
             <Text className="text-lg text-gray-600">{item.message}</Text>
           </View>
     
