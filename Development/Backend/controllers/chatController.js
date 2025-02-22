@@ -144,6 +144,7 @@ const getFriends = async (req, res) => {
             id: true,
             username: true,
             email: true,
+            image: true
           },
         },
       },
