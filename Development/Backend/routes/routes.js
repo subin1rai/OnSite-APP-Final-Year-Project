@@ -8,7 +8,7 @@ const attendanceController = require("../controllers/attendaceController.js");
 const chatController = require("../controllers/chatController.js");
 const workerController = require("../controllers/workerController.js");
 const vendorController = require("../controllers/vendorController.js");
-const { updateUser, uploadMiddleware } = require("../controllers/userController");
+const userController = require("../controllers/userController");
 const threeDModelController = require("../controllers/threeDModelController.js");
 const upload = workerController.upload;  
 
@@ -55,7 +55,8 @@ router.post("/chat/sendMessage", authMiddleware(), chatController.sendMessage);
 router.post("/chat/getMessage", authMiddleware(), chatController.getMessage);
 
 
-router.put("/user/updateUser", authMiddleware(), upload.single("image"), updateUser);
+router.put("/user/updateUser", authMiddleware(), upload.single("image"), userController.updateUser);
+router.get("/user/getUser", authMiddleware(), userController.getuser);
 
 
 

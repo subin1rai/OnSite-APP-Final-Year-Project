@@ -4,6 +4,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import React, { useState, useEffect } from 'react';
@@ -12,12 +13,13 @@ import { router } from 'expo-router';
 import * as SecureStore from "expo-secure-store";
 import apiHandler from '@/context/ApiHandler';
 import ChatItem from '@/Components/Chat';
+import { icons } from '@/constants';
 
 
 interface ChatUser {
   id: string;
   username: string;
-  profileImage?: string;
+  image?: string;
 }
 
 const Chat: React.FC = () => {
@@ -53,20 +55,17 @@ const Chat: React.FC = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Chats</Text>
+        <Text className='text-2xl pl-4 font-semibold'>Chats</Text>
         <View style={styles.headerIcons}>
           <MaterialIcons
             onPress={() => router.push('../(chat)/usersScreen')}
             name="person-outline"
-            size={26}
+            size={32}
             color="black"
           />
-          <MaterialIcons
-            onPress={() => router.push('../(chat)/allRequest')}
-            name="person-outline"
-            size={26}
-            color="black"
-          />
+         <TouchableOpacity onPress={() => router.push('../(chat)/allRequest')}>
+          <Image source={icons.conversation} className='w-8 h-8'/>
+         </TouchableOpacity>
         </View>
       </View>
 
@@ -88,7 +87,7 @@ const Chat: React.FC = () => {
 
 const styles = StyleSheet.create({
   header: {
-    padding: 10,
+    paddingHorizontal: 16,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

@@ -51,5 +51,18 @@ const updateUser = async (req, res) => {
     }
   };
 
-module.exports = { updateUser, upload };
+  const getuser = async (req, res) => {
+    try {
+      const userId = req.user.userId;
+      const user = await prisma.user.findFirst({
+        where: { id: userId },
+      });
+      res.status(200).json({ user });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+
+module.exports = { updateUser, upload, getuser };
 

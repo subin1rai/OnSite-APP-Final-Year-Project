@@ -93,6 +93,14 @@ const Home = () => {
     }
   }, []);
 
+  const getGreeting = () => {
+    const hours = new Date().getHours();
+    if (hours >= 5 && hours < 12) return "Good Morning";
+    if (hours >= 12 && hours < 17) return "Good Afternoon";
+    if (hours >= 17 && hours < 21) return "Good Evening";
+    return "Good Night";
+  };
+
   useEffect(() => {
     getProject();
     setIsOpen(false);
@@ -107,14 +115,18 @@ const Home = () => {
         {/* Header Section */}
         <View className="flex flex-row gap-2 justify-between items-center">
           <View className="flex-row gap-2 items-center">
-            <Image source={images.imageProfile} />
+            {/* ✅ Fixed User Profile Image Handling */}
+            {user?.image ? (
+              <Image source={{ uri: user.image }} className="w-10 h-10 rounded-full" />
+            ) : (
+              <Image source={images.imageProfile} className="w-10 h-10 rounded-full" />
+            )}
+
             <View>
-              <Text className="text-[20px] font-semibold">Good Morning</Text>
-              {user ? (
-                <Text className="text-[18px] font-medium">{user.username}</Text>
-              ) : (
-                <Text className="text-[18px] font-medium">Loading...</Text>
-              )}
+              <Text className="text-[20px] font-semibold">{getGreeting()}</Text>
+              <Text className="text-[18px] font-medium">
+                {user?.username || "Loading..."}
+              </Text>
             </View>
           </View>
           <Image source={icons.bell} className="w-8 h-8" />

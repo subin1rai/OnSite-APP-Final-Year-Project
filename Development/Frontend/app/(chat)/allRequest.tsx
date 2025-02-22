@@ -7,6 +7,7 @@ import { images } from "@/constants";
 interface User {
   id: number;
   email: string;
+  image: string;
   role: string;
   username: string;
 }
@@ -75,7 +76,7 @@ const AllRequest = () => {
           <View key={item.id} className="flex-row items-center bg-white rounded-lg p-4 mx-4 mt-3">
           {/* Profile Image */}
           <TouchableOpacity>
-            <Image source={images.imageProfile} className="w-12 h-12 rounded-full" />
+            <Image source={item?.from.image ? { uri: item.from.image } : images.imageProfile} className="w-12 h-12 rounded-full" />
           </TouchableOpacity>
     
           {/* User Info */}

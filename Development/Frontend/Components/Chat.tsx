@@ -8,7 +8,7 @@ interface ChatItemProps {
   item: {
     id: string;
     username: string;
-    profileImage?: string;
+    image?: string;
   };
 }
 
@@ -27,8 +27,8 @@ const ChatItem: React.FC<ChatItemProps> = ({ item }) => {
     >
       <View>
         <Image
-          style={styles.profileImage}
-          source={item.profileImage ? { uri: item.profileImage } : images.imageProfile}
+          style={styles.image}
+          source={item.image ? { uri: item.image } : images.imageProfile}
         />
       </View>
       <View>
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
   },
-  profileImage: {
+  image: {
     width: 40,
     height: 40,
     borderRadius: 20,

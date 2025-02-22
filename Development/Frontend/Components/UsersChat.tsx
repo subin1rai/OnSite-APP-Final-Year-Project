@@ -8,6 +8,7 @@ interface User {
   id: number;
   username: string;
   email: string;
+  image: string;
   role: string;
   createdAt: string;
   updatedAt: string;
@@ -29,7 +30,7 @@ const UsersChat: React.FC<UsersChatProps> = ({ item }) => {
       <View className="flex-row items-center gap-3">
         <TouchableOpacity>
           <Image
-            source={images.imageProfile}
+            source={item?.image ? { uri: item.image } : images.imageProfile}
             className="w-[40px] h-[40px] rounded-full"
           />
         </TouchableOpacity>
