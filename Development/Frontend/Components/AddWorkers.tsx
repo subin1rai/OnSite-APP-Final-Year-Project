@@ -24,8 +24,8 @@ const AddWorkers: React.FC<AddWorkerProps> = ({ handleAddWorkerClose }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedWorkers, setSelectedWorkers] = useState<number[]>([]);
   const { selectedProject } = useProjectStore();
-  const { fetchWorkers } = useAttendanceStore(); // Get the global fetch function
-
+  const { fetchWorkers } = useAttendanceStore();
+  
   // Fetch all workers from your API
   const fetchAllWorkers = async () => {
     try { 

@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import apiHandler from "@/context/ApiHandler";
 import { useVendorStore, Vendor } from "@/store/vendorStore";
+import * as SecureStore from "expo-secure-store";
 
 interface VendorListProps {
   handleCloseBottomSheet: () => void;
@@ -18,16 +19,21 @@ const VendorList: React.FC<VendorListProps> = ({ handleCloseBottomSheet }) => {
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-
-  // Get the setter from our Zustand store.
   const { setSelectedVendor } = useVendorStore();
 
   const fetchVendors = async () => {
     try {
       setLoading(true);
-      const response = await apiHandler.get("/vendor");
-      // Assumes your JSON response contains vendors under response.data.data.
-      setVendors(response?.data?.data || []);
+      const response = await apiHandler.get("/vendor",
+        {
+          headers: {
+            Authorization: `Bearer ${await SecureStore.getItemAsync("AccessToken")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response.data);
+      setVendors(response?.data?.vendors || []);
     } catch (error) {
       console.error("Error fetching vendors:", error);
     } finally {
@@ -76,9 +82,7 @@ const VendorList: React.FC<VendorListProps> = ({ handleCloseBottomSheet }) => {
         renderItem={({ item: v }) => (
           <TouchableOpacity
             onPress={() => {
-              // Update the selected vendor in the Zustand store.
               setSelectedVendor(v);
-              // Close the bottom sheet after selection.
               handleCloseBottomSheet();
             }}
             style={{
