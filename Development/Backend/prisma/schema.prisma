@@ -8,25 +8,25 @@ datasource db {
 }
 
 model User {
-  id          Int           @id @default(autoincrement())
-  email       String        @unique
-  role        String        @default("client")
-  username    String?
-  password    String?
-  image       String?
-  friends     User[]        @relation("UserFriends")
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @default(now()) @updatedAt
-  requests    Request[]
-  projects    Project[]
-  Worker      Worker[]
-  threeDModel threeDModel[]
-  Vendor      Vendor[]
-  Message          Message[] @relation("Sender")
-  receivedMessages Message[] @relation("Receiver")
-  User             User[]    @relation("UserFriends")
-  Requestfrom Request[] @relation("RequestFrom")
-  Requestuser Request[] @relation("RequestUser")
+  id               Int           @id @default(autoincrement())
+  email            String        @unique
+  role             String        @default("client")
+  username         String?
+  password         String?
+  image            String?
+  friends          User[]        @relation("UserFriends")
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @default(now()) @updatedAt
+  requests         Request[]
+  projects         Project[]
+  Worker           Worker[]
+  threeDModel      threeDModel[]
+  Vendor           Vendor[]
+  Message          Message[]     @relation("Sender")
+  receivedMessages Message[]     @relation("Receiver")
+  User             User[]        @relation("UserFriends")
+  Requestfrom      Request[]     @relation("RequestFrom")
+  Requestuser      Request[]     @relation("RequestUser")
 }
 
 model Project {
@@ -44,6 +44,7 @@ model Project {
   budgets        Budget[]
   projectWorkers ProjectWorker[]
   threeDModel    threeDModel[]
+  Payment        Payment[]
 }
 
 model Worker {
@@ -56,6 +57,7 @@ model Worker {
   builderId      Int
   builder        User            @relation(fields: [builderId], references: [id])
   projectWorkers ProjectWorker[]
+  Payment        Payment[]
 }
 
 model ProjectWorker {
@@ -158,4 +160,27 @@ enum status {
   pending
   accepted
   rejected
+}
+
+model Payment {
+  id            Int           @id @default(autoincrement())
+  transactionId String?
+  pidx          String?
+  workerId      Int
+  worker        Worker        @relation(fields: [workerId], references: [id])
+  projectId     Int
+  project       Project       @relation(fields: [projectId], references: [id])
+  month         String
+  year          Int
+  totalSalary   Float
+  status        PaymentStatus @default(pending)
+  paidAt        DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+enum PaymentStatus {
+  completed
+  pending
+  paid
 }
