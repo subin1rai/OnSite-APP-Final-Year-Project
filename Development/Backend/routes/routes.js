@@ -10,6 +10,7 @@ const workerController = require("../controllers/workerController.js");
 const vendorController = require("../controllers/vendorController.js");
 const userController = require("../controllers/userController");
 const threeDModelController = require("../controllers/threeDModelController.js");
+const { initializePayment, verifyPayment } = require("../controllers/paymentController");
 const upload = workerController.upload;  
 
 // Authentication routes
@@ -59,6 +60,8 @@ router.post("/chat/getMessage", authMiddleware(), chatController.getMessage);
 router.put("/user/updateUser", authMiddleware(), upload.single("image"), userController.updateUser);
 router.get("/user/getUser", authMiddleware(), userController.getuser);
 
-
+//payments
+router.post("/initialize-khalti", initializePayment);
+router.get("/verify-khalti", verifyPayment);
 
 module.exports = router;

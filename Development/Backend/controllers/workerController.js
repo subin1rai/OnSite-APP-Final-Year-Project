@@ -64,60 +64,60 @@ const allWorkers = async(req,res)=>{
 
 const workerDetails = async (req, res) => {
   try {
-    const { workerId } = req.body;
-    console.log(workerId);
-    if (!workerId) {
-      return res.status(400).json({ error: "Worker ID is required" });
+    const { workerId, projectId } = req.body;
+    console.log("Fetching details for Worker ID:", workerId, "Project ID:", projectId);
+
+    if (!workerId || !projectId) {
+      return res.status(400).json({ error: "Worker ID and Project ID are required" });
     }
 
-    // Fetch worker and attendance details
+    
     const worker = await prisma.worker.findUnique({
       where: { id: workerId },
       include: {
         projectWorkers: {
+          where: { projectId: projectId },
           include: {
-            attendance: true, // Fetch attendance records
+            attendance: true, 
           },
         },
       },
     });
 
-    if (!worker) {
-      return res.status(404).json({ error: "Worker not found" });
+    if (!worker || worker.projectWorkers.length === 0) {
+      return res.status(404).json({ error: "No attendance found for this worker in this project" });
     }
 
-    // Group attendance by month and calculate salary per month
+    // Group attendance by month
     const attendanceByMonth = {};
     const salaryByMonth = {};
     const summaryByMonth = {};
 
-    worker.projectWorkers.forEach((projectWorker) => {
-      projectWorker.attendance.forEach((record) => {
-        const date = new Date(record.date);
-        const year = date.getFullYear();
-        const monthName = date.toLocaleString("default", { month: "long" });
-        const monthKey = `${year}-${monthName}`;
+    worker.projectWorkers[0].attendance.forEach((record) => {
+      const date = new Date(record.date);
+      const year = date.getFullYear();
+      const monthName = date.toLocaleString("default", { month: "long" });
+      const monthKey = `${year}-${monthName}`;
 
-        if (!attendanceByMonth[monthKey]) {
-          attendanceByMonth[monthKey] = [];
-          salaryByMonth[monthKey] = 0;
-          summaryByMonth[monthKey] = { totalPresent: 0, totalAbsent: 0 };
-        }
+      if (!attendanceByMonth[monthKey]) {
+        attendanceByMonth[monthKey] = [];
+        salaryByMonth[monthKey] = 0;
+        summaryByMonth[monthKey] = { totalPresent: 0, totalAbsent: 0 };
+      }
 
-        attendanceByMonth[monthKey].push({
-          date: record.date,
-          status: record.status,
-          shifts: record.shifts || 0,
-        });
-
-        // Calculate salary (assume ₹1000 per shift)
-        if (record.status === "present") {
-          summaryByMonth[monthKey].totalPresent++;
-          salaryByMonth[monthKey] += (record.shifts || 0) * 1000;
-        } else {
-          summaryByMonth[monthKey].totalAbsent++;
-        }
+      attendanceByMonth[monthKey].push({
+        date: record.date,
+        status: record.status,
+        shifts: record.shifts || 0,
       });
+
+      // Calculate salary (1000 per shift assumption)
+      if (record.status === "present") {
+        summaryByMonth[monthKey].totalPresent++;
+        salaryByMonth[monthKey] += (record.shifts || 0) * 1000;
+      } else {
+        summaryByMonth[monthKey].totalAbsent++;
+      }
     });
 
     return res.status(200).json({
@@ -133,5 +133,7 @@ const workerDetails = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+
 
 module.exports = { upload, addWorker, allWorkers,workerDetails};
