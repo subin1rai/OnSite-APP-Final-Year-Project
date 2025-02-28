@@ -22,11 +22,9 @@ model User {
   Worker      Worker[]
   threeDModel threeDModel[]
   Vendor      Vendor[]
-
   Message          Message[] @relation("Sender")
   receivedMessages Message[] @relation("Receiver")
   User             User[]    @relation("UserFriends")
-
   Requestfrom Request[] @relation("RequestFrom")
   Requestuser Request[] @relation("RequestUser")
 }

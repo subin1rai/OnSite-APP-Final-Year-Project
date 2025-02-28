@@ -20,19 +20,21 @@ export interface Worker {
   projectWorkerId: number;
   attendance: AttendanceRecord[];
 }
-
 interface AttendanceStore {
-  selectedWorker: AttendanceRecord | null;
-  setSelectedWorker: (worker: AttendanceRecord) => void;
+  selectedWorker: Worker | null; 
+  setSelectedWorker: (worker: Worker) => void; 
   clearSelectedWorker: () => void;
   workers: Worker[];
   setWorkers: (workers: Worker[]) => void;
   fetchWorkers: () => Promise<void>;
 }
 
-export const useAttendanceStore = create<AttendanceStore>((set, get) => ({
+export const useAttendanceStore = create<AttendanceStore>((set) => ({
   selectedWorker: null,
-  setSelectedWorker: (worker) => set({ selectedWorker: worker }),
+  setSelectedWorker: (worker: Worker) => {
+    console.log("Setting selected worker:", worker); // Debug log
+    set({ selectedWorker: worker });
+  },
   clearSelectedWorker: () => set({ selectedWorker: null }),
   workers: [],
   setWorkers: (workers) => set({ workers }),
@@ -47,3 +49,4 @@ export const useAttendanceStore = create<AttendanceStore>((set, get) => ({
     }
   },
 }));
+

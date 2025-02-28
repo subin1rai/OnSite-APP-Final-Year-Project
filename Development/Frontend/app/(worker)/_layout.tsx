@@ -16,6 +16,7 @@ const Layout = () => {
 
       <Stack>
         <Stack.Screen  name="worker_list" options={{ headerShown: false }}/>
+        <Stack.Screen  name="worker_details" options={{ headerShown: false }}/>
       </Stack>
       <Toast />
     </GestureHandlerRootView>

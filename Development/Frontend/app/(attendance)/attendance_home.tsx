@@ -25,9 +25,7 @@ const AttendanceHome = () => {
   const [date, setDate] = useState(new Date());
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-
-  // Use workers from zustand
-  const { workers, fetchWorkers } = useAttendanceStore();
+  const { workers, fetchWorkers,setSelectedWorker} = useAttendanceStore();
 
   // Bottom sheet state and refs
   const [isAddWorkerSheetOpen, setIsAddWorkerSheetOpen] = useState(false);
@@ -151,14 +149,20 @@ const AttendanceHome = () => {
     setDate(newDate);
   };
 
-  const handleWorkerClick = (selectedWorker: AttendanceRecord) => {
+  const handleWorkerClick = (selectedWorker: Worker) => {
     useAttendanceStore.getState().setSelectedWorker(selectedWorker);
     handleUpdateWorkerOpen();
   };
+  const setWorkerClick =(worker: Worker) => {
+    console.log("Selected Worker:", worker);
+    setSelectedWorker(worker); 
+    router.push("/(worker)/worker_details");
+  };
+  
 
   const renderWorker = ({ item }: { item: Worker }) => {
     const status = getAttendanceStatus(item);
-    // Get today's attendance record from the fetched data
+    
     const todayAttendanceRecord = item.attendance.find(
       (att) => formatDate(new Date(att.date)) === formatDate(date)
     );
@@ -166,7 +170,7 @@ const AttendanceHome = () => {
     return (
       <View>
         <View className="flex-row items-center justify-between px-4 mt-2">
-          <View className="flex-row items-center gap-2">
+          <TouchableOpacity className="flex-row items-center gap-2"   onPress={() => setWorkerClick(item)} >
             <View>
               <Image
                 className="w-8 h-8 rounded-full"
@@ -175,9 +179,9 @@ const AttendanceHome = () => {
             </View>
             <View className="flex-row items-center">
               <Text>{item.name}</Text>
-              <Ionicons name="chevron-forward" size={24} color="#FDB43D" />
+              <Ionicons name="chevron-forward" size={24} color="#FDB43D"/>
             </View>
-          </View>
+          </TouchableOpacity>
           {todayAttendanceRecord && (
             <Text>{todayAttendanceRecord.shifts} Shift(s)</Text>
           )}
@@ -207,7 +211,7 @@ const AttendanceHome = () => {
             <TouchableOpacity
               className="border rounded-md p-1"
               style={{ borderColor: "#C2C2C2" }}
-              onPress={() => handleWorkerClick(item.attendance[0])}
+              onPress={() => handleWorkerClick(item)}
             >
               <Ionicons name="chevron-down" size={20} color="#FCA311" />
             </TouchableOpacity>
