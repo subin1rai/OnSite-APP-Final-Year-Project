@@ -45,10 +45,6 @@ const addWorker = async (req, res) => {
   }
 };
 
-const updateWorkerShifts = async (req,res)=>{
-
-}
-
 const allWorkers = async(req,res)=>{
   try {
     const user = req.user.userId;
@@ -66,4 +62,76 @@ const allWorkers = async(req,res)=>{
   }
 }
 
-module.exports = { upload, addWorker, allWorkers };
+const workerDetails = async (req, res) => {
+  try {
+    const { workerId } = req.body;
+    console.log(workerId);
+    if (!workerId) {
+      return res.status(400).json({ error: "Worker ID is required" });
+    }
+
+    // Fetch worker and attendance details
+    const worker = await prisma.worker.findUnique({
+      where: { id: workerId },
+      include: {
+        projectWorkers: {
+          include: {
+            attendance: true, // Fetch attendance records
+          },
+        },
+      },
+    });
+
+    if (!worker) {
+      return res.status(404).json({ error: "Worker not found" });
+    }
+
+    // Group attendance by month and calculate salary per month
+    const attendanceByMonth = {};
+    const salaryByMonth = {};
+    const summaryByMonth = {};
+
+    worker.projectWorkers.forEach((projectWorker) => {
+      projectWorker.attendance.forEach((record) => {
+        const date = new Date(record.date);
+        const year = date.getFullYear();
+        const monthName = date.toLocaleString("default", { month: "long" });
+        const monthKey = `${year}-${monthName}`;
+
+        if (!attendanceByMonth[monthKey]) {
+          attendanceByMonth[monthKey] = [];
+          salaryByMonth[monthKey] = 0;
+          summaryByMonth[monthKey] = { totalPresent: 0, totalAbsent: 0 };
+        }
+
+        attendanceByMonth[monthKey].push({
+          date: record.date,
+          status: record.status,
+          shifts: record.shifts || 0,
+        });
+
+        // Calculate salary (assume ₹1000 per shift)
+        if (record.status === "present") {
+          summaryByMonth[monthKey].totalPresent++;
+          salaryByMonth[monthKey] += (record.shifts || 0) * 1000;
+        } else {
+          summaryByMonth[monthKey].totalAbsent++;
+        }
+      });
+    });
+
+    return res.status(200).json({
+      workerId: worker.id,
+      name: worker.name,
+      designation: worker.designation,
+      attendanceByMonth,
+      salaryByMonth,
+      summaryByMonth,
+    });
+  } catch (error) {
+    console.error("Error fetching worker details:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+module.exports = { upload, addWorker, allWorkers,workerDetails};

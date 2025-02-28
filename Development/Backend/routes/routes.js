@@ -36,6 +36,7 @@ router.put("/attendace/updateShift", attendanceController.updateShift);
 // Worker route
 router.post("/worker/addWorker", authMiddleware(), upload.single("image"), workerController.addWorker);
 router.get("/worker", authMiddleware(), workerController.allWorkers);
+router.post("/workerDetails", authMiddleware(), workerController.workerDetails);
 
 //vendor route
 router.get("/vendor", authMiddleware(), vendorController.getAllVendors);
