@@ -49,84 +49,100 @@ async function initializePayment(req, res) {
   
   const verifyPayment = async (req, res) => {
     try {
-        console.log("Received Khalti Response:", req.query);
+      console.log("Received Khalti Response:", req.query);
   
-        const {
+      const {
+        pidx,
+        transaction_id,
+        total_amount,
+        purchase_order_id,
+        status
+      } = req.query;
+      
+      // Step 1: Ensure payment status is completed
+      if (status !== "Completed") {
+        return res.status(400).json({ success: false, message: "Payment not completed" });
+      }
+  
+      // Step 2: Verify the payment with Khalti API
+      const khaltiResponse = await verifyKhaltiPayment(pidx);
+      if (!khaltiResponse || khaltiResponse.status !== "Completed") {
+        return res.status(400).json({ success: false, message: "Khalti verification failed" });
+      }
+  
+      const [workerId, projectId, month, year] = purchase_order_id.split("-");
+  
+      // Step 3: Update payment status in the database
+      const updatedPayment = await prisma.payment.updateMany({
+        where: {
+          workerId: parseInt(workerId),
+          projectId: parseInt(projectId),
+          month,
+          year: parseInt(year),
+          status: "pending",
+        },
+        data: {
+          transactionId: transaction_id,
           pidx,
-          transaction_id,
-          total_amount,
-          purchase_order_id,
-          status
-        } = req.query;
+          status: "completed",
+          paidAt: new Date(),
+        },
+      });
   
-        // Check if payment is successful
-        if (status !== "Completed") {
-          return res.status(400).json({ success: false, message: "Payment not completed" });
-        }
+      if (updatedPayment.count === 0) {
+        return res.status(404).json({ success: false, message: "No matching payment found" });
+      }
   
-        // Verify with Khalti
-        const khaltiResponse = await verifyKhaltiPayment(pidx);
+      // Step 4: Fetch all attendance records for the worker in the given month
+      const startDate = new Date(year, month - 1, 1); // First day of the month
+      const endDate = new Date(year, month, 0, 23, 59, 59); // Last day of the month
   
-        if (!khaltiResponse || khaltiResponse.status !== "Completed") {
-          return res.status(400).json({ success: false, message: "Khalti verification failed" });
-        }
+      console.log(`Fetching attendance records for WorkerID: ${workerId}, ProjectID: ${projectId} between ${startDate} and ${endDate}`);
   
-        const [workerId, projectId, month, year] = purchase_order_id.split("-");
-  
-        // Update Payment Status in Database
-        const updatedPayment = await prisma.payment.updateMany({
-          where: {
+      const attendanceRecords = await prisma.attendance.findMany({
+        where: {
+          projectWorker: {
             workerId: parseInt(workerId),
             projectId: parseInt(projectId),
-            month,
-            year: parseInt(year),
-            status: "pending",
           },
-          data: {
-            transactionId: transaction_id,
-            pidx,
-            status: "completed",
-            paidAt: new Date(),
+          date: {
+            gte: startDate,
+            lt: endDate,
           },
-        });
+        },
+      });
   
-        if (updatedPayment.count === 0) {
-          return res.status(404).json({ success: false, message: "No matching payment found" });
-        }
+      console.log("Fetched Attendance Records:", attendanceRecords);
   
-        // **Update Attendance Records for the Paid Worker**
-        const startDate = new Date(year, month - 1, 1); 
-        const endDate = new Date(year, month, 0, 23, 59, 59); 
+      if (attendanceRecords.length === 0) {
+        return res.status(404).json({ success: false, message: "No attendance records found for this worker in the given month." });
+      }
   
-        const updatedAttendance = await prisma.attendance.updateMany({
-          where: {
-            projectWorker: {
-              workerId: parseInt(workerId),
-              projectId: parseInt(projectId),
-            },
-            date: {
-              gte: startDate, // First day of the month
-              lt: endDate, // Last day of the month
-            },
-            paymentStatus: "pending",
-          },
-          data: {
-            paymentStatus: "paid",
-          },
-        });
+      // Step 5: Update all attendance records to mark them as paid
+      const updatedAttendance = await prisma.attendance.updateMany({
+        where: {
+          id: { in: attendanceRecords.map(att => att.id) },
+        },
+        data: {
+          paymentStatus: "paid",
+        },
+      });
   
-        return res.json({
-          success: true,
-          message: "Payment verified, updated in database, and attendance marked as paid",
-          updatedPayment,
-          updatedAttendance,
-        });
+      console.log(`Updated Attendance Count: ${updatedAttendance.count}`);
+  
+      return res.json({
+        success: true,
+        message: "Payment verified, updated in database, and attendance marked as paid",
+        updatedPayment,
+        updatedAttendance,
+      });
   
     } catch (error) {
-        console.error("Error verifying payment:", error);
-        res.status(500).json({ success: false, message: "Server error", error });
+      console.error("Error verifying payment:", error);
+      res.status(500).json({ success: false, message: "Server error", error });
     }
   };
+  
   
 
 
