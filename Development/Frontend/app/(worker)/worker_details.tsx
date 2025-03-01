@@ -12,6 +12,8 @@ import apiHandler from "@/context/ApiHandler";
 import { useAttendanceStore } from "@/store/attendanceStore";
 import * as SecureStore from "expo-secure-store";
 import { useProjectStore } from "@/store/projectStore";
+import WebView from "react-native-webview";
+import { useRouter } from "expo-router"; // ✅ Use expo-router
 
 interface AttendanceRecord {
   date: string;
@@ -38,11 +40,13 @@ const WorkerDetails = () => {
   const [error, setError] = useState<string | null>(null);
   const [months, setMonths] = useState<string[]>([]);
   const [selectedMonthIndex, setSelectedMonthIndex] = useState<number>(0);
+  const [paymentUrl, setPaymentUrl] = useState<string | null>(null); // ✅ WebView State
+
   const projectId = selectedProject?.id;
   const workerId = selectedWorker?.id;
+  const router = useRouter(); // ✅ Use expo-router
 
   useEffect(() => {
-    console.log("Selected Worker ID:", workerId);
     if (workerId) {
       fetchWorkerDetails();
     } else {
@@ -67,8 +71,6 @@ const WorkerDetails = () => {
         }
       );
 
-      console.log("API Response:", response.data);
-
       if (!response || !response.data) {
         throw new Error("Invalid response from server");
       }
@@ -81,7 +83,7 @@ const WorkerDetails = () => {
       );
 
       setMonths(availableMonths);
-      setSelectedMonthIndex(availableMonths.length - 1); // Default to latest month
+      setSelectedMonthIndex(availableMonths.length - 1);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching worker details:", error);
@@ -113,17 +115,6 @@ const WorkerDetails = () => {
     );
   }
 
-  if (error) {
-    return (
-      <View className="flex-1 justify-center items-center">
-        <Text className="text-red-500">{error}</Text>
-        <TouchableOpacity onPress={fetchWorkerDetails}>
-          <Text className="text-blue-500">Retry</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
   if (!workerData || months.length === 0) {
     return (
       <View className="p-4 m-auto">
@@ -139,11 +130,58 @@ const WorkerDetails = () => {
   const totalSalary =
     workerData.salaryByMonth[selectedMonth]?.toFixed(2) || "0.00";
 
+  // **🔹 Make Payment Function**
+  const makePayment = async () => {
+    try {
+      const response = await apiHandler.post(
+        "/initialize-khalti",
+        {
+          workerId,
+          projectId,
+          totalSalary,
+          selectedMonth,
+          selectedYear: new Date().getFullYear(), // ✅ Ensure Year is included
+          website_url: "http://localhost:3099",
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      if (response.data.success) {
+        setPaymentUrl(response.data.payment.payment_url); // ✅ Open Khalti WebView
+      } else {
+        console.error("Payment Initialization Failed", response.data);
+      }
+    } catch (error) {
+      console.error("Error making payment:", error);
+    }
+  };
+
+  // **🔹 Handle WebView Navigation Changes**
+  const handleWebViewNavigation = (navState: any) => {
+    if (navState.url.includes("localhost:3099")) {
+      setPaymentUrl(null); // ✅ Close WebView after payment
+      fetchWorkerDetails(); // ✅ Refresh Data
+      router.replace("/(worker)/worker_details"); // ✅ Redirect to workers list after payment
+    }
+  };
+
+  // **🔹 Render WebView for Khalti Payment**
+  if (paymentUrl) {
+    return (
+      <WebView
+        source={{ uri: paymentUrl }}
+        onNavigationStateChange={handleWebViewNavigation}
+      />
+    );
+  }
+
   return (
-    <SafeAreaView className="p-4  bg-white flex-1 ">
+    <SafeAreaView className="p-4 bg-white flex-1">
       {/* Worker Info */}
       <View className="flex-row items-center justify-between mb-4 mx-4">
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.back()}> {/* ✅ Use router.back() */}
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
         <View className="items-center">
@@ -157,81 +195,19 @@ const WorkerDetails = () => {
 
       {/* Month Selector */}
       <View className="flex-row justify-between items-center my-4 mx-4">
-        <TouchableOpacity
-          onPress={handlePreviousMonth}
-          disabled={selectedMonthIndex === 0}
-        >
-          <Ionicons
-            name="chevron-back"
-            size={24}
-            color={selectedMonthIndex === 0 ? "gray" : "black"}
-          />
+        <TouchableOpacity onPress={handlePreviousMonth} disabled={selectedMonthIndex === 0}>
+          <Ionicons name="chevron-back" size={24} color={selectedMonthIndex === 0 ? "gray" : "black"} />
         </TouchableOpacity>
         <Text className="text-lg font-bold">{selectedMonth}</Text>
-        <TouchableOpacity
-          onPress={handleNextMonth}
-          disabled={selectedMonthIndex === months.length - 1}
-        >
-          <Ionicons
-            name="chevron-forward"
-            size={24}
-            color={selectedMonthIndex === months.length - 1 ? "gray" : "black"}
-          />
+        <TouchableOpacity onPress={handleNextMonth} disabled={selectedMonthIndex === months.length - 1}>
+          <Ionicons name="chevron-forward" size={24} color={selectedMonthIndex === months.length - 1 ? "gray" : "black"} />
         </TouchableOpacity>
       </View>
 
-      {/* Attendance Summary */}
-      <View className="flex-row justify-between bg-gray-100 p-4 rounded-lg mb-4 mx-4">
-        <Text className="text-green-500">Present: {totalPresent}</Text>
-        <Text className="text-red-500">Absent: {totalAbsent}</Text>
-        <Text className="text-blue-500">Total Salary: ₹ {totalSalary}</Text>
-      </View>
-
-      {/* Attendance List */}
-      <FlatList
-        data={workerData.attendanceByMonth[selectedMonth] || []}
-        keyExtractor={(item) => item.date}
-        renderItem={({ item }) => (
-          <View className="bg-gray-100 p-3 rounded-lg mb-3 mx-4">
-            <View className="flex-row justify-between mt-1">
-              <View>
-                <Text className="text-gray-500">Date</Text>
-                <Text className="text-lg font-bold">
-                  {new Date(item.date).toLocaleDateString("en-US", {
-                    day: "2-digit",
-                    month: "short",
-                    weekday: "short",
-                  })}
-                </Text>
-              </View>
-              <View className="flex items-center gap-2">
-                <Text className="text-gray-700">{item.shifts} Shift</Text>
-                <View
-                  className="px-3 py-1 rounded-md"
-                  style={{
-                    backgroundColor:
-                      item.status === "present" ? "#D1FAE5" : "#FECACA",
-                  }}
-                >
-                  <Text
-                    className={
-                      item.status === "present"
-                        ? "text-green-700"
-                        : "text-red-700"
-                    }
-                  >
-                    {item.status}
-                  </Text>
-                </View>
-              </View>
-            </View>
-          </View>
-        )}
-      />
-      {/*Payment Buttons */}
+      {/* Payment Button */}
       <View className="mx-4">
-        <TouchableOpacity className="w-full items-center p-4 bg-[#FCAC29] rounded-lg">
-          <Text className=" font-semibold text-xl text-white">Payment</Text>
+        <TouchableOpacity onPress={makePayment} className="w-full items-center p-4 bg-[#FCAC29] rounded-lg">
+          <Text className=" font-semibold text-xl text-white">Make Payment</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
