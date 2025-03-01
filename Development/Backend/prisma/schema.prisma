@@ -76,6 +76,7 @@ model Attendance {
   date            DateTime      @default(now())
   status          String
   shifts          Float?
+  paymentStatus   String?
   projectWorker   ProjectWorker @relation(fields: [projectWorkerId], references: [id])
 }
 
