@@ -27,7 +27,7 @@ async function initializePayment(req, res) {
     
         // Prepare Khalti Payment Data
         const paymentData = {
-            return_url: "http://localhost:3099/api/verify-khalti",
+          return_url: `${process.env.BACKEND_URI}/api/verify-khalti`,
           website_url,
           amount: totalSalary * 100,
           purchase_order_id: `${workerId}-${projectId}-${month}-${year}`,
@@ -47,11 +47,10 @@ async function initializePayment(req, res) {
       }
   }
   
-
-
-const verifyPayment = async (req, res) => {
+  const verifyPayment = async (req, res) => {
     try {
-        console.log("jello");
+        console.log("Received Khalti Response:", req.query);
+  
         const {
           pidx,
           transaction_id,
@@ -59,23 +58,21 @@ const verifyPayment = async (req, res) => {
           purchase_order_id,
           status
         } = req.query;
-    
-        console.log("Received Khalti Response:", req.query);
-    
+  
         // Check if payment is successful
         if (status !== "Completed") {
           return res.status(400).json({ success: false, message: "Payment not completed" });
         }
-    
+  
         // Verify with Khalti
         const khaltiResponse = await verifyKhaltiPayment(pidx);
-    
+  
         if (!khaltiResponse || khaltiResponse.status !== "Completed") {
           return res.status(400).json({ success: false, message: "Khalti verification failed" });
         }
- 
+  
         const [workerId, projectId, month, year] = purchase_order_id.split("-");
-    
+  
         // Update Payment Status in Database
         const updatedPayment = await prisma.payment.updateMany({
           where: {
@@ -92,17 +89,46 @@ const verifyPayment = async (req, res) => {
             paidAt: new Date(),
           },
         });
-    
+  
         if (updatedPayment.count === 0) {
           return res.status(404).json({ success: false, message: "No matching payment found" });
         }
-    
-        return res.json({ success: true, message: "Payment verified and updated in database", updatedPayment });
-      } catch (error) {
+  
+        // **Update Attendance Records for the Paid Worker**
+        const startDate = new Date(year, month - 1, 1); 
+        const endDate = new Date(year, month, 0, 23, 59, 59); 
+  
+        const updatedAttendance = await prisma.attendance.updateMany({
+          where: {
+            projectWorker: {
+              workerId: parseInt(workerId),
+              projectId: parseInt(projectId),
+            },
+            date: {
+              gte: startDate, // First day of the month
+              lt: endDate, // Last day of the month
+            },
+            paymentStatus: "pending",
+          },
+          data: {
+            paymentStatus: "paid",
+          },
+        });
+  
+        return res.json({
+          success: true,
+          message: "Payment verified, updated in database, and attendance marked as paid",
+          updatedPayment,
+          updatedAttendance,
+        });
+  
+    } catch (error) {
         console.error("Error verifying payment:", error);
         res.status(500).json({ success: false, message: "Server error", error });
-      }
-};
+    }
+  };
+  
+
 
 
 module.exports = { initializePayment,verifyPayment };
