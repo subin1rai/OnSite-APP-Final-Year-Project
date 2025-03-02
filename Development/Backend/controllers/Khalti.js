@@ -1,9 +1,7 @@
 const axios = require("axios");
 
-// Ensure the Khalti base URL is correctly set
 const KHALTI_BASE_URL = process.env.KHALTI_GATEWAY_URL || "https://a.khalti.com";
 
-// Function to verify Khalti Payment
 async function verifyKhaltiPayment(pidx) {
   if (!pidx) {
     throw new Error("pidx is required for verifying Khalti payment.");
@@ -17,7 +15,7 @@ async function verifyKhaltiPayment(pidx) {
   const bodyContent = JSON.stringify({ pidx });
 
   const reqOptions = {
-    url: `${KHALTI_BASE_URL}/api/v2/epayment/lookup/`, // ✅ Ensure valid URL
+    url: `${KHALTI_BASE_URL}/api/v2/epayment/lookup/`,
     method: "POST",
     headers: headersList,
     data: bodyContent,
@@ -46,7 +44,7 @@ async function initializeKhaltiPayment(details) {
   const bodyContent = JSON.stringify(details);
 
   const reqOptions = {
-    url: `${KHALTI_BASE_URL}/api/v2/epayment/initiate/`, // ✅ Ensure valid URL
+    url: `${KHALTI_BASE_URL}/api/v2/epayment/initiate/`, 
     method: "POST",
     headers: headersList,
     data: bodyContent,

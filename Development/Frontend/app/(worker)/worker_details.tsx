@@ -13,12 +13,19 @@ import { useAttendanceStore } from "@/store/attendanceStore";
 import * as SecureStore from "expo-secure-store";
 import { useProjectStore } from "@/store/projectStore";
 import WebView from "react-native-webview";
-import { useRouter } from "expo-router"; // ✅ Use expo-router
+import { useRouter } from "expo-router"; 
+const getCurrentMonthYear = () => {
+  const date = new Date();
+  const month = String(date.getMonth() + 1).padStart(2, "0"); 
+  const year = date.getFullYear();
+  return { month, year };
+};
 
 interface AttendanceRecord {
   date: string;
   status: string;
   shifts: number;
+  paymentStatus: string;
 }
 
 interface WorkerData {
@@ -40,11 +47,17 @@ const WorkerDetails = () => {
   const [error, setError] = useState<string | null>(null);
   const [months, setMonths] = useState<string[]>([]);
   const [selectedMonthIndex, setSelectedMonthIndex] = useState<number>(0);
-  const [paymentUrl, setPaymentUrl] = useState<string | null>(null); // ✅ WebView State
+  const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
+  const [paymentSuccess, setPaymentSuccess] = useState<boolean>(false); 
+  const router = useRouter(); 
 
   const projectId = selectedProject?.id;
   const workerId = selectedWorker?.id;
-  const router = useRouter(); // ✅ Use expo-router
+
+  useEffect(() => {
+    const { month, year } = getCurrentMonthYear();
+    setSelectedMonthIndex(months.indexOf(`${year}-${month}`) || 0); 
+  }, []);
 
   useEffect(() => {
     if (workerId) {
@@ -106,41 +119,50 @@ const WorkerDetails = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <View className="flex-1 justify-center items-center">
-        <ActivityIndicator size="large" color="#FDB43D" />
-        <Text>Loading worker details...</Text>
-      </View>
-    );
-  }
+  // ✅ Month Name to MM Format Mapping
+  const monthMap: { [key: string]: string } = {
+    "January": "01",
+    "February": "02",
+    "March": "03",
+    "April": "04",
+    "May": "05",
+    "June": "06",
+    "July": "07",
+    "August": "08",
+    "September": "09",
+    "October": "10",
+    "November": "11",
+    "December": "12",
+  };
 
-  if (!workerData || months.length === 0) {
-    return (
-      <View className="p-4 m-auto">
-        <Text className="text-lg font-bold">No Worker Data Available</Text>
-      </View>
-    );
-  }
-
-  const totalPresent =
-    workerData.summaryByMonth[selectedMonth]?.totalPresent || 0;
-  const totalAbsent =
-    workerData.summaryByMonth[selectedMonth]?.totalAbsent || 0;
-  const totalSalary =
-    workerData.salaryByMonth[selectedMonth]?.toFixed(2) || "0.00";
-
-  // **🔹 Make Payment Function**
+  
   const makePayment = async () => {
     try {
+      console.log("📢 Payment button clicked");
+      console.log("🛠 Worker ID:", workerId);
+      console.log("🛠 Project ID:", projectId);
+      console.log("🛠 Selected Month (Before Fix):", selectedMonth);
+      console.log("🛠 Total Salary:", workerData?.salaryByMonth[selectedMonth]);
+
+      if (!workerId || !projectId || !selectedMonth || !workerData) {
+        console.error("🚨 Missing required fields for payment!");
+        return;
+      }
+
+      const totalSalary = workerData.salaryByMonth[selectedMonth] || 0;
+      const [year, monthName] = selectedMonth.split("-");
+      const fixedMonth = monthMap[monthName] || "01";
+
+      console.log("🛠 Fixed Month:", fixedMonth);
+
       const response = await apiHandler.post(
         "/initialize-khalti",
         {
           workerId,
           projectId,
           totalSalary,
-          selectedMonth,
-          selectedYear: new Date().getFullYear(), // ✅ Ensure Year is included
+          month: fixedMonth,
+          year: parseInt(year),
           website_url: "http://localhost:3099",
         },
         {
@@ -148,32 +170,56 @@ const WorkerDetails = () => {
         }
       );
 
+      console.log("✅ API Response:", response.data);
+
       if (response.data.success) {
-        setPaymentUrl(response.data.payment.payment_url); // ✅ Open Khalti WebView
+        setPaymentUrl(response.data.payment.payment_url);
+        console.log("🔗 Opening Payment URL:", response.data.payment.payment_url);
       } else {
-        console.error("Payment Initialization Failed", response.data);
+        console.error("🚨 Payment Initialization Failed", response.data);
       }
     } catch (error) {
-      console.error("Error making payment:", error);
+      console.error("❌ Error making payment:", error);
     }
   };
 
-  // **🔹 Handle WebView Navigation Changes**
+  // ✅ WebView Navigation Handler
   const handleWebViewNavigation = (navState: any) => {
     if (navState.url.includes("localhost:3099")) {
-      setPaymentUrl(null); // ✅ Close WebView after payment
-      fetchWorkerDetails(); // ✅ Refresh Data
-      router.replace("/(worker)/worker_details"); // ✅ Redirect to workers list after payment
+      setPaymentUrl(null);
+      setPaymentSuccess(true);
+      fetchWorkerDetails(); 
     }
   };
 
-  // **🔹 Render WebView for Khalti Payment**
+  
+  if (paymentSuccess) {
+    return (
+      <SafeAreaView className="p-4 bg-white flex-1 items-center justify-center">
+        <Ionicons name="checkmark-circle-outline" size={64} color="green" />
+        <Text className="text-2xl font-bold text-green-600 mt-4">
+          Payment Successful!
+        </Text>
+        <Text className="text-md text-gray-500 mt-2">
+          Your payment has been processed successfully.
+        </Text>
+        <TouchableOpacity
+          onPress={() => {
+            setPaymentSuccess(false);
+            fetchWorkerDetails();
+          }}
+          className="mt-6 p-4 bg-[#FCAC29] rounded-lg"
+        >
+          <Text className="font-semibold text-xl text-white">Back to Worker Details</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    );
+  }
+
+  
   if (paymentUrl) {
     return (
-      <WebView
-        source={{ uri: paymentUrl }}
-        onNavigationStateChange={handleWebViewNavigation}
-      />
+      <WebView source={{ uri: paymentUrl }} onNavigationStateChange={handleWebViewNavigation} />
     );
   }
 
@@ -181,13 +227,13 @@ const WorkerDetails = () => {
     <SafeAreaView className="p-4 bg-white flex-1">
       {/* Worker Info */}
       <View className="flex-row items-center justify-between mb-4 mx-4">
-        <TouchableOpacity onPress={() => router.back()}> {/* ✅ Use router.back() */}
+        <TouchableOpacity>
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
         <View className="items-center">
-          <Text className="text-xl font-bold">{workerData.name}</Text>
+          <Text className="text-xl font-bold">{workerData?.name}</Text>
           <Text className="text-md text-gray-500">
-            {workerData.designation}
+            {workerData?.designation}
           </Text>
         </View>
         <Ionicons name="document-text-outline" size={24} color="black" />
@@ -204,10 +250,67 @@ const WorkerDetails = () => {
         </TouchableOpacity>
       </View>
 
+      {/* Summary Section (✅ Re-added) */}
+      <View className="flex-row justify-between bg-gray-100 p-4 rounded-lg mb-4 mx-4">
+        <Text className="text-green-500">Present: {workerData?.summaryByMonth[selectedMonth]?.totalPresent || 0}</Text>
+        <Text className="text-red-500">Absent: {workerData?.summaryByMonth[selectedMonth]?.totalAbsent || 0}</Text>
+        <Text className="text-blue-500">Total Salary: ₹ {workerData?.salaryByMonth[selectedMonth]?.toFixed(2) || "0.00"}</Text>
+      </View>
+
+
+      {/* Attendance List */}
+      <FlatList
+        data={workerData?.attendanceByMonth[selectedMonth] || []}
+        keyExtractor={(item) => item.date}
+        renderItem={({ item }) => (
+          <View className="bg-gray-100 p-3 rounded-lg mb-3 mx-4">
+            <View className="flex-row justify-between mt-1">
+              <View>
+                <Text className="text-gray-500">Date</Text>
+                <Text className="text-lg font-bold">
+                  {new Date(item.date).toLocaleDateString("en-US", {
+                    day: "2-digit",
+                    month: "short",
+                    weekday: "short",
+                  })}
+                </Text>
+                <View className="flex-row mt-2 items-center gap-2">
+                  <Text className="text-gray-700">Payment:</Text>
+                  <Text className="p-1 bg-red-300 rounded-md px-2 text-white">
+                    {item.paymentStatus}
+                  </Text>
+                </View>
+              </View>
+              <View className="flex items-center gap-2">
+                <Text className="text-gray-700">{item.shifts} Shift</Text>
+                <View
+                  className="px-3 py-1 rounded-md"
+                  style={{
+                    backgroundColor:
+                      item.status === "present" ? "#D1FAE5" : "#FECACA",
+                  }}
+                >
+                  <Text
+                    className={
+                      item.status === "present"
+                        ? "text-green-700"
+                        : "text-red-700"
+                    }
+                  >
+                    {item.status}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        )}
+      />
+
+
       {/* Payment Button */}
       <View className="mx-4">
         <TouchableOpacity onPress={makePayment} className="w-full items-center p-4 bg-[#FCAC29] rounded-lg">
-          <Text className=" font-semibold text-xl text-white">Make Payment</Text>
+          <Text className="font-semibold text-xl text-white">Make Payment</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

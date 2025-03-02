@@ -1,6 +1,7 @@
 const prisma = require("../utils/prisma.js");
 const cloudinary = require("../config/cloudinary");
 const multer = require("multer");
+const { PaymentStatus } = require("@prisma/client");
 
 // Multer Configuration (Memory Storage)
 const storage = multer.memoryStorage();
@@ -71,14 +72,15 @@ const workerDetails = async (req, res) => {
       return res.status(400).json({ error: "Worker ID and Project ID are required" });
     }
 
-    
     const worker = await prisma.worker.findUnique({
       where: { id: workerId },
       include: {
         projectWorkers: {
           where: { projectId: projectId },
           include: {
-            attendance: true, 
+            attendance: {
+              select: { date: true, status: true, shifts: true, paymentStatus: true },
+            },
           },
         },
       },
@@ -105,10 +107,12 @@ const workerDetails = async (req, res) => {
         summaryByMonth[monthKey] = { totalPresent: 0, totalAbsent: 0 };
       }
 
+      // ✅ Ensure `paymentStatus` is included in the response
       attendanceByMonth[monthKey].push({
         date: record.date,
         status: record.status,
         shifts: record.shifts || 0,
+        paymentStatus: record.paymentStatus || "pending", // Default to "pending" if null
       });
 
       // Calculate salary (1000 per shift assumption)
@@ -133,6 +137,7 @@ const workerDetails = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 
 

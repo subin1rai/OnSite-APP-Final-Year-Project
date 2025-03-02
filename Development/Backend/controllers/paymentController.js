@@ -4,7 +4,7 @@ const prisma = require("../utils/prisma.js");
 async function initializePayment(req, res) {
     try {
         const { workerId, projectId, totalSalary, month, year, website_url } = req.body;
-    
+      console.log(req.body);
         // Validate worker and project existence
         const worker = await prisma.worker.findUnique({ where: { id: workerId } });
         const project = await prisma.project.findUnique({ where: { id: projectId } });
@@ -20,7 +20,7 @@ async function initializePayment(req, res) {
             projectId,
             totalSalary,
             month,
-            year,
+                year : parseInt(year),
             status: "pending",
           },
         });
@@ -29,7 +29,7 @@ async function initializePayment(req, res) {
         const paymentData = {
           return_url: `${process.env.BACKEND_URI}/api/verify-khalti`,
           website_url,
-          amount: totalSalary * 100,
+          amount: totalSalary,
           purchase_order_id: `${workerId}-${projectId}-${month}-${year}`,
           purchase_order_name: `Salary Payment - ${month} ${year}`,
         };

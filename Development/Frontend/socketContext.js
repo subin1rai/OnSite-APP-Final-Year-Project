@@ -35,7 +35,7 @@ export const SocketProvider = ({ children }) => {
         console.log("Extracted UserId:", decoded.userId);
 
         // Initialize Socket Connection
-        const socket = io("https://c6c7-2400-1a00-bd11-179d-a471-fe56-6a69-a366.ngrok-free.app", {
+        const socket = io("https://onsite-app-final-year-project-production.up.railway.app", {
           query: {
             userId: decoded.userId,
           },
