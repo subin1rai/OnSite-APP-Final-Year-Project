@@ -11,7 +11,10 @@ const vendorController = require("../controllers/vendorController.js");
 const userController = require("../controllers/userController");
 const threeDModelController = require("../controllers/threeDModelController.js");
 const { initializePayment, verifyPayment } = require("../controllers/paymentController");
+const { uploadDocument, getAllDocument } = require("../controllers/documentController.js");
 const upload = workerController.upload;  
+const multer = require('multer');
+const multiUpload = multer({ dest: "uploads/" });
 
 // Authentication routes
 router.get("/", authController.root);
@@ -63,5 +66,8 @@ router.get("/user/getUser", authMiddleware(), userController.getuser);
 //payments
 router.post("/initialize-khalti", initializePayment);
 router.get("/verify-khalti", verifyPayment);
+
+router.post('/document/upload', multiUpload.array('files'), uploadDocument);
+router.post('/allDocument', getAllDocument);
 
 module.exports = router;
