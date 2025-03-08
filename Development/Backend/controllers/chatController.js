@@ -6,7 +6,7 @@ const getChatUser = async (req, res) => {
   try {
     const userId = req.user.userId;
     const users = await prisma.user.findMany({
-      where: {
+      where: {  
         id: {
           not: parseInt(userId),
         },

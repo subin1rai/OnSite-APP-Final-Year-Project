@@ -121,12 +121,12 @@ const Project_home = () => {
             </View>
             <Text>Budget</Text>
           </TouchableOpacity>
-          <View className="items-center gap-2">
+          <TouchableOpacity className="items-center gap-2" onPress={()=>router.push('../(document)/allDocument')}>
             <View className="bg-[#FEEDCF] p-6 rounded-md items-center gap-2">
               <Image source={icons.doc} className="w-10 h-10" />
             </View>
             <Text>Document</Text>
-          </View>
+          </TouchableOpacity   >
         </View>
         </View>
         {/* Custom Tab Bar */}
