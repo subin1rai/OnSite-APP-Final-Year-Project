@@ -121,7 +121,7 @@ const Project_home = () => {
             </View>
             <Text>Budget</Text>
           </TouchableOpacity>
-          <TouchableOpacity className="items-center gap-2" onPress={()=>router.push('../(document)/allDocument')}>
+          <TouchableOpacity className="items-center gap-2" onPress={()=>router.push('../(files)/all_files')}>
             <View className="bg-[#FEEDCF] p-6 rounded-md items-center gap-2">
               <Image source={icons.doc} className="w-10 h-10" />
             </View>

@@ -3,11 +3,11 @@ import { Text, View, FlatList, TouchableOpacity, Image, ActivityIndicator } from
 import apiHandler from '../../context/ApiHandler';
 import { useProjectStore } from '@/store/projectStore';
 
-interface DocumentListProps {
+interface all_filesProps {
   workerId: string;
 }
 
-const DocumentList: React.FC<DocumentListProps> = ({workerId }) => {
+const all_files: React.FC<all_filesProps> = ({workerId }) => {
   const [documents, setDocuments] = useState([]);
     const { selectedProject } = useProjectStore();
   const [loading, setLoading] = useState(true);
@@ -86,42 +86,8 @@ const DocumentList: React.FC<DocumentListProps> = ({workerId }) => {
     </TouchableOpacity>
   );
 
-  if (loading) {
-    return (
-      <View className="flex-1 items-center justify-center bg-white">
-        <ActivityIndicator size="large" color="#0066cc" />
-        <Text className="mt-2 text-gray-600">Loading documents...</Text>
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <View className="flex-1 items-center justify-center bg-white p-4">
-        <Text className="text-red-500 text-lg">Error: {error}</Text>
-        <TouchableOpacity 
-          className="mt-3 p-3 bg-blue-500 rounded-lg"
-          onPress={fetchDocuments}
-        >
-          <Text className="text-white font-semibold">Try Again</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
   return (
-    <View className="flex-1 bg-white">
-      {/* Header */}
-      <View className="flex-row items-center justify-between p-4 bg-blue-500">
-        <Text className="text-xl font-bold text-white">Project Documents</Text>
-        <TouchableOpacity 
-          className="bg-white rounded-full p-2"
-          onPress={() => console.log('Add new document')}
-        >
-          <Text className="text-blue-500 font-bold text-xl">+</Text>
-        </TouchableOpacity>
-      </View>
-      
+    <View className="flex-1 bg-white">      
       {/* Search Bar */}
       <View className="bg-gray-100 mx-4 my-3 p-3 rounded-lg flex-row items-center">
         <Text className="text-gray-400 mr-2">🔍</Text>
@@ -146,4 +112,4 @@ const DocumentList: React.FC<DocumentListProps> = ({workerId }) => {
   );
 };
 
-export default DocumentList;
+export default all_files;
