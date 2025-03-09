@@ -15,7 +15,7 @@ const Layout = () => {
       <StatusBar barStyle="dark-content" backgroundColor="white" translucent={false} />
 
       <Stack>
-        <Stack.Screen  name="allDocument" options={{ headerShown: false }}/>
+        <Stack.Screen  name="all_files" options={{ headerShown: true, title:"Documents" }}/>
       </Stack>
       <Toast />
     </GestureHandlerRootView>
