@@ -6,7 +6,6 @@ import { useRouter } from "expo-router";
 import "../../global.css";
 import Toast from "react-native-toast-message";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import eventBus from "../../context/eventBus";
 
 const Layout = () => {
   const router = useRouter();
