@@ -46,6 +46,7 @@ const getAllDocument = async (req, res) => {
     const documents = await prisma.documentFiles.findMany({
       where: {
         projectId: parseInt(projectId),
+        isVisible: true
       }
     });
 
@@ -70,25 +71,28 @@ const deleteDocuments = async (req, res) => {
       return res.status(400).json({ success: false, message: "No files selected for deletion." });
     }
 
-    // Fetch the file URLs from the database
-    const filesToDelete = await prisma.documentFiles.findMany({
+    // // Fetch the file URLs from the database
+    // const filesToDelete = await prisma.documentFiles.findMany({
+    //   where: {
+    //     id: { in: fileIds },
+    //   },
+    // });
+
+    // // Delete files from Cloudinary
+    // const cloudinaryDeletionPromises = filesToDelete.map(async (file) => {
+    //   const publicId = file.file.split("/").pop().split(".")[0]; 
+    //   await cloudinary.uploader.destroy(`document_files/${publicId}`);
+    // });
+
+    // await Promise.all(cloudinaryDeletionPromises);
+
+    await prisma.documentFiles.updateMany({
       where: {
         id: { in: fileIds },
       },
-    });
-
-    // Delete files from Cloudinary
-    const cloudinaryDeletionPromises = filesToDelete.map(async (file) => {
-      const publicId = file.file.split("/").pop().split(".")[0]; 
-      await cloudinary.uploader.destroy(`document_files/${publicId}`);
-    });
-
-    await Promise.all(cloudinaryDeletionPromises);
-
-    await prisma.documentFiles.deleteMany({
-      where: {
-        id: { in: fileIds },
-      },
+      data:{
+        isVisible:false
+      }
     });
 
     return res.status(200).json({ success: true, message: "Files deleted successfully." });
