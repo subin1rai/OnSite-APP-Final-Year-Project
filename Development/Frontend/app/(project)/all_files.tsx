@@ -103,7 +103,7 @@ const openFilePicker = async () => {
 
     try {
       const response = await apiHandler.post("/document/upload", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { "Content-Type": "application/json" },
       });
 
       if (response.data.success) {
