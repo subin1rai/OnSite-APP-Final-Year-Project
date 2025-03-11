@@ -10,6 +10,7 @@ import {
   FlatList,
   Image,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
@@ -17,6 +18,8 @@ import { useProjectStore } from "@/store/projectStore";
 import AddFile from "@/Components/AddFile";
 import apiHandler from "../../context/ApiHandler";
 import eventBus from "../../context/eventBus";
+import * as ImagePicker from "expo-image-picker";
+import * as DocumentPicker from "expo-document-picker";
 
 interface FileItem {
   id: number;
@@ -57,26 +60,66 @@ export default function AllFiles() {
     setLoading(false);
   };
 
-  // Open BottomSheet properly
-  const openBottomSheet = useCallback(() => {
-    setIsOpen(true);
-    requestAnimationFrame(() => {
-      bottomSheetRef.current?.expand();
+  const openCamera = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Permission Required", "Camera access is required to take pictures.");
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      quality: 1,
     });
-  }, []);
 
-  // Close BottomSheet properly
-  const closeBottomSheet = useCallback(() => {
-    bottomSheetRef.current?.close();
-    setTimeout(() => setIsOpen(false), 300);
-  }, []);
+    if (!result.canceled && result.assets.length > 0) {
+      uploadFiles([result.assets[0]]);
+    }
+  };
+const openFilePicker = async () => {
+    const result = await DocumentPicker.getDocumentAsync({
+      multiple: true,
+      type: ["image/*", "application/pdf"],
+    });
 
-  useEffect(() => {
-    eventBus.on("openBottomSheet", openBottomSheet);
-    return () => {
-      eventBus.off("openBottomSheet", openBottomSheet);
-    };
-  }, []);
+    if (result.canceled) {
+      return;
+    }
+
+    uploadFiles(result.assets);
+  };
+
+  // Function to upload files to backend
+  const uploadFiles = async (files: any[]) => {
+    const formData = new FormData();
+    formData.append("projectId", projectId?.toString() || "");
+
+    files.forEach((file) => {
+      const fileBlob = {
+        uri: file.uri,
+        type: file.mimeType || "application/octet-stream",
+        name: file.name || `upload_${Date.now()}`
+      };
+      formData.append("files", fileBlob as any);
+    });
+
+    try {
+      const response = await apiHandler.post("/document/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      if (response.data.success) {
+        setDocuments((prevDocs) => [...response.data.data, ...prevDocs]);
+        Alert.alert("Success", "Files uploaded successfully!");
+      } else {
+        Alert.alert("Upload Failed", response.data.message);
+      }
+    } catch (error) {
+      console.error("Upload Error:", error);
+      Alert.alert("Error", "Failed to upload files. Please try again.");
+    }
+  };
+
 
   const isImageFile = (fileUrl: string) => /\.(jpg|jpeg|png)$/i.test(fileUrl);
   const isPdfFile = (fileUrl: string) => /\.pdf$/i.test(fileUrl);
@@ -111,10 +154,10 @@ export default function AllFiles() {
             Files
           </Text>
           <View className=" flex-row gap-4 py-1 items-center">
-           <TouchableOpacity>
+           <TouchableOpacity onPress={openCamera}>
            <Ionicons name="camera" size={24} color="white" />
            </TouchableOpacity>
-           <TouchableOpacity  >
+           <TouchableOpacity onPress={openFilePicker}>
             <Ionicons name="download" size={24} color="white" />
            </TouchableOpacity>
           </View>
@@ -135,13 +178,13 @@ export default function AllFiles() {
         />
       )}
 
-      {/* Dim Background when BottomSheet is open */}
+      {/* Dim Background when BottomSheet is open
       {isOpen && (
         <Pressable
           className="absolute top-0 left-0 w-full h-full bg-black opacity-50"
           onPress={closeBottomSheet}
         />
-      )}
+      )} */}
 
       {/* BottomSheet for Adding File
       <BottomSheet
