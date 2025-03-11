@@ -11,7 +11,7 @@ const vendorController = require("../controllers/vendorController.js");
 const userController = require("../controllers/userController");
 const threeDModelController = require("../controllers/threeDModelController.js");
 const { initializePayment, verifyPayment } = require("../controllers/paymentController");
-const { uploadDocument, getAllDocument } = require("../controllers/documentController.js");
+const { uploadDocument, getAllDocument, deleteDocuments } = require("../controllers/documentController.js");
 const upload = workerController.upload;  
 const multer = require('multer');
 const multiUpload = multer({ dest: "uploads/" });
@@ -69,5 +69,6 @@ router.get("/verify-khalti", verifyPayment);
 
 router.post('/document/upload', multiUpload.array('files'), uploadDocument);
 router.post('/allDocument', getAllDocument);
+router.post("/document/delete", deleteDocuments);
 
 module.exports = router;

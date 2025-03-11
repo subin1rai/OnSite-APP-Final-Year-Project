@@ -62,5 +62,40 @@ const getAllDocument = async (req, res) => {
     });
   }
 };
+const deleteDocuments = async (req, res) => {
+  try {
+    const { fileIds } = req.body;
+    console.log(fileIds);
+    if (!fileIds || fileIds.length === 0) {
+      return res.status(400).json({ success: false, message: "No files selected for deletion." });
+    }
 
-module.exports = { uploadDocument, getAllDocument };
+    // Fetch the file URLs from the database
+    const filesToDelete = await prisma.documentFiles.findMany({
+      where: {
+        id: { in: fileIds },
+      },
+    });
+
+    // Delete files from Cloudinary
+    const cloudinaryDeletionPromises = filesToDelete.map(async (file) => {
+      const publicId = file.file.split("/").pop().split(".")[0]; 
+      await cloudinary.uploader.destroy(`document_files/${publicId}`);
+    });
+
+    await Promise.all(cloudinaryDeletionPromises);
+
+    await prisma.documentFiles.deleteMany({
+      where: {
+        id: { in: fileIds },
+      },
+    });
+
+    return res.status(200).json({ success: true, message: "Files deleted successfully." });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: "Error deleting files", error: error.message });
+  }
+};
+
+module.exports = { uploadDocument, getAllDocument ,deleteDocuments};
