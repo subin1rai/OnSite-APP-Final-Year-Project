@@ -186,6 +186,7 @@ model DocumentFiles {
   name      String?
   file      String?
   projectId Int
+  isVisible Boolean?
   project   Project @relation(fields: [projectId], references: [id])
 }
 
