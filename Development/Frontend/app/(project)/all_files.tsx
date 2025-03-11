@@ -13,11 +13,9 @@ import {
   Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { useProjectStore } from "@/store/projectStore";
-import AddFile from "@/Components/AddFile";
 import apiHandler from "../../context/ApiHandler";
-import eventBus from "../../context/eventBus";
+import Checkbox from "expo-checkbox";
 import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
 
@@ -33,9 +31,9 @@ export default function AllFiles() {
   const projectId = selectedProject?.id || null;
   const [documents, setDocuments] = useState<FileItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isOpen, setIsOpen] = useState(false);
-  const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = ["50%"];
+  const [selectedFiles, setSelectedFiles] = useState<FileItem[]>([]);
+  const [selectionMode, setSelectionMode] = useState(false);
+
 
   useEffect(() => {
     if (projectId) {
@@ -120,24 +118,88 @@ const openFilePicker = async () => {
     }
   };
 
+  const handleLongPress = (file: FileItem) => {
+    setSelectionMode(true);
+    setSelectedFiles([file]);
+  };
+  const handleFileSelect = (file: FileItem) => {
+    if (!selectionMode) return;
+
+    setSelectedFiles((prevSelected) => {
+      const isSelected = prevSelected.some((item) => item.id === file.id);
+      if (isSelected) {
+        return prevSelected.filter((item) => item.id !== file.id);
+      } else {
+        return [...prevSelected, file];
+      }
+    });
+  };
+
+  // Delete selected files
+  const deleteFiles = async () => {
+    if (selectedFiles.length === 0) return;
+
+    Alert.alert("Delete Files", "Are you sure you want to delete the selected files?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: async () => {
+          const fileIds = selectedFiles.map((file) => file.id);
+
+          try {
+            const response = await apiHandler.post("/document/delete", { fileIds }, { headers: { "Content-Type": "application/json" } });
+
+            if (response.data.success) {
+              setDocuments((prevDocs) => prevDocs.filter((doc) => !fileIds.includes(doc.id)));
+              setSelectedFiles([]);
+              setSelectionMode(false);
+              Alert.alert("Deleted", "Files have been deleted successfully.");
+            } else {
+              Alert.alert("Error", "Failed to delete files.");
+            }
+          } catch (error) {
+            console.error("Delete Error:", error);
+            Alert.alert("Error", "Something went wrong.");
+          }
+        },
+      },
+    ]);
+  };
+
 
   const isImageFile = (fileUrl: string) => /\.(jpg|jpeg|png)$/i.test(fileUrl);
   const isPdfFile = (fileUrl: string) => /\.pdf$/i.test(fileUrl);
 
-  const renderItem = ({ item }: { item: FileItem }) => (
-    <TouchableOpacity className="w-1/3 p-2 aspect-square">
-      <View className="bg-gray-100 border border-gray-300 rounded-lg overflow-hidden flex-1">
-        {isImageFile(item.file) ? (
-          <Image source={{ uri: item.file }} className="w-full h-full" resizeMode="cover" />
-        ) : (
-          <View className="flex-1 justify-center items-center p-2">
-            <Image source={require("../../assets/icons/pdf-icon.png")} className="w-12 h-12 mb-2" resizeMode="contain" />
-            <Text className="text-xs text-gray-600 text-center" numberOfLines={2}>{item.name}</Text>
-          </View>
-        )}
-      </View>
-    </TouchableOpacity>
-  );
+  const renderItem = ({ item }: { item: FileItem }) => {
+    const isSelected = selectedFiles.some((selected) => selected.id === item.id);
+
+    return (
+      <TouchableOpacity
+        className="w-1/3 p-2 aspect-square"
+        onLongPress={() => handleLongPress(item)}
+        onPress={() => handleFileSelect(item)}
+      >
+        <View className="relative bg-gray-100 border border-gray-300 rounded-lg overflow-hidden flex-1">
+          {isSelected && (
+            <View className="absolute top-2 left-2 z-10">
+              <Checkbox value={true} color="#ffb133" />
+            </View>
+          )}
+          {isImageFile(item.file) ? (
+            <Image source={{ uri: item.file }} className="w-full h-full" resizeMode="cover" />
+          ) : (
+            <View className="flex-1 justify-center items-center p-2">
+              <Image source={require("../../assets/icons/pdf-icon.png")} className="w-12 h-12 mb-2" resizeMode="contain" />
+              <Text className="text-xs text-gray-600 text-center" numberOfLines={2}>
+                {item.name}
+              </Text>
+            </View>
+          )}
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View className="flex-1 bg-white">
@@ -153,6 +215,11 @@ const openFilePicker = async () => {
           <Text className="text-white text-2xl font-medium tracking-widest">
             Files
           </Text>
+          {selectionMode ? (
+            <TouchableOpacity onPress={deleteFiles}>
+              <Ionicons name="trash" size={24} color="white" />
+            </TouchableOpacity>
+          ) : 
           <View className=" flex-row gap-4 py-1 items-center">
            <TouchableOpacity onPress={openCamera}>
            <Ionicons name="camera" size={24} color="white" />
@@ -160,7 +227,7 @@ const openFilePicker = async () => {
            <TouchableOpacity onPress={openFilePicker}>
             <Ionicons name="download" size={24} color="white" />
            </TouchableOpacity>
-          </View>
+          </View>}
         </View>
       </SafeAreaView>
 
@@ -177,29 +244,6 @@ const openFilePicker = async () => {
           numColumns={3}
         />
       )}
-
-      {/* Dim Background when BottomSheet is open
-      {isOpen && (
-        <Pressable
-          className="absolute top-0 left-0 w-full h-full bg-black opacity-50"
-          onPress={closeBottomSheet}
-        />
-      )} */}
-
-      {/* BottomSheet for Adding File
-      <BottomSheet
-        ref={bottomSheetRef}
-        index={-1}
-        snapPoints={snapPoints}
-        enablePanDownToClose={true}
-        onClose={closeBottomSheet}
-        detached={true}
-        backgroundStyle={{ borderRadius: 24 }}
-      >
-        <BottomSheetView className="flex-1">
-          <AddFile />
-        </BottomSheetView>
-      </BottomSheet> */}
     </View>
   );
 }
