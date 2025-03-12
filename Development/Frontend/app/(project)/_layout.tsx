@@ -22,7 +22,7 @@ const Layout = () => {
             headerTitleStyle: { fontSize: 20, fontWeight: "semibold", color: "#fff" },
             headerTintColor: "#fff",
             headerLeft: () => (
-              <TouchableOpacity onPress={() => router.back()} style={{ marginLeft: 15 }}>
+              <TouchableOpacity onPress={() => router.back()} style={{ marginLeft: 0 }}>
                 <Ionicons name="arrow-back" size={24} color="white" />
               </TouchableOpacity>
             ),

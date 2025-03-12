@@ -148,12 +148,12 @@ const Home = () => {
             </View>
             <Text>Vendor</Text>
           </TouchableOpacity>
-          <View className="items-center gap-2">
+          <TouchableOpacity className="items-center gap-2" onPress={()=>{router.push('../(Mulyankan)/housePricePrediction')}}>
             <View className="bg-[#FEEDCF] p-6 rounded-md items-center gap-2">
               <Image source={icons.ai} className="w-10 h-10" />
             </View>
             <Text>Mulyankan</Text>
-          </View>
+          </TouchableOpacity>
           <View className="items-center gap-2">
             <View className="bg-[#FEEDCF] p-6 rounded-md items-center gap-2">
               <Image source={icons.report} className="w-10 h-10" />

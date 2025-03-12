@@ -1,0 +1,14 @@
+
+const predictModel = async (req, res) => {
+    try {
+        const response = await axios.post("http://192.168.18.66:5000/predict", req.body);
+        console.log(req.body);
+        res.json(response.data);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+module.exports= {
+    predictModel
+}
