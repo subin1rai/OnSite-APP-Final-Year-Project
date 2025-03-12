@@ -18,6 +18,7 @@ const uploadDocument = async (req, res) => {
             name: file.originalname,
             file: uploadResult.secure_url,
             projectId: parseInt(projectId, 10),
+            isVisible: true
           },
         });
       });

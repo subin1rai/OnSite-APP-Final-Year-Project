@@ -19,6 +19,7 @@
     "@gorhom/bottom-sheet": "^5.0.6",
     "@metafic-co/react-native-glassmorphism": "^0.1.2",
     "@react-native-community/blur": "^4.4.1",
+    "@react-native-picker/picker": "^2.11.0",
     "@react-navigation/bottom-tabs": "^7.0.0",
     "@react-navigation/drawer": "^7.0.19",
     "@react-navigation/material-top-tabs": "^7.0.18",
