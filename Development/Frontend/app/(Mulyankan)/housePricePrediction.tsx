@@ -9,14 +9,12 @@ import {
   ActivityIndicator,
   Modal,
   FlatList,
-  StyleSheet,
   Pressable
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import apiHandler from "@/context/ApiHandler";
 
 const HousePricePrediction = () => {
-  // State for input fields
   const [landArea, setLandArea] = useState("");
   const [roadAccess, setRoadAccess] = useState("");
   const [floor, setFloor] = useState("");
@@ -25,22 +23,19 @@ const HousePricePrediction = () => {
   const [cars, setCars] = useState("");
   const [bikes, setBikes] = useState("");
 
-  // State for custom dropdowns
   const [location, setLocation] = useState("Baneswhor, Kathmandu");
   const [facing, setFacing] = useState("East");
   
-  // Modal visibility states
   const [locationModalVisible, setLocationModalVisible] = useState(false);
   const [facingModalVisible, setFacingModalVisible] = useState(false);
+  const [resultModalVisible, setResultModalVisible] = useState(false);
   
-  // Loading state
   const [loading, setLoading] = useState(false);
 
-  // Available locations and directions
   const locations = [
-    "Baneswhor, Kathmandu", 
-    "Bafal, Kathmandu", 
-    "Balambu, Kathmandu"
+   "Chitwan",
+    "Kathmandu", 
+    "Lalitpur"
   ];
   
   const facings = [
@@ -53,8 +48,7 @@ const HousePricePrediction = () => {
     "South-West", 
     "North-West"
   ];
-
-  // Prediction result
+  
   const [prediction, setPrediction] = useState(null);
 
   const getPrediction = async () => {
@@ -71,13 +65,14 @@ const HousePricePrediction = () => {
           "BATHROOM": parseInt(bathroom) || 0,
           "CARS": parseInt(cars) || 0,
           "BIKES": parseInt(bikes) || 0,
-          ["LOCATION_" + location.replace(", ", "_")]: 1,
+          ["LOCATION_" + location]: 1,
           ["FACING_" + facing.replace("-", "_").replace(" ", "_")]: 1
         }),
       });
 
       const data = response.data;
       setPrediction(data.predicted_price);
+      setResultModalVisible(true);
     } catch (error) {
       console.error("Prediction error:", error);
       alert("Failed to get prediction. Please try again.");
@@ -104,18 +99,12 @@ const HousePricePrediction = () => {
   };
 
   // Custom dropdown item component
-  const DropdownItem = ({ item, selected, onPress }: { item: string, selected: boolean, onPress: () => void }) => (
+  const DropdownItem = ({ item, selected, onPress }: { item: string; selected: boolean; onPress: () => void }) => (
     <TouchableOpacity 
-      style={[
-        styles.dropdownItem, 
-        selected && styles.dropdownItemSelected
-      ]}
+      className={`py-3 px-1 border-b border-gray-100 flex-row justify-between items-center ${selected ? 'bg-blue-50' : ''}`}
       onPress={onPress}
     >
-      <Text style={[
-        styles.dropdownItemText,
-        selected && styles.dropdownItemTextSelected
-      ]}>
+      <Text className={`text-base ${selected ? 'text-blue-600 font-medium' : 'text-gray-800'}`}>
         {item}
       </Text>
       {selected && (
@@ -126,14 +115,14 @@ const HousePricePrediction = () => {
 
   // House features section (floor, bedroom, bathroom, etc.)
   const renderHouseFeatures = () => (
-    <View style={styles.card}>
-      <Text style={styles.cardTitle}>House Features</Text>
+    <View className="bg-white rounded-2xl p-4 mx-4 mb-4 shadow-sm">
+      <Text className="text-lg font-semibold text-gray-800 mb-3">House Features</Text>
       
-      <View style={styles.featuresGrid}>
-        <View style={styles.featureItem}>
-          <Text style={styles.label}>Floors</Text>
+      <View className="flex-row flex-wrap justify-between">
+        <View className="w-[48%] mb-3">
+          <Text className="text-sm font-medium text-gray-600 mb-1.5">Floors</Text>
           <TextInput
-            style={styles.input}
+            className="bg-gray-50 border border-gray-300 rounded-xl p-3 text-base text-gray-800"
             value={floor}
             onChangeText={setFloor}
             keyboardType="numeric"
@@ -141,10 +130,10 @@ const HousePricePrediction = () => {
           />
         </View>
         
-        <View style={styles.featureItem}>
-          <Text style={styles.label}>Bedrooms</Text>
+        <View className="w-[48%] mb-3">
+          <Text className="text-sm font-medium text-gray-600 mb-1.5">Bedrooms</Text>
           <TextInput
-            style={styles.input}
+            className="bg-gray-50 border border-gray-300 rounded-xl p-3 text-base text-gray-800"
             value={bedroom}
             onChangeText={setBedroom}
             keyboardType="numeric"
@@ -152,10 +141,10 @@ const HousePricePrediction = () => {
           />
         </View>
         
-        <View style={styles.featureItem}>
-          <Text style={styles.label}>Bathrooms</Text>
+        <View className="w-[48%] mb-3">
+          <Text className="text-sm font-medium text-gray-600 mb-1.5">Bathrooms</Text>
           <TextInput
-            style={styles.input}
+            className="bg-gray-50 border border-gray-300 rounded-xl p-3 text-base text-gray-800"
             value={bathroom}
             onChangeText={setBathroom}
             keyboardType="numeric"
@@ -163,10 +152,10 @@ const HousePricePrediction = () => {
           />
         </View>
         
-        <View style={styles.featureItem}>
-          <Text style={styles.label}>Car Parking</Text>
+        <View className="w-[48%] mb-3">
+          <Text className="text-sm font-medium text-gray-600 mb-1.5">Car Parking</Text>
           <TextInput
-            style={styles.input}
+            className="bg-gray-50 border border-gray-300 rounded-xl p-3 text-base text-gray-800"
             value={cars}
             onChangeText={setCars}
             keyboardType="numeric"
@@ -174,10 +163,10 @@ const HousePricePrediction = () => {
           />
         </View>
         
-        <View style={styles.featureItem}>
-          <Text style={styles.label}>Bike Parking</Text>
+        <View className="w-[48%] mb-3">
+          <Text className="text-sm font-medium text-gray-600 mb-1.5">Bike Parking</Text>
           <TextInput
-            style={styles.input}
+            className="bg-gray-50 border border-gray-300 rounded-xl p-3 text-base text-gray-800"
             value={bikes}
             onChangeText={setBikes}
             keyboardType="numeric"
@@ -189,16 +178,17 @@ const HousePricePrediction = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+    <SafeAreaView className="flex-1 bg-gray-100">
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+        
         {/* Property Dimensions */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Property Dimensions</Text>
+        <View className="bg-white rounded-2xl p-4 mx-4 mb-4 shadow-sm">
+          <Text className="text-lg font-semibold text-gray-800 mb-3">Property Dimensions</Text>
           
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Land Area (sq. ft)</Text>
+          <View className="mb-3">
+            <Text className="text-sm font-medium text-gray-600 mb-1.5">Land Area (sq. ft)</Text>
             <TextInput
-              style={styles.input}
+              className="bg-gray-50 border border-gray-300 rounded-xl p-3 text-base text-gray-800"
               value={landArea}
               onChangeText={setLandArea}
               keyboardType="numeric"
@@ -206,10 +196,10 @@ const HousePricePrediction = () => {
             />
           </View>
 
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Road Access (Feet)</Text>
+          <View className="mb-3">
+            <Text className="text-sm font-medium text-gray-600 mb-1.5">Road Access (Feet)</Text>
             <TextInput
-              style={styles.input}
+              className="bg-gray-50 border border-gray-300 rounded-xl p-3 text-base text-gray-800"
               value={roadAccess}
               onChangeText={setRoadAccess}
               keyboardType="numeric"
@@ -218,85 +208,65 @@ const HousePricePrediction = () => {
           </View>
         </View>
 
-        {/* House Features */}
         {renderHouseFeatures()}
 
-        {/* Location & Facing Custom Dropdowns */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Location & Facing</Text>
+        <View className="bg-white rounded-2xl p-4 mx-4 mb-4 shadow-sm">
+          <Text className="text-lg font-semibold text-gray-800 mb-3">Location & Facing</Text>
 
-          {/* Location Custom Dropdown */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Location</Text>
+          <View className="mb-3">
+            <Text className="text-sm font-medium text-gray-600 mb-1.5">Location</Text>
             <TouchableOpacity 
-              style={styles.dropdownButton}
+              className="bg-gray-50 border border-gray-300 rounded-xl p-3 flex-row justify-between items-center"
               onPress={() => setLocationModalVisible(true)}
             >
-              <Text style={styles.dropdownButtonText}>{location}</Text>
+              <Text className="text-base text-gray-800">{location}</Text>
               <Ionicons name="chevron-down" size={20} color="#64748B" />
             </TouchableOpacity>
           </View>
 
-          {/* Facing Custom Dropdown */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Facing Direction</Text>
+          <View className="mb-3">
+            <Text className="text-sm font-medium text-gray-600 mb-1.5">Facing Direction</Text>
             <TouchableOpacity 
-              style={styles.dropdownButton}
+              className="bg-gray-50 border border-gray-300 rounded-xl p-3 flex-row justify-between items-center"
               onPress={() => setFacingModalVisible(true)}
             >
-              <Text style={styles.dropdownButtonText}>{facing}</Text>
+              <Text className="text-base text-gray-800">{facing}</Text>
               <Ionicons name="chevron-down" size={20} color="#64748B" />
             </TouchableOpacity>
           </View>
         </View>
 
-        {/* Action Buttons */}
-        <View style={styles.buttonContainer}>
+        <View className="px-4 mb-6">
           <TouchableOpacity 
-            style={styles.predictButton}
+            className="bg-blue-600 py-4 rounded-xl items-center mb-3"
             onPress={getPrediction}
             disabled={loading}
           >
             {loading ? (
               <ActivityIndicator color="#fff" />
             ) : (
-              <Text style={styles.predictButtonText}>Predict Price</Text>
+              <Text className="text-white font-semibold text-base">Predict Price</Text>
             )}
           </TouchableOpacity>
 
           <TouchableOpacity 
-            style={styles.resetButton}
+            className="bg-gray-200 py-4 rounded-xl items-center"
             onPress={resetForm}
           >
-            <Text style={styles.resetButtonText}>Reset Form</Text>
+            <Text className="text-gray-600 font-semibold text-base">Reset Form</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Prediction Result */}
-        {prediction && (
-          <View style={styles.resultCard}>
-            <View style={styles.resultIconContainer}>
-              <Ionicons name="home" size={32} color="#15803D" />
-            </View>
-            <Text style={styles.resultLabel}>Estimated Property Value</Text>
-            <Text style={styles.resultValue}>Rs. {formatNumber(prediction)}</Text>
-            <Text style={styles.resultDisclaimer}>
-              This is an estimate based on the provided information.
-            </Text>
-          </View>
-        )}
-
-        {/* Location Modal */}
         <Modal
-          animationType="slide"
+          animationType="none"
           transparent={true}
           visible={locationModalVisible}
           onRequestClose={() => setLocationModalVisible(false)}
         >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>Select Location</Text>
+          <View className="flex-1 bg-black/50 justify-end">
+            <View className="bg-white rounded-t-3xl p-5 max-h-[70%]">
+              <View className="flex-row justify-between items-center mb-4 pb-4 border-b border-gray-200">
+                <Text className="text-lg font-semibold text-gray-800">Select Location</Text>
                 <TouchableOpacity onPress={() => setLocationModalVisible(false)}>
                   <Ionicons name="close" size={24} color="#64748B" />
                 </TouchableOpacity>
@@ -315,7 +285,7 @@ const HousePricePrediction = () => {
                     }}
                   />
                 )}
-                style={styles.modalList}
+                className="max-h-[400px]"
               />
             </View>
           </View>
@@ -328,10 +298,10 @@ const HousePricePrediction = () => {
           visible={facingModalVisible}
           onRequestClose={() => setFacingModalVisible(false)}
         >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>Select Facing Direction</Text>
+          <View className="flex-1 bg-black/50 justify-end">
+            <View className="bg-white rounded-t-3xl p-5 max-h-[70%]">
+              <View className="flex-row justify-between items-center mb-4 pb-4 border-b border-gray-200">
+                <Text className="text-lg font-semibold text-gray-800">Select Facing Direction</Text>
                 <TouchableOpacity onPress={() => setFacingModalVisible(false)}>
                   <Ionicons name="close" size={24} color="#64748B" />
                 </TouchableOpacity>
@@ -350,8 +320,62 @@ const HousePricePrediction = () => {
                     }}
                   />
                 )}
-                style={styles.modalList}
+                className="max-h-[400px]"
               />
+            </View>
+          </View>
+        </Modal>
+
+        {/* Result Modal */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={resultModalVisible && prediction !== null}
+          onRequestClose={() => setResultModalVisible(false)}
+        >
+          <View className="flex-1 bg-black/60 justify-center items-center px-5">
+            <View className="bg-white rounded-3xl p-6 w-full max-w-md">
+              <View className="items-center">
+                <View className="bg-green-100 p-4 rounded-full mb-4">
+                  <Ionicons name="home" size={36} color="#15803D" />
+                </View>
+                
+                <Text className="text-xl font-bold text-gray-800 mb-2">Estimated Property Value</Text>
+                <Text className="text-3xl font-bold text-green-700 mb-3">
+                  Rs. {formatNumber(prediction ?? 0)}
+                </Text>
+                
+                <Text className="text-sm text-gray-500 text-center mb-6">
+                  This is an estimate based on the provided information and market data analysis.
+                </Text>
+                
+                <View className="bg-gray-100 rounded-xl p-4 w-full mb-6">
+                  <Text className="text-sm font-medium text-gray-800 mb-2">Property Summary</Text>
+                  <View className="flex-row justify-between mb-1">
+                    <Text className="text-xs text-gray-600">Location:</Text>
+                    <Text className="text-xs font-medium text-gray-800">{location}</Text>
+                  </View>
+                  <View className="flex-row justify-between mb-1">
+                    <Text className="text-xs text-gray-600">Land Area:</Text>
+                    <Text className="text-xs font-medium text-gray-800">{landArea} sq. ft</Text>
+                  </View>
+                  <View className="flex-row justify-between mb-1">
+                    <Text className="text-xs text-gray-600">Facing:</Text>
+                    <Text className="text-xs font-medium text-gray-800">{facing}</Text>
+                  </View>
+                  <View className="flex-row justify-between">
+                    <Text className="text-xs text-gray-600">Rooms:</Text>
+                    <Text className="text-xs font-medium text-gray-800">{bedroom || 0} Bed, {bathroom || 0} Bath</Text>
+                  </View>
+                </View>
+                
+                <TouchableOpacity 
+                  className="bg-blue-600 py-4 px-6 rounded-xl w-full items-center"
+                  onPress={() => setResultModalVisible(false)}
+                >
+                  <Text className="text-white font-semibold">Close</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </Modal>
@@ -359,196 +383,5 @@ const HousePricePrediction = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F1F5F9",
-  },
-  header: {
-    padding: 20,
-    alignItems: "center",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#1E293B",
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: "#64748B",
-    marginBottom: 8,
-  },
-  card: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 16,
-    padding: 16,
-    marginHorizontal: 16,
-    marginBottom: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#1E293B",
-    marginBottom: 12,
-  },
-  inputGroup: {
-    marginBottom: 12,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: "#475569",
-    marginBottom: 6,
-  },
-  input: {
-    backgroundColor: "#F8FAFC",
-    borderWidth: 1,
-    borderColor: "#CBD5E1",
-    borderRadius: 12,
-    padding: 12,
-    fontSize: 16,
-    color: "#1E293B",
-  },
-  featuresGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-  },
-  featureItem: {
-    width: "48%",
-    marginBottom: 12,
-  },
-  dropdownButton: {
-    backgroundColor: "#F8FAFC",
-    borderWidth: 1,
-    borderColor: "#CBD5E1",
-    borderRadius: 12,
-    padding: 12,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  dropdownButtonText: {
-    fontSize: 16,
-    color: "#1E293B",
-  },
-  buttonContainer: {
-    paddingHorizontal: 16,
-    marginBottom: 16,
-  },
-  predictButton: {
-    backgroundColor: "#2563EB",
-    borderRadius: 12,
-    padding: 16,
-    alignItems: "center",
-    marginBottom: 12,
-  },
-  predictButtonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  resetButton: {
-    backgroundColor: "#E2E8F0",
-    borderRadius: 12,
-    padding: 16,
-    alignItems: "center",
-  },
-  resetButtonText: {
-    color: "#64748B",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  resultCard: {
-    backgroundColor: "#ECFDF5",
-    borderRadius: 16,
-    padding: 20,
-    marginHorizontal: 16,
-    marginBottom: 30,
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#A7F3D0",
-  },
-  resultIconContainer: {
-    backgroundColor: "#D1FAE5",
-    padding: 12,
-    borderRadius: 50,
-    marginBottom: 12,
-  },
-  resultLabel: {
-    fontSize: 16,
-    color: "#065F46",
-    fontWeight: "600",
-    marginBottom: 4,
-  },
-  resultValue: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#064E3B",
-    marginBottom: 8,
-  },
-  resultDisclaimer: {
-    fontSize: 12,
-    color: "#64748B",
-    fontStyle: "italic",
-    textAlign: "center",
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "flex-end",
-  },
-  modalContent: {
-    backgroundColor: "#FFFFFF",
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    padding: 20,
-    maxHeight: "70%",
-  },
-  modalHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#E2E8F0",
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#1E293B",
-  },
-  modalList: {
-    maxHeight: 400,
-  },
-  dropdownItem: {
-    paddingVertical: 12,
-    paddingHorizontal: 4,
-    borderBottomWidth: 1,
-    borderBottomColor: "#F1F5F9",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  dropdownItemSelected: {
-    backgroundColor: "#EFF6FF",
-  },
-  dropdownItemText: {
-    fontSize: 16,
-    color: "#1E293B",
-  },
-  dropdownItemTextSelected: {
-    color: "#2563EB",
-    fontWeight: "500",
-  },
-});
 
 export default HousePricePrediction;
