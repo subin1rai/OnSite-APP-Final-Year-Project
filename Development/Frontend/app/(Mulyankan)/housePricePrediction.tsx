@@ -178,7 +178,7 @@ const HousePricePrediction = () => {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-100">
+    <SafeAreaView className="flex-1 bg-gray-100 mt-3">
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         
         {/* Property Dimensions */}
@@ -238,7 +238,7 @@ const HousePricePrediction = () => {
 
         <View className="px-4 mb-6">
           <TouchableOpacity 
-            className="bg-blue-600 py-4 rounded-xl items-center mb-3"
+            className="bg-[#FDB541] py-4 rounded-xl items-center mb-3"
             onPress={getPrediction}
             disabled={loading}
           >
@@ -247,13 +247,6 @@ const HousePricePrediction = () => {
             ) : (
               <Text className="text-white font-semibold text-base">Predict Price</Text>
             )}
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            className="bg-gray-200 py-4 rounded-xl items-center"
-            onPress={resetForm}
-          >
-            <Text className="text-gray-600 font-semibold text-base">Reset Form</Text>
           </TouchableOpacity>
         </View>
 
@@ -342,7 +335,7 @@ const HousePricePrediction = () => {
                 
                 <Text className="text-xl font-bold text-gray-800 mb-2">Estimated Property Value</Text>
                 <Text className="text-3xl font-bold text-green-700 mb-3">
-                  Rs. {formatNumber(prediction ?? 0)}
+                {formatNumber(prediction ?? 0)}
                 </Text>
                 
                 <Text className="text-sm text-gray-500 text-center mb-6">
@@ -370,7 +363,7 @@ const HousePricePrediction = () => {
                 </View>
                 
                 <TouchableOpacity 
-                  className="bg-blue-600 py-4 px-6 rounded-xl w-full items-center"
+                  className="bg-[#FDB541] py-4 px-6 rounded-xl w-full items-center"
                   onPress={() => setResultModalVisible(false)}
                 >
                   <Text className="text-white font-semibold">Close</Text>

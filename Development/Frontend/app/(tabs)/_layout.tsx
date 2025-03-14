@@ -6,14 +6,14 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 export default function TabLayout() {
   return (
     <GestureHandlerRootView className="flex-1">
-      {/* ✅ Ensures the Status Bar is visible */}
+  
       <View className="flex-1">
         <StatusBar barStyle="dark-content" backgroundColor="white" translucent={false} />
 
         <Tabs
           screenOptions={{
             tabBarActiveTintColor: "#FCA311",
-            headerShown: false, // ✅ Hides header, but keeps status bar
+            headerShown: false,
           }}
         >
           <Tabs.Screen

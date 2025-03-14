@@ -18,7 +18,7 @@ def format_rupees(value):
     """Format rupees into Lakhs or Crores with proper formatting."""
     if value < 1e5:
         return f"रु{value:,.2f}"
-    elif value < 1e7:
+    elif value < 1e7:  
         return f"रु{value / 1e5:.2f} Lakh"
     elif value < 1e9:
         return f"रु{value / 1e7:.2f} Crore"
