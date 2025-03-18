@@ -37,7 +37,6 @@ def predict():
 
         print("Received Data (Cleaned):", data)
 
-    
         input_data = pd.DataFrame([data])
         print("\nInitial Input DataFrame:\n", input_data)
 

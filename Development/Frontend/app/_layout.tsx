@@ -5,8 +5,8 @@ import * as SplashScreen from "expo-splash-screen";
 import "react-native-reanimated";
 import { LogBox, StatusBar, Text, View, ActivityIndicator } from "react-native";
 import Toast from "react-native-toast-message";
-import AuthService from "@/context/AuthContext"; // Adjust path if needed
-import { SocketProvider } from "@/socketContext"; // Import SocketProvider
+import AuthService from "@/context/AuthContext"; 
+import { SocketProvider } from "@/socketContext"; 
 
 // Prevent the splash screen from auto-hiding.
 SplashScreen.preventAutoHideAsync();

@@ -236,7 +236,7 @@ const sendMessage = async (req, res) => {
 const getMessage = async (req, res) => {
   try {
     const senderId = req.user.userId;
-    const { receiverId } = req.body; // Read receiverId from request body
+    const { receiverId } = req.body; 
 
     if (!senderId || !receiverId) {
       return res.status(400).json({

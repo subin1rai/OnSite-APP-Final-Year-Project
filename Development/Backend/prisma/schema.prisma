@@ -14,7 +14,6 @@ model User {
   username         String?
   password         String?
   image            String?
-  friends          User[]        @relation("UserFriends")
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @default(now()) @updatedAt
   requests         Request[]
@@ -22,6 +21,7 @@ model User {
   Worker           Worker[]
   threeDModel      threeDModel[]
   Vendor           Vendor[]
+  friends          User[]        @relation("UserFriends")
   Message          Message[]     @relation("Sender")
   receivedMessages Message[]     @relation("Receiver")
   User             User[]        @relation("UserFriends")
