@@ -1,0 +1,501 @@
+House Type,Total Area (sq. ft.),Floors,Foundation Type,Material Quality,Location,Bedrooms,Bathrooms,Roof Type,Parking,Additional Features,Labor Cost,Material Cost,Total Estimated Cost
+traditional,611,1,pile,premium,Pokhara,1,4,metal,yes,none,366600,1222000,1588600
+apartment,3108,1,RCC,standard,Kathmandu,5,2,sloped,no,solar panels,1243200,4662000,6105200
+apartment,1672,1,RCC,standard,Terai,3,2,sloped,yes,none,668800,2508000,3176800
+traditional,3167,3,RCC,standard,Bhaktapur,6,4,RCC,yes,basement,1266800,4750500,6517300
+apartment,1845,3,RCC,premium,Terai,1,1,flat,no,basement,1107000,3690000,5297000
+apartment,2640,5,RCC,low,Kathmandu,3,2,flat,no,basement,792000,3168000,4460000
+traditional,4676,5,normal,premium,Kathmandu,4,2,metal,no,garden,2805600,9352000,12307600
+modern,3892,1,RCC,standard,Bhaktapur,1,1,metal,no,garden,1556800,5838000,7544800
+modern,559,4,normal,low,Bhaktapur,4,1,RCC,no,basement,167700,670800,1338500
+apartment,4428,1,pile,low,Terai,2,2,flat,no,solar panels,1328400,5313600,6842000
+traditional,1930,3,RCC,low,Terai,2,2,flat,yes,basement,579000,2316000,3395000
+modern,3053,3,RCC,premium,Pokhara,5,2,metal,yes,solar panels,1831800,6106000,8137800
+traditional,1244,2,RCC,premium,Pokhara,4,3,metal,no,none,746400,2488000,3234400
+traditional,1765,1,normal,low,Lalitpur,4,1,flat,no,garden,529500,2118000,2797500
+apartment,2962,4,pile,low,Pokhara,4,2,sloped,yes,garden,888600,3554400,4593000
+apartment,2864,5,RCC,premium,Bhaktapur,6,2,flat,no,solar panels,1718400,5728000,7646400
+modern,4776,4,normal,standard,Pokhara,3,3,sloped,no,solar panels,1910400,7164000,9274400
+apartment,3204,5,RCC,low,Lalitpur,3,4,sloped,no,swimming pool,961200,3844800,5606000
+traditional,2279,5,RCC,low,Bhaktapur,3,2,flat,no,basement,683700,2734800,3918500
+modern,4974,3,normal,standard,Lalitpur,2,4,sloped,no,garden,1989600,7461000,9600600
+apartment,1036,5,pile,low,Lalitpur,6,3,flat,yes,swimming pool,310800,1243200,2354000
+apartment,1222,2,RCC,standard,Kathmandu,6,1,metal,no,solar panels,488800,1833000,2521800
+traditional,3261,2,RCC,standard,Kathmandu,6,3,sloped,no,none,1304400,4891500,6195900
+traditional,4480,1,normal,premium,Kathmandu,3,4,RCC,yes,solar panels,2688000,8960000,11848000
+traditional,3175,4,pile,standard,Lalitpur,4,4,flat,no,garden,1270000,4762500,6182500
+apartment,2160,2,RCC,standard,Terai,2,4,flat,yes,swimming pool,864000,3240000,4904000
+modern,3667,1,pile,low,Lalitpur,6,4,metal,yes,solar panels,1100100,4400400,5700500
+traditional,4056,3,normal,premium,Kathmandu,2,2,flat,no,solar panels,2433600,8112000,10745600
+apartment,4362,3,pile,premium,Bhaktapur,1,2,sloped,yes,swimming pool,2617200,8724000,12141200
+modern,3271,4,normal,standard,Kathmandu,5,2,RCC,yes,garden,1308400,4906500,6364900
+modern,3441,1,pile,standard,Terai,4,1,RCC,no,basement,1376400,5161500,7037900
+apartment,4114,2,RCC,low,Kathmandu,5,3,RCC,no,none,1234200,4936800,6171000
+apartment,4343,4,normal,standard,Lalitpur,6,4,metal,no,swimming pool,1737200,6514500,9051700
+traditional,3509,2,RCC,premium,Lalitpur,1,3,sloped,yes,solar panels,2105400,7018000,9323400
+modern,750,1,normal,premium,Bhaktapur,5,4,sloped,yes,garden,450000,1500000,2100000
+apartment,591,1,normal,standard,Lalitpur,6,4,sloped,yes,none,236400,886500,1122900
+modern,2131,2,normal,premium,Kathmandu,3,1,metal,no,basement,1278600,4262000,6040600
+apartment,1678,5,normal,standard,Bhaktapur,3,1,sloped,yes,basement,671200,2517000,3688200
+traditional,3353,2,RCC,premium,Lalitpur,3,2,metal,no,basement,2011800,6706000,9217800
+modern,570,1,normal,standard,Bhaktapur,5,4,RCC,yes,basement,228000,855000,1583000
+apartment,4431,2,pile,premium,Kathmandu,5,3,flat,no,none,2658600,8862000,11520600
+traditional,4271,2,RCC,standard,Lalitpur,2,3,metal,no,garden,1708400,6406500,8264900
+apartment,573,4,normal,low,Kathmandu,3,4,RCC,no,none,171900,687600,859500
+apartment,2271,3,pile,premium,Pokhara,3,1,RCC,no,swimming pool,1362600,4542000,6704600
+traditional,4719,5,RCC,standard,Lalitpur,4,4,RCC,yes,swimming pool,1887600,7078500,9766100
+traditional,1077,3,normal,standard,Pokhara,1,2,sloped,no,basement,430800,1615500,2546300
+traditional,2028,4,normal,standard,Lalitpur,3,4,RCC,no,swimming pool,811200,3042000,4653200
+traditional,1716,2,pile,premium,Bhaktapur,6,1,metal,no,swimming pool,1029600,3432000,5261600
+apartment,2912,2,RCC,premium,Terai,1,3,sloped,yes,swimming pool,1747200,5824000,8371200
+modern,1560,2,normal,low,Terai,3,3,RCC,no,garden,468000,1872000,2490000
+traditional,1232,3,RCC,standard,Lalitpur,5,4,sloped,yes,garden,492800,1848000,2490800
+traditional,4962,2,normal,premium,Lalitpur,6,4,sloped,yes,none,2977200,9924000,12901200
+traditional,2378,4,RCC,standard,Bhaktapur,6,3,sloped,no,none,951200,3567000,4518200
+modern,3379,2,RCC,premium,Pokhara,5,4,sloped,no,solar panels,2027400,6758000,8985400
+traditional,4255,5,pile,standard,Lalitpur,1,2,RCC,yes,swimming pool,1702000,6382500,8884500
+traditional,4890,1,RCC,premium,Terai,2,3,metal,yes,basement,2934000,9780000,13214000
+apartment,2827,5,RCC,standard,Bhaktapur,3,1,RCC,no,garden,1130800,4240500,5521300
+apartment,1267,2,normal,low,Pokhara,2,3,metal,yes,solar panels,380100,1520400,2100500
+traditional,4921,2,normal,premium,Terai,5,2,metal,yes,solar panels,2952600,9842000,12994600
+modern,1893,2,normal,low,Terai,6,1,metal,no,swimming pool,567900,2271600,3639500
+modern,4491,4,RCC,low,Kathmandu,2,3,RCC,no,garden,1347300,5389200,6886500
+modern,3148,2,pile,standard,Bhaktapur,4,2,RCC,no,garden,1259200,4722000,6131200
+modern,3526,1,normal,low,Bhaktapur,5,3,flat,yes,basement,1057800,4231200,5789000
+apartment,530,5,RCC,premium,Terai,4,1,metal,no,none,318000,1060000,1378000
+apartment,4498,5,pile,premium,Bhaktapur,1,2,RCC,no,none,2698800,8996000,11694800
+traditional,4486,4,pile,standard,Bhaktapur,3,3,metal,yes,none,1794400,6729000,8523400
+apartment,1503,5,pile,standard,Kathmandu,6,3,sloped,no,none,601200,2254500,2855700
+apartment,1602,5,normal,low,Kathmandu,3,1,sloped,yes,solar panels,480600,1922400,2603000
+traditional,4912,4,RCC,premium,Pokhara,2,1,metal,yes,swimming pool,2947200,9824000,13571200
+modern,2326,5,normal,standard,Bhaktapur,4,4,metal,yes,basement,930400,3489000,4919400
+apartment,1707,3,pile,low,Lalitpur,2,3,flat,yes,none,512100,2048400,2560500
+modern,3962,2,pile,premium,Kathmandu,4,4,metal,no,solar panels,2377200,7924000,10501200
+apartment,4980,3,pile,standard,Bhaktapur,1,1,metal,no,basement,1992000,7470000,9962000
+modern,3872,4,normal,premium,Bhaktapur,5,2,flat,no,basement,2323200,7744000,10567200
+modern,2484,4,normal,low,Bhaktapur,5,1,RCC,no,solar panels,745200,2980800,3926000
+modern,4839,5,pile,standard,Lalitpur,1,1,RCC,no,basement,1935600,7258500,9694100
+apartment,3488,1,pile,premium,Pokhara,5,2,flat,no,swimming pool,2092800,6976000,9868800
+modern,2308,1,RCC,standard,Kathmandu,3,1,flat,no,garden,923200,3462000,4535200
+modern,3315,5,pile,premium,Kathmandu,3,3,metal,yes,garden,1989000,6630000,8769000
+modern,1129,3,pile,low,Bhaktapur,4,3,flat,no,garden,338700,1354800,1843500
+traditional,3968,1,RCC,low,Kathmandu,5,1,sloped,no,garden,1190400,4761600,6102000
+apartment,4800,1,pile,low,Kathmandu,2,2,flat,yes,garden,1440000,5760000,7350000
+modern,1806,2,normal,low,Pokhara,3,3,flat,yes,none,541800,2167200,2709000
+apartment,3452,5,RCC,standard,Kathmandu,2,1,metal,no,solar panels,1380800,5178000,6758800
+traditional,2671,3,RCC,low,Terai,6,2,flat,no,none,801300,3205200,4006500
+traditional,3463,5,RCC,premium,Terai,5,3,sloped,yes,basement,2077800,6926000,9503800
+modern,1149,2,RCC,low,Bhaktapur,6,3,sloped,no,garden,344700,1378800,1873500
+apartment,3587,5,RCC,premium,Terai,6,3,metal,no,garden,2152200,7174000,9476200
+apartment,4529,5,normal,low,Lalitpur,5,4,RCC,no,solar panels,1358700,5434800,6993500
+traditional,3624,2,pile,premium,Lalitpur,3,4,RCC,yes,garden,2174400,7248000,9572400
+apartment,731,4,RCC,low,Lalitpur,1,3,metal,no,none,219300,877200,1096500
+traditional,1608,3,normal,low,Lalitpur,6,4,flat,yes,none,482400,1929600,2412000
+modern,1339,3,pile,low,Terai,1,2,metal,yes,none,401700,1606800,2008500
+modern,2678,1,pile,low,Kathmandu,2,1,flat,yes,garden,803400,3213600,4167000
+traditional,3698,3,pile,premium,Bhaktapur,2,3,sloped,no,none,2218800,7396000,9614800
+traditional,3707,3,RCC,standard,Kathmandu,1,4,RCC,yes,none,1482800,5560500,7043300
+apartment,1643,1,pile,standard,Terai,5,1,RCC,yes,swimming pool,657200,2464500,3921700
+modern,2055,5,pile,low,Bhaktapur,3,4,sloped,no,swimming pool,616500,2466000,3882500
+apartment,2205,3,normal,low,Bhaktapur,4,1,RCC,yes,garden,661500,2646000,3457500
+apartment,4171,5,RCC,premium,Lalitpur,5,2,metal,yes,none,2502600,8342000,10844600
+modern,2735,2,pile,premium,Bhaktapur,3,1,flat,no,none,1641000,5470000,7111000
+modern,2716,4,normal,standard,Terai,2,2,metal,yes,solar panels,1086400,4074000,5360400
+traditional,1607,1,pile,premium,Kathmandu,6,3,RCC,yes,swimming pool,964200,3214000,4978200
+apartment,908,5,RCC,low,Terai,3,2,metal,no,garden,272400,1089600,1512000
+traditional,2356,5,RCC,low,Pokhara,1,2,RCC,no,none,706800,2827200,3534000
+traditional,4778,5,RCC,premium,Kathmandu,2,2,flat,yes,none,2866800,9556000,12422800
+apartment,1511,4,normal,premium,Terai,6,2,sloped,no,basement,906600,3022000,4428600
+modern,4918,5,RCC,standard,Kathmandu,4,1,RCC,no,swimming pool,1967200,7377000,10144200
+traditional,3209,1,normal,low,Pokhara,3,4,flat,yes,garden,962700,3850800,4963500
+apartment,3539,1,normal,premium,Lalitpur,3,4,sloped,no,none,2123400,7078000,9201400
+apartment,891,2,RCC,low,Bhaktapur,1,4,metal,yes,garden,267300,1069200,1486500
+modern,4878,1,pile,premium,Kathmandu,5,3,flat,yes,solar panels,2926800,9756000,12882800
+traditional,4327,4,RCC,low,Pokhara,1,4,metal,no,garden,1298100,5192400,6640500
+traditional,4354,2,pile,standard,Pokhara,2,2,flat,no,basement,1741600,6531000,8772600
+traditional,3436,4,normal,premium,Terai,2,1,flat,yes,swimming pool,2061600,6872000,9733600
+traditional,4974,3,normal,standard,Kathmandu,3,1,flat,no,garden,1989600,7461000,9600600
+modern,2095,2,pile,low,Lalitpur,6,1,RCC,no,basement,628500,2514000,3642500
+traditional,2444,5,pile,low,Bhaktapur,2,1,RCC,no,basement,733200,2932800,4166000
+traditional,2111,2,normal,standard,Kathmandu,5,2,RCC,no,swimming pool,844400,3166500,4810900
+traditional,2600,5,RCC,low,Lalitpur,1,3,metal,no,garden,780000,3120000,4050000
+modern,3855,3,normal,premium,Pokhara,2,1,RCC,yes,solar panels,2313000,7710000,10223000
+traditional,2833,4,normal,standard,Bhaktapur,5,2,flat,yes,garden,1133200,4249500,5532700
+traditional,1904,1,normal,premium,Kathmandu,5,1,flat,yes,solar panels,1142400,3808000,5150400
+apartment,4976,5,normal,premium,Kathmandu,3,3,RCC,yes,swimming pool,2985600,9952000,13737600
+modern,590,5,pile,standard,Kathmandu,6,1,flat,no,swimming pool,236000,885000,1921000
+apartment,1115,3,RCC,premium,Lalitpur,3,3,sloped,no,solar panels,669000,2230000,3099000
+traditional,1853,2,pile,low,Bhaktapur,6,3,sloped,no,garden,555900,2223600,2929500
+apartment,4797,2,RCC,low,Pokhara,5,2,sloped,yes,swimming pool,1439100,5756400,7995500
+traditional,2138,1,RCC,premium,Terai,5,3,sloped,yes,none,1282800,4276000,5558800
+apartment,1822,5,normal,standard,Terai,3,2,metal,yes,basement,728800,2733000,3961800
+traditional,855,4,RCC,premium,Bhaktapur,2,3,sloped,no,basement,513000,1710000,2723000
+traditional,869,2,normal,low,Lalitpur,6,4,RCC,yes,solar panels,260700,1042800,1503500
+traditional,542,4,RCC,low,Kathmandu,1,2,RCC,yes,swimming pool,162600,650400,1613000
+modern,4962,3,pile,low,Bhaktapur,4,3,metal,no,garden,1488600,5954400,7593000
+modern,4610,4,normal,premium,Kathmandu,1,2,RCC,no,swimming pool,2766000,9220000,12786000
+modern,4171,4,RCC,standard,Kathmandu,5,3,flat,no,garden,1668400,6256500,8074900
+modern,1677,4,pile,low,Pokhara,4,1,metal,yes,none,503100,2012400,2515500
+apartment,4318,3,pile,low,Pokhara,3,3,metal,no,swimming pool,1295400,5181600,7277000
+apartment,4708,2,RCC,low,Pokhara,5,4,RCC,yes,none,1412400,5649600,7062000
+apartment,601,3,normal,premium,Terai,6,1,RCC,no,solar panels,360600,1202000,1762600
+traditional,4474,3,RCC,premium,Bhaktapur,5,1,flat,yes,swimming pool,2684400,8948000,12432400
+modern,3403,3,pile,low,Kathmandu,1,2,flat,no,garden,1020900,4083600,5254500
+apartment,3909,4,normal,premium,Kathmandu,3,3,metal,no,none,2345400,7818000,10163400
+apartment,4456,5,RCC,premium,Lalitpur,5,2,sloped,yes,garden,2673600,8912000,11735600
+apartment,3198,5,pile,low,Kathmandu,6,4,metal,no,solar panels,959400,3837600,4997000
+apartment,947,3,normal,low,Pokhara,4,1,metal,yes,none,284100,1136400,1420500
+apartment,1471,2,RCC,low,Kathmandu,6,2,sloped,no,none,441300,1765200,2206500
+traditional,991,1,RCC,low,Pokhara,2,4,flat,no,basement,297300,1189200,1986500
+modern,3504,1,pile,premium,Bhaktapur,1,1,metal,no,garden,2102400,7008000,9260400
+apartment,1735,3,RCC,standard,Lalitpur,5,1,flat,no,basement,694000,2602500,3796500
+traditional,4116,4,normal,low,Terai,2,2,metal,no,garden,1234800,4939200,6324000
+traditional,3681,2,pile,low,Terai,4,1,metal,no,basement,1104300,4417200,6021500
+apartment,3384,2,pile,premium,Bhaktapur,1,3,RCC,no,solar panels,2030400,6768000,8998400
+traditional,4654,4,pile,premium,Bhaktapur,2,2,RCC,no,basement,2792400,9308000,12600400
+modern,1724,4,pile,premium,Kathmandu,3,1,metal,yes,garden,1034400,3448000,4632400
+apartment,4306,3,RCC,premium,Kathmandu,5,2,RCC,yes,garden,2583600,8612000,11345600
+modern,4033,1,RCC,low,Lalitpur,1,2,sloped,yes,basement,1209900,4839600,6549500
+traditional,4450,1,pile,standard,Pokhara,5,4,sloped,no,basement,1780000,6675000,8955000
+apartment,4579,4,RCC,premium,Kathmandu,1,3,RCC,yes,garden,2747400,9158000,12055400
+modern,870,2,RCC,standard,Lalitpur,1,1,flat,no,swimming pool,348000,1305000,2453000
+traditional,4644,4,pile,low,Bhaktapur,4,3,metal,yes,basement,1393200,5572800,7466000
+traditional,1418,2,RCC,premium,Kathmandu,5,4,sloped,no,solar panels,850800,2836000,3886800
+traditional,3271,4,pile,standard,Terai,3,2,sloped,yes,none,1308400,4906500,6214900
+modern,1319,5,normal,standard,Lalitpur,5,2,RCC,no,garden,527600,1978500,2656100
+traditional,1947,3,normal,low,Pokhara,3,3,RCC,no,swimming pool,584100,2336400,3720500
+apartment,687,2,RCC,standard,Pokhara,1,2,flat,no,swimming pool,274800,1030500,2105300
+traditional,1676,5,RCC,premium,Terai,4,3,RCC,yes,swimming pool,1005600,3352000,5157600
+traditional,1227,2,normal,low,Kathmandu,5,1,sloped,yes,garden,368100,1472400,1990500
+modern,2142,1,pile,low,Terai,6,4,sloped,no,garden,642600,2570400,3363000
+modern,3427,4,RCC,standard,Lalitpur,5,1,flat,no,none,1370800,5140500,6511300
+apartment,1129,5,RCC,low,Lalitpur,4,4,metal,no,garden,338700,1354800,1843500
+modern,2594,1,RCC,premium,Terai,6,2,RCC,yes,none,1556400,5188000,6744400
+modern,3071,2,pile,premium,Bhaktapur,3,1,metal,no,none,1842600,6142000,7984600
+traditional,2014,3,pile,premium,Pokhara,6,4,flat,no,garden,1208400,4028000,5386400
+modern,1497,2,RCC,premium,Lalitpur,5,3,sloped,yes,swimming pool,898200,2994000,4692200
+modern,3636,2,pile,standard,Pokhara,1,1,sloped,yes,none,1454400,5454000,6908400
+apartment,866,1,pile,standard,Terai,3,4,sloped,no,basement,346400,1299000,2145400
+traditional,1153,1,RCC,standard,Terai,2,2,flat,no,garden,461200,1729500,2340700
+apartment,4167,2,normal,low,Bhaktapur,6,3,metal,yes,swimming pool,1250100,5000400,7050500
+apartment,3528,5,pile,premium,Kathmandu,1,1,flat,yes,solar panels,2116800,7056000,9372800
+modern,4439,1,pile,standard,Lalitpur,1,2,flat,no,garden,1775600,6658500,8584100
+apartment,1541,4,RCC,standard,Terai,1,3,flat,no,none,616400,2311500,2927900
+traditional,1344,1,pile,low,Bhaktapur,1,4,metal,no,swimming pool,403200,1612800,2816000
+modern,2079,1,normal,premium,Lalitpur,1,2,sloped,no,solar panels,1247400,4158000,5605400
+modern,2237,4,pile,premium,Lalitpur,3,2,flat,no,solar panels,1342200,4474000,6016200
+modern,783,5,RCC,low,Pokhara,3,2,flat,yes,solar panels,234900,939600,1374500
+traditional,4504,3,pile,standard,Bhaktapur,3,2,sloped,yes,basement,1801600,6756000,9057600
+modern,2693,4,RCC,premium,Pokhara,5,3,metal,yes,garden,1615800,5386000,7151800
+traditional,2059,4,pile,standard,Pokhara,1,2,flat,yes,solar panels,823600,3088500,4112100
+traditional,2684,3,pile,standard,Terai,1,1,metal,no,solar panels,1073600,4026000,5299600
+modern,4645,1,RCC,low,Pokhara,6,2,flat,no,garden,1393500,5574000,7117500
+modern,2815,5,RCC,premium,Pokhara,1,2,metal,no,garden,1689000,5630000,7469000
+modern,2875,4,normal,premium,Pokhara,5,3,metal,yes,basement,1725000,5750000,7975000
+traditional,4763,5,RCC,low,Pokhara,5,2,sloped,no,none,1428900,5715600,7144500
+apartment,586,3,pile,premium,Terai,4,3,metal,yes,basement,351600,1172000,2023600
+modern,4604,2,pile,premium,Pokhara,5,4,metal,yes,solar panels,2762400,9208000,12170400
+apartment,2540,3,normal,standard,Lalitpur,6,2,RCC,yes,basement,1016000,3810000,5326000
+traditional,1121,5,RCC,premium,Lalitpur,1,4,metal,yes,solar panels,672600,2242000,3114600
+apartment,1004,2,pile,low,Bhaktapur,3,4,sloped,yes,solar panels,301200,1204800,1706000
+traditional,3274,1,normal,low,Bhaktapur,1,3,RCC,no,none,982200,3928800,4911000
+traditional,3041,1,normal,standard,Terai,2,2,flat,no,solar panels,1216400,4561500,5977900
+modern,941,3,RCC,standard,Bhaktapur,4,3,metal,yes,solar panels,376400,1411500,1987900
+modern,4988,1,pile,premium,Pokhara,1,2,metal,yes,garden,2992800,9976000,13118800
+modern,1542,4,RCC,premium,Pokhara,6,3,flat,no,basement,925200,3084000,4509200
+traditional,1561,5,RCC,standard,Bhaktapur,6,3,metal,yes,garden,624400,2341500,3115900
+modern,4323,5,RCC,standard,Kathmandu,1,1,RCC,yes,basement,1729200,6484500,8713700
+modern,1773,4,pile,premium,Terai,1,1,sloped,yes,none,1063800,3546000,4609800
+traditional,2502,1,normal,standard,Bhaktapur,6,1,flat,yes,solar panels,1000800,3753000,4953800
+modern,2061,3,normal,low,Bhaktapur,6,4,flat,yes,swimming pool,618300,2473200,3891500
+apartment,3937,5,RCC,low,Kathmandu,5,2,sloped,yes,solar panels,1181100,4724400,6105500
+traditional,1473,2,normal,standard,Kathmandu,2,2,sloped,no,swimming pool,589200,2209500,3598700
+modern,1123,2,RCC,low,Lalitpur,1,1,sloped,no,garden,336900,1347600,1834500
+modern,529,1,RCC,low,Terai,5,2,metal,no,basement,158700,634800,1293500
+traditional,2546,3,RCC,low,Bhaktapur,2,2,RCC,no,solar panels,763800,3055200,4019000
+apartment,4113,5,normal,low,Kathmandu,4,3,sloped,no,none,1233900,4935600,6169500
+traditional,659,5,pile,premium,Terai,1,4,metal,yes,solar panels,395400,1318000,1913400
+modern,3870,4,pile,low,Bhaktapur,2,2,metal,yes,none,1161000,4644000,5805000
+modern,4165,1,pile,low,Lalitpur,4,4,metal,yes,garden,1249500,4998000,6397500
+traditional,3657,1,normal,premium,Kathmandu,5,2,metal,yes,solar panels,2194200,7314000,9708200
+apartment,2871,4,normal,premium,Bhaktapur,4,1,RCC,yes,solar panels,1722600,5742000,7664600
+apartment,4537,4,RCC,low,Kathmandu,4,3,flat,no,swimming pool,1361100,5444400,7605500
+apartment,753,2,pile,standard,Terai,6,4,RCC,no,basement,301200,1129500,1930700
+modern,2460,4,pile,standard,Kathmandu,1,2,flat,no,solar panels,984000,3690000,4874000
+apartment,4089,4,RCC,premium,Lalitpur,6,2,metal,no,garden,2453400,8178000,10781400
+traditional,3780,3,RCC,low,Terai,3,4,metal,yes,solar panels,1134000,4536000,5870000
+apartment,3755,4,normal,standard,Terai,2,1,RCC,yes,garden,1502000,5632500,7284500
+apartment,3687,3,normal,low,Bhaktapur,3,1,flat,no,none,1106100,4424400,5530500
+traditional,1811,4,pile,standard,Kathmandu,6,1,RCC,no,solar panels,724400,2716500,3640900
+traditional,3145,1,pile,premium,Bhaktapur,4,4,flat,yes,basement,1887000,6290000,8677000
+traditional,2859,3,pile,standard,Lalitpur,6,1,metal,yes,none,1143600,4288500,5432100
+modern,2748,5,pile,premium,Pokhara,1,1,metal,no,swimming pool,1648800,5496000,7944800
+apartment,1182,1,RCC,low,Terai,5,3,RCC,no,none,354600,1418400,1773000
+modern,1945,2,pile,low,Kathmandu,1,2,RCC,no,garden,583500,2334000,3067500
+traditional,1392,3,RCC,premium,Lalitpur,5,1,sloped,no,none,835200,2784000,3619200
+modern,1208,4,RCC,standard,Pokhara,6,2,RCC,no,solar panels,483200,1812000,2495200
+traditional,2658,2,normal,standard,Terai,1,4,RCC,no,swimming pool,1063200,3987000,5850200
+traditional,1296,1,normal,standard,Kathmandu,2,1,RCC,yes,none,518400,1944000,2462400
+apartment,4418,4,normal,low,Kathmandu,3,1,sloped,yes,swimming pool,1325400,5301600,7427000
+modern,4930,2,pile,standard,Terai,4,4,sloped,no,none,1972000,7395000,9367000
+modern,2240,1,pile,premium,Lalitpur,1,2,RCC,no,swimming pool,1344000,4480000,6624000
+modern,3401,1,RCC,standard,Lalitpur,2,1,flat,yes,solar panels,1360400,5101500,6661900
+modern,2052,4,pile,low,Lalitpur,4,2,RCC,yes,solar panels,615600,2462400,3278000
+traditional,3399,5,normal,premium,Bhaktapur,6,2,RCC,no,swimming pool,2039400,6798000,9637400
+apartment,1569,1,normal,premium,Terai,4,1,metal,yes,swimming pool,941400,3138000,4879400
+traditional,794,4,normal,premium,Terai,1,1,RCC,no,garden,476400,1588000,2214400
+apartment,696,1,RCC,premium,Pokhara,3,1,RCC,yes,basement,417600,1392000,2309600
+traditional,3157,3,normal,low,Terai,6,4,metal,no,solar panels,947100,3788400,4935500
+traditional,1145,5,normal,premium,Kathmandu,6,1,metal,yes,garden,687000,2290000,3127000
+modern,3440,4,normal,low,Lalitpur,4,3,flat,no,solar panels,1032000,4128000,5360000
+modern,1257,5,pile,premium,Lalitpur,3,2,sloped,no,garden,754200,2514000,3418200
+apartment,2736,1,normal,low,Lalitpur,6,2,sloped,yes,none,820800,3283200,4104000
+modern,2799,5,normal,low,Bhaktapur,5,3,flat,no,solar panels,839700,3358800,4398500
+modern,1589,3,normal,standard,Lalitpur,1,3,metal,yes,none,635600,2383500,3019100
+apartment,4999,1,pile,low,Kathmandu,1,1,RCC,no,none,1499700,5998800,7498500
+modern,4610,2,pile,premium,Bhaktapur,1,4,RCC,yes,none,2766000,9220000,11986000
+traditional,4122,5,normal,low,Terai,5,4,flat,no,basement,1236600,4946400,6683000
+apartment,1816,1,pile,standard,Pokhara,3,4,RCC,yes,none,726400,2724000,3450400
+apartment,4250,1,normal,premium,Lalitpur,5,1,flat,yes,garden,2550000,8500000,11200000
+apartment,2799,1,normal,low,Bhaktapur,4,1,flat,yes,solar panels,839700,3358800,4398500
+modern,1371,1,pile,low,Bhaktapur,3,2,sloped,no,none,411300,1645200,2056500
+apartment,907,3,pile,standard,Pokhara,2,4,metal,yes,swimming pool,362800,1360500,2523300
+traditional,4917,1,normal,low,Bhaktapur,2,4,flat,yes,solar panels,1475100,5900400,7575500
+modern,1505,2,pile,standard,Lalitpur,2,4,RCC,yes,garden,602000,2257500,3009500
+apartment,3591,1,pile,standard,Bhaktapur,5,1,sloped,yes,basement,1436400,5386500,7322900
+modern,1747,5,normal,premium,Terai,5,2,sloped,no,solar panels,1048200,3494000,4742200
+apartment,1625,3,normal,premium,Bhaktapur,5,2,metal,no,garden,975000,3250000,4375000
+apartment,1779,2,RCC,low,Lalitpur,5,2,sloped,no,garden,533700,2134800,2818500
+apartment,4162,2,normal,premium,Lalitpur,4,4,flat,no,garden,2497200,8324000,10971200
+traditional,4261,5,pile,standard,Terai,4,2,flat,yes,garden,1704400,6391500,8245900
+modern,1189,1,normal,standard,Terai,2,2,metal,no,swimming pool,475600,1783500,3059100
+traditional,3440,5,normal,low,Kathmandu,3,2,metal,yes,solar panels,1032000,4128000,5360000
+apartment,3373,1,normal,premium,Pokhara,4,3,sloped,yes,garden,2023800,6746000,8919800
+apartment,4009,5,normal,standard,Kathmandu,2,4,RCC,no,solar panels,1603600,6013500,7817100
+modern,1905,3,RCC,low,Terai,5,3,metal,yes,none,571500,2286000,2857500
+apartment,1991,4,RCC,standard,Terai,5,2,metal,yes,swimming pool,796400,2986500,4582900
+traditional,4438,2,RCC,standard,Terai,3,4,sloped,yes,basement,1775200,6657000,8932200
+apartment,4730,3,pile,standard,Lalitpur,3,1,flat,yes,swimming pool,1892000,7095000,9787000
+apartment,4304,5,normal,premium,Pokhara,3,4,sloped,no,none,2582400,8608000,11190400
+modern,617,1,normal,standard,Bhaktapur,6,3,RCC,yes,none,246800,925500,1172300
+modern,4075,2,RCC,standard,Lalitpur,4,2,sloped,no,garden,1630000,6112500,7892500
+traditional,3854,2,normal,premium,Bhaktapur,5,3,RCC,yes,swimming pool,2312400,7708000,10820400
+modern,1844,1,normal,low,Pokhara,6,1,sloped,no,swimming pool,553200,2212800,3566000
+modern,3317,2,normal,premium,Pokhara,6,3,flat,no,garden,1990200,6634000,8774200
+traditional,4888,5,normal,standard,Lalitpur,6,2,metal,no,solar panels,1955200,7332000,9487200
+modern,2423,4,pile,standard,Bhaktapur,1,3,metal,yes,solar panels,969200,3634500,4803700
+traditional,4966,2,normal,premium,Pokhara,5,4,RCC,yes,swimming pool,2979600,9932000,13711600
+apartment,2091,4,normal,premium,Pokhara,4,1,RCC,no,none,1254600,4182000,5436600
+modern,4906,4,RCC,low,Bhaktapur,3,2,flat,no,swimming pool,1471800,5887200,8159000
+modern,4274,4,pile,low,Kathmandu,6,2,RCC,yes,swimming pool,1282200,5128800,7211000
+modern,2043,5,RCC,standard,Terai,1,4,RCC,no,garden,817200,3064500,4031700
+apartment,2235,3,pile,standard,Pokhara,3,2,flat,yes,basement,894000,3352500,4746500
+apartment,700,4,RCC,standard,Lalitpur,5,4,metal,yes,none,280000,1050000,1330000
+apartment,2342,3,normal,premium,Lalitpur,6,4,flat,yes,solar panels,1405200,4684000,6289200
+apartment,2844,1,pile,premium,Kathmandu,6,1,metal,no,basement,1706400,5688000,7894400
+apartment,2795,2,pile,low,Kathmandu,2,2,metal,yes,none,838500,3354000,4192500
+modern,4747,2,RCC,low,Kathmandu,4,4,metal,yes,solar panels,1424100,5696400,7320500
+apartment,3537,5,normal,premium,Terai,3,2,sloped,no,none,2122200,7074000,9196200
+traditional,606,3,normal,premium,Bhaktapur,1,1,flat,no,basement,363600,1212000,2075600
+traditional,4838,3,RCC,premium,Terai,4,1,metal,no,none,2902800,9676000,12578800
+traditional,3686,1,pile,premium,Bhaktapur,1,4,metal,yes,garden,2211600,7372000,9733600
+apartment,4047,2,pile,low,Terai,2,4,flat,yes,none,1214100,4856400,6070500
+modern,3916,5,RCC,premium,Terai,1,4,RCC,no,basement,2349600,7832000,10681600
+apartment,2015,4,normal,premium,Bhaktapur,2,3,sloped,yes,basement,1209000,4030000,5739000
+apartment,4340,3,RCC,standard,Terai,3,3,RCC,no,swimming pool,1736000,6510000,9046000
+apartment,3662,1,pile,standard,Lalitpur,4,2,sloped,no,none,1464800,5493000,6957800
+apartment,3967,2,pile,premium,Pokhara,2,3,RCC,yes,garden,2380200,7934000,10464200
+modern,4957,2,normal,premium,Lalitpur,5,1,metal,yes,swimming pool,2974200,9914000,13688200
+apartment,1979,1,normal,premium,Kathmandu,3,2,metal,no,swimming pool,1187400,3958000,5945400
+apartment,4390,5,normal,premium,Pokhara,3,4,metal,no,none,2634000,8780000,11414000
+modern,604,5,pile,standard,Kathmandu,2,2,sloped,no,solar panels,241600,906000,1347600
+traditional,4143,2,RCC,low,Kathmandu,2,1,flat,no,solar panels,1242900,4971600,6414500
+apartment,1978,5,pile,premium,Terai,1,1,RCC,yes,swimming pool,1186800,3956000,5942800
+traditional,893,2,normal,standard,Kathmandu,1,1,metal,no,none,357200,1339500,1696700
+traditional,3374,5,normal,standard,Pokhara,5,3,flat,no,garden,1349600,5061000,6560600
+modern,1864,4,RCC,premium,Terai,4,2,metal,yes,solar panels,1118400,3728000,5046400
+modern,2588,3,RCC,premium,Kathmandu,6,4,metal,no,garden,1552800,5176000,6878800
+modern,2367,1,normal,premium,Kathmandu,5,3,sloped,yes,garden,1420200,4734000,6304200
+apartment,4464,3,normal,standard,Kathmandu,5,2,sloped,no,swimming pool,1785600,6696000,9281600
+apartment,3885,4,normal,low,Pokhara,6,3,metal,yes,swimming pool,1165500,4662000,6627500
+modern,1008,2,normal,low,Terai,4,1,flat,yes,garden,302400,1209600,1662000
+apartment,4549,1,RCC,low,Terai,6,3,metal,no,basement,1364700,5458800,7323500
+traditional,1943,2,normal,premium,Kathmandu,1,3,flat,no,garden,1165800,3886000,5201800
+traditional,2896,1,pile,low,Bhaktapur,5,3,metal,no,swimming pool,868800,3475200,5144000
+traditional,653,1,normal,premium,Bhaktapur,2,3,sloped,yes,none,391800,1306000,1697800
+modern,2895,2,pile,low,Terai,5,1,metal,yes,solar panels,868500,3474000,4542500
+traditional,3798,4,normal,premium,Pokhara,4,2,sloped,yes,swimming pool,2278800,7596000,10674800
+modern,3747,2,RCC,premium,Bhaktapur,2,1,flat,yes,basement,2248200,7494000,10242200
+modern,1849,5,normal,premium,Bhaktapur,5,2,RCC,yes,basement,1109400,3698000,5307400
+modern,1299,1,normal,premium,Terai,5,1,metal,yes,solar panels,779400,2598000,3577400
+modern,1694,2,RCC,standard,Bhaktapur,5,2,flat,no,none,677600,2541000,3218600
+traditional,3385,1,normal,premium,Bhaktapur,1,1,sloped,yes,basement,2031000,6770000,9301000
+modern,1198,2,normal,low,Bhaktapur,1,4,RCC,yes,none,359400,1437600,1797000
+modern,4333,4,RCC,standard,Lalitpur,4,1,RCC,no,basement,1733200,6499500,8732700
+apartment,2469,3,pile,low,Kathmandu,4,3,flat,yes,garden,740700,2962800,3853500
+modern,999,5,normal,standard,Terai,2,4,RCC,yes,solar panels,399600,1498500,2098100
+apartment,4000,2,normal,low,Pokhara,4,1,RCC,yes,garden,1200000,4800000,6150000
+modern,4298,5,pile,low,Bhaktapur,2,2,flat,yes,basement,1289400,5157600,6947000
+traditional,1149,2,normal,premium,Kathmandu,1,3,sloped,no,swimming pool,689400,2298000,3787400
+traditional,2525,4,normal,standard,Terai,3,1,metal,yes,basement,1010000,3787500,5297500
+apartment,668,4,normal,premium,Bhaktapur,6,3,metal,no,solar panels,400800,1336000,1936800
+apartment,2487,1,pile,low,Bhaktapur,4,3,flat,no,basement,746100,2984400,4230500
+traditional,3567,5,pile,premium,Lalitpur,1,2,metal,yes,swimming pool,2140200,7134000,10074200
+modern,850,2,normal,premium,Terai,1,4,RCC,yes,swimming pool,510000,1700000,3010000
+traditional,694,3,RCC,premium,Lalitpur,5,1,flat,no,garden,416400,1388000,1954400
+modern,4792,5,RCC,standard,Pokhara,2,1,flat,no,basement,1916800,7188000,9604800
+apartment,1813,1,normal,standard,Terai,1,4,flat,yes,solar panels,725200,2719500,3644700
+traditional,3023,5,pile,standard,Terai,2,3,flat,no,garden,1209200,4534500,5893700
+apartment,1645,2,pile,standard,Pokhara,5,1,RCC,yes,basement,658000,2467500,3625500
+traditional,678,3,RCC,standard,Lalitpur,5,4,RCC,no,garden,271200,1017000,1438200
+traditional,1311,4,RCC,standard,Pokhara,4,2,sloped,yes,swimming pool,524400,1966500,3290900
+modern,2217,4,normal,premium,Bhaktapur,1,3,sloped,no,swimming pool,1330200,4434000,6564200
+traditional,4880,1,RCC,standard,Pokhara,6,3,sloped,yes,basement,1952000,7320000,9772000
+traditional,1174,2,RCC,standard,Lalitpur,2,3,flat,yes,none,469600,1761000,2230600
+modern,2589,2,pile,low,Bhaktapur,5,1,metal,yes,basement,776700,3106800,4383500
+apartment,3179,2,normal,premium,Kathmandu,3,4,metal,no,solar panels,1907400,6358000,8465400
+apartment,3445,1,RCC,low,Lalitpur,5,1,metal,yes,solar panels,1033500,4134000,5367500
+traditional,908,1,normal,low,Kathmandu,2,2,sloped,yes,solar panels,272400,1089600,1562000
+apartment,2805,5,RCC,premium,Bhaktapur,1,1,RCC,yes,swimming pool,1683000,5610000,8093000
+apartment,4070,1,RCC,low,Lalitpur,6,1,metal,no,solar panels,1221000,4884000,6305000
+modern,2526,1,pile,premium,Kathmandu,3,3,sloped,yes,swimming pool,1515600,5052000,7367600
+traditional,4794,5,normal,premium,Pokhara,2,1,metal,yes,garden,2876400,9588000,12614400
+traditional,717,5,normal,standard,Terai,5,4,flat,no,basement,286800,1075500,1862300
+traditional,2865,1,normal,low,Bhaktapur,2,1,RCC,yes,basement,859500,3438000,4797500
+modern,4934,2,pile,premium,Terai,4,2,flat,no,solar panels,2960400,9868000,13028400
+apartment,2649,2,RCC,low,Terai,2,3,flat,yes,none,794700,3178800,3973500
+apartment,4471,2,pile,standard,Bhaktapur,5,2,RCC,no,garden,1788400,6706500,8644900
+apartment,993,2,RCC,low,Lalitpur,2,3,RCC,yes,basement,297900,1191600,1989500
+traditional,2872,1,pile,premium,Pokhara,4,4,RCC,yes,basement,1723200,5744000,7967200
+apartment,2020,4,pile,standard,Lalitpur,5,1,metal,no,swimming pool,808000,3030000,4638000
+traditional,1508,2,normal,low,Kathmandu,6,4,sloped,yes,none,452400,1809600,2262000
+traditional,3593,4,pile,premium,Bhaktapur,3,3,RCC,yes,basement,2155800,7186000,9841800
+traditional,1405,3,pile,standard,Lalitpur,2,2,sloped,yes,basement,562000,2107500,3169500
+modern,4143,1,normal,premium,Kathmandu,2,2,metal,yes,none,2485800,8286000,10771800
+modern,2149,5,normal,premium,Terai,5,4,RCC,yes,solar panels,1289400,4298000,5787400
+traditional,2927,5,RCC,standard,Kathmandu,1,3,flat,no,garden,1170800,4390500,5711300
+traditional,2474,3,pile,premium,Lalitpur,6,1,metal,no,none,1484400,4948000,6432400
+apartment,1625,4,normal,premium,Terai,3,4,flat,no,garden,975000,3250000,4375000
+traditional,1434,4,normal,standard,Pokhara,6,3,RCC,no,basement,573600,2151000,3224600
+traditional,3755,3,normal,standard,Kathmandu,2,4,flat,yes,garden,1502000,5632500,7284500
+traditional,4508,5,normal,premium,Kathmandu,2,1,RCC,no,garden,2704800,9016000,11870800
+traditional,953,3,RCC,low,Kathmandu,6,1,sloped,no,swimming pool,285900,1143600,2229500
+traditional,1758,5,RCC,premium,Lalitpur,1,1,flat,no,basement,1054800,3516000,5070800
+traditional,2651,3,pile,premium,Bhaktapur,2,3,RCC,no,none,1590600,5302000,6892600
+apartment,4107,3,normal,low,Terai,4,4,RCC,yes,swimming pool,1232100,4928400,6960500
+traditional,2722,3,RCC,low,Pokhara,1,1,RCC,yes,none,816600,3266400,4083000
+modern,636,2,normal,low,Bhaktapur,6,2,flat,yes,garden,190800,763200,1104000
+apartment,4069,1,RCC,premium,Terai,6,3,sloped,no,solar panels,2441400,8138000,10779400
+apartment,4990,2,RCC,low,Terai,4,1,metal,yes,garden,1497000,5988000,7635000
+modern,2482,2,pile,low,Lalitpur,1,2,metal,yes,none,744600,2978400,3723000
+modern,1776,1,normal,premium,Terai,1,4,RCC,yes,garden,1065600,3552000,4767600
+traditional,824,3,normal,low,Pokhara,6,2,sloped,yes,swimming pool,247200,988800,2036000
+apartment,921,4,normal,low,Terai,3,2,RCC,yes,none,276300,1105200,1381500
+apartment,4825,4,pile,low,Terai,5,3,metal,yes,none,1447500,5790000,7237500
+modern,4150,2,RCC,standard,Pokhara,4,4,flat,no,none,1660000,6225000,7885000
+apartment,4038,1,RCC,standard,Lalitpur,4,2,metal,no,garden,1615200,6057000,7822200
+apartment,2325,4,pile,standard,Terai,3,3,flat,yes,solar panels,930000,3487500,4617500
+traditional,1217,3,normal,low,Bhaktapur,4,3,flat,no,solar panels,365100,1460400,2025500
+traditional,830,1,RCC,standard,Lalitpur,3,1,metal,no,solar panels,332000,1245000,1777000
+modern,2707,3,pile,standard,Lalitpur,1,3,metal,no,basement,1082800,4060500,5643300
+traditional,1665,1,RCC,premium,Lalitpur,1,3,flat,yes,none,999000,3330000,4329000
+apartment,3510,1,pile,low,Terai,6,4,sloped,no,garden,1053000,4212000,5415000
+apartment,2931,2,normal,low,Terai,5,1,sloped,yes,basement,879300,3517200,4896500
+traditional,3251,3,normal,standard,Lalitpur,2,4,sloped,no,solar panels,1300400,4876500,6376900
+traditional,561,5,normal,low,Kathmandu,1,2,RCC,yes,basement,168300,673200,1341500
+traditional,905,5,normal,standard,Lalitpur,5,3,flat,yes,garden,362000,1357500,1869500
+apartment,3405,5,normal,low,Terai,1,4,RCC,no,none,1021500,4086000,5107500
+traditional,3496,3,pile,premium,Lalitpur,4,4,flat,no,swimming pool,2097600,6992000,9889600
+apartment,1516,3,pile,low,Pokhara,2,3,sloped,no,none,454800,1819200,2274000
+modern,4292,2,pile,premium,Terai,4,4,metal,yes,solar panels,2575200,8584000,11359200
+modern,3220,4,normal,low,Pokhara,6,4,flat,yes,basement,966000,3864000,5330000
+apartment,1187,5,normal,standard,Lalitpur,2,3,sloped,yes,garden,474800,1780500,2405300
+apartment,4888,2,pile,standard,Lalitpur,4,3,metal,no,none,1955200,7332000,9287200
+modern,1849,5,pile,low,Kathmandu,3,4,sloped,yes,none,554700,2218800,2773500
+traditional,1648,1,RCC,standard,Terai,5,3,sloped,yes,swimming pool,659200,2472000,3931200
+apartment,1624,1,RCC,premium,Kathmandu,4,1,metal,no,none,974400,3248000,4222400
+modern,3501,4,normal,premium,Bhaktapur,3,3,metal,no,swimming pool,2100600,7002000,9902600
+traditional,3143,5,pile,low,Terai,1,3,sloped,no,solar panels,942900,3771600,4914500
+modern,2640,5,normal,low,Pokhara,2,3,flat,no,basement,792000,3168000,4460000
+apartment,1867,3,RCC,standard,Terai,3,3,sloped,yes,none,746800,2800500,3547300
+modern,4386,3,normal,premium,Pokhara,4,1,metal,no,garden,2631600,8772000,11553600
+traditional,504,1,RCC,standard,Pokhara,5,3,metal,yes,garden,201600,756000,1107600
+modern,3308,1,RCC,low,Terai,1,4,sloped,yes,swimming pool,992400,3969600,5762000
+modern,1422,3,pile,premium,Bhaktapur,5,1,sloped,no,solar panels,853200,2844000,3897200
+traditional,1033,5,RCC,premium,Bhaktapur,6,4,sloped,no,basement,619800,2066000,3185800
+apartment,599,1,normal,standard,Pokhara,3,4,flat,yes,swimming pool,239600,898500,1938100
+modern,4442,5,pile,premium,Pokhara,4,2,RCC,yes,swimming pool,2665200,8884000,12349200
+apartment,2960,5,RCC,premium,Bhaktapur,5,1,flat,yes,solar panels,1776000,5920000,7896000
+traditional,1425,5,pile,low,Terai,1,4,sloped,no,swimming pool,427500,1710000,2937500
+traditional,1090,2,pile,premium,Pokhara,5,2,RCC,yes,swimming pool,654000,2180000,3634000
+modern,2455,4,normal,premium,Pokhara,3,4,metal,no,none,1473000,4910000,6383000
+traditional,4195,4,pile,standard,Lalitpur,6,2,sloped,no,none,1678000,6292500,7970500
+traditional,1819,2,pile,standard,Kathmandu,6,1,RCC,no,swimming pool,727600,2728500,4256100
+modern,2098,3,normal,premium,Pokhara,2,2,metal,no,solar panels,1258800,4196000,5654800
+traditional,1167,1,pile,low,Terai,1,1,flat,yes,swimming pool,350100,1400400,2550500
+apartment,4610,1,pile,low,Pokhara,1,2,metal,no,swimming pool,1383000,5532000,7715000
+modern,4028,4,pile,premium,Bhaktapur,2,2,metal,yes,swimming pool,2416800,8056000,11272800
+modern,3997,2,normal,low,Lalitpur,2,3,metal,no,solar panels,1199100,4796400,6195500
+traditional,3699,4,normal,premium,Lalitpur,6,1,RCC,no,swimming pool,2219400,7398000,10417400
+modern,1658,1,pile,premium,Pokhara,1,4,flat,yes,basement,994800,3316000,4810800
+modern,962,1,pile,premium,Bhaktapur,3,4,RCC,yes,none,577200,1924000,2501200
+apartment,1938,4,pile,premium,Pokhara,5,3,metal,yes,garden,1162800,3876000,5188800
+traditional,4945,1,normal,premium,Lalitpur,6,4,flat,yes,solar panels,2967000,9890000,13057000
+apartment,3551,5,RCC,premium,Terai,3,2,flat,yes,solar panels,2130600,7102000,9432600
+modern,3795,5,normal,standard,Lalitpur,6,2,sloped,no,swimming pool,1518000,5692500,8010500
+traditional,3513,5,pile,low,Pokhara,5,1,sloped,no,basement,1053900,4215600,5769500
+traditional,1731,2,normal,premium,Terai,5,1,flat,yes,basement,1038600,3462000,5000600
+traditional,2524,5,normal,standard,Terai,2,4,flat,no,swimming pool,1009600,3786000,5595600
+apartment,1436,5,normal,low,Lalitpur,4,3,flat,yes,solar panels,430800,1723200,2354000
+traditional,3541,2,pile,premium,Bhaktapur,6,1,RCC,no,none,2124600,7082000,9206600
+modern,996,4,RCC,low,Terai,2,2,flat,yes,garden,298800,1195200,1644000
+traditional,1719,2,pile,low,Terai,4,3,sloped,yes,solar panels,515700,2062800,2778500
+apartment,3154,1,pile,low,Terai,3,3,RCC,yes,none,946200,3784800,4731000
+apartment,3744,5,RCC,standard,Kathmandu,4,2,sloped,no,garden,1497600,5616000,7263600
+apartment,3835,4,pile,standard,Lalitpur,4,2,metal,no,garden,1534000,5752500,7436500
+traditional,2302,1,normal,premium,Terai,6,4,metal,no,solar panels,1381200,4604000,6185200
+apartment,513,5,normal,premium,Pokhara,2,4,sloped,yes,garden,307800,1026000,1483800
+traditional,4112,5,normal,low,Lalitpur,4,1,metal,yes,swimming pool,1233600,4934400,6968000
+modern,1568,3,normal,standard,Pokhara,3,4,metal,no,none,627200,2352000,2979200
+traditional,3138,4,pile,low,Terai,1,4,sloped,yes,swimming pool,941400,3765600,5507000
+traditional,2776,2,pile,premium,Terai,3,3,sloped,no,garden,1665600,5552000,7367600
+apartment,1687,4,RCC,low,Bhaktapur,2,1,metal,yes,basement,506100,2024400,3030500
+modern,1427,4,normal,standard,Terai,6,2,flat,no,none,570800,2140500,2711300
+traditional,4891,1,normal,standard,Kathmandu,5,2,sloped,no,swimming pool,1956400,7336500,10092900
+apartment,2242,3,RCC,premium,Lalitpur,4,2,flat,yes,basement,1345200,4484000,6329200
+modern,1856,3,normal,standard,Lalitpur,4,3,sloped,yes,solar panels,742400,2784000,3726400
+apartment,3479,4,normal,premium,Lalitpur,4,4,sloped,yes,none,2087400,6958000,9045400
+apartment,1993,1,normal,standard,Bhaktapur,6,2,RCC,no,swimming pool,797200,2989500,4586700
+apartment,4564,2,pile,standard,Kathmandu,3,2,sloped,no,solar panels,1825600,6846000,8871600
+apartment,2493,1,normal,standard,Kathmandu,6,3,metal,yes,none,997200,3739500,4736700
+modern,551,3,RCC,low,Pokhara,1,1,RCC,no,swimming pool,165300,661200,1626500
+apartment,4315,1,pile,premium,Lalitpur,6,3,sloped,yes,solar panels,2589000,8630000,11419000
+traditional,4125,1,pile,low,Kathmandu,2,4,sloped,yes,basement,1237500,4950000,6687500
+apartment,1418,2,pile,premium,Kathmandu,4,4,metal,yes,garden,850800,2836000,3836800
+traditional,2379,1,pile,premium,Pokhara,1,2,sloped,no,none,1427400,4758000,6185400
+modern,4854,1,RCC,standard,Kathmandu,2,1,flat,yes,garden,1941600,7281000,9372600
+traditional,923,5,normal,standard,Lalitpur,2,2,metal,no,solar panels,369200,1384500,1953700
+apartment,4854,1,RCC,premium,Lalitpur,6,4,RCC,yes,garden,2912400,9708000,12770400
+apartment,3293,5,pile,low,Terai,6,4,metal,yes,swimming pool,987900,3951600,5739500
+traditional,2927,3,RCC,standard,Bhaktapur,6,1,metal,no,basement,1170800,4390500,6061300
+modern,2570,1,normal,standard,Kathmandu,6,3,metal,no,swimming pool,1028000,3855000,5683000
+apartment,2117,2,normal,standard,Bhaktapur,1,1,RCC,no,none,846800,3175500,4022300
+apartment,3708,4,RCC,low,Terai,3,2,flat,no,swimming pool,1112400,4449600,6362000
+modern,4032,1,normal,standard,Lalitpur,3,1,sloped,yes,basement,1612800,6048000,8160800
+traditional,2528,2,RCC,premium,Kathmandu,1,3,metal,yes,none,1516800,5056000,6572800
+modern,2926,5,pile,standard,Pokhara,5,1,flat,no,swimming pool,1170400,4389000,6359400
+traditional,1860,1,normal,low,Kathmandu,4,1,RCC,no,solar panels,558000,2232000,2990000
+traditional,2598,2,RCC,low,Bhaktapur,3,2,RCC,yes,garden,779400,3117600,4047000
+apartment,3441,1,pile,standard,Terai,6,4,metal,yes,swimming pool,1376400,5161500,7337900
+apartment,869,4,pile,standard,Pokhara,4,1,sloped,no,swimming pool,347600,1303500,2451100
+apartment,4566,5,pile,low,Bhaktapur,6,2,flat,yes,swimming pool,1369800,5479200,7649000
+modern,1000,5,pile,premium,Terai,3,3,sloped,yes,swimming pool,600000,2000000,3400000
+apartment,2145,4,pile,premium,Pokhara,1,2,flat,no,basement,1287000,4290000,6077000
+traditional,4469,4,normal,premium,Terai,1,1,metal,no,swimming pool,2681400,8938000,12419400
+apartment,4438,5,pile,low,Kathmandu,5,1,flat,yes,none,1331400,5325600,6657000
+apartment,1330,1,pile,premium,Pokhara,2,4,flat,no,none,798000,2660000,3458000
+modern,2381,3,pile,standard,Bhaktapur,3,3,RCC,yes,garden,952400,3571500,4673900
+apartment,2902,3,normal,standard,Terai,1,3,flat,no,swimming pool,1160800,4353000,6313800
+modern,4861,1,pile,low,Kathmandu,5,3,flat,yes,none,1458300,5833200,7291500
+modern,4751,3,pile,standard,Terai,3,4,RCC,no,solar panels,1900400,7126500,9226900
+traditional,3963,5,normal,low,Bhaktapur,5,1,RCC,yes,basement,1188900,4755600,6444500
