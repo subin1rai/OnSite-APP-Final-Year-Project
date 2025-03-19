@@ -35,7 +35,7 @@ const signUp = async (req, res) => {
         password: hashPassword,
       },
     });
-  
+
     const result = res.status(201).json({
       message: "User created successfully",
       status: 201,
@@ -68,11 +68,17 @@ const login = async (req, res) => {
       return res.status(400).json({ error: "Invalid password" });
     }
     const token = jwt.sign(
-      { userId: user.id, email: user.email, username: user.username, role: user.role,image: user.image },
+      {
+        userId: user.id,
+        email: user.email,
+        username: user.username,
+        role: user.role,
+        image: user.image,
+      },
       process.env.JWT_SECRET,
-      { expiresIn: "2hrs" }   
+      { expiresIn: "2hrs" }
     );
-    
+
     return res.status(200).json({
       message: "Login successful",
       user,

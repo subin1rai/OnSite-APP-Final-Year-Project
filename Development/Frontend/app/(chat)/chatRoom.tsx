@@ -53,7 +53,6 @@ const ChatRoom: React.FC = () => {
   // ✅ Auto-Scroll Fix: Reference for ScrollView
   const scrollViewRef = useRef<ScrollView>(null);
 
-  // Fetch and store User ID when component mounts
   useEffect(() => {
     const fetchUserId = async () => {
       try {
