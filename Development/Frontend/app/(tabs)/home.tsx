@@ -148,7 +148,7 @@ const Home = () => {
             </View>
             <Text>Vendor</Text>
           </TouchableOpacity>
-          <TouchableOpacity className="items-center gap-2" onPress={()=>{router.push('../(Mulyankan)/housePricePrediction')}}>
+          <TouchableOpacity className="items-center gap-2" onPress={()=>{router.push('../(Mulyankan)/ConstructionPrediction')}}>
             <View className="bg-[#FEEDCF] p-6 rounded-md items-center gap-2">
               <Image source={icons.ai} className="w-10 h-10" />
             </View>
