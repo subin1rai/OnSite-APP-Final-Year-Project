@@ -48,14 +48,12 @@ def predict():
 
         input_data = pd.DataFrame([data])
 
-        # Ensuring all location-related features are boolean
         for col in input_data.columns:
             if col.startswith("LOCATION_") and input_data[col].iloc[0] == 1:
                 input_data[col] = True
             elif col.startswith("LOCATION_"):
                 input_data[col] = False
 
-        # Handle missing columns by adding them with default value 0
         missing_cols = [col for col in house_feature_columns if col not in input_data.columns]
         if missing_cols:
             print("\nMissing Features:", missing_cols)
@@ -64,7 +62,6 @@ def predict():
 
         input_data = input_data[house_feature_columns]
         
-        # Make house price prediction
         prediction_log = model.predict(input_data)[0]
         formatted_price = format_rupees(prediction_log)
 
@@ -78,12 +75,10 @@ def predict():
 @app.route("/constructionpredict", methods=["POST"])
 def construction_predict():
     try:
-        # Parse the incoming JSON data
         data = request.get_json()
         if not data:
             return jsonify({"error": "No input data provided"}), 400
 
-        # Check for body key and load the data accordingly
         if "body" in data:
             try:
                 data = json.loads(data["body"])
@@ -92,7 +87,6 @@ def construction_predict():
 
         input_data = pd.DataFrame([data])
 
-        # Handle missing columns by adding them with default value 0
         missing_cols = [col for col in construction_feature_columns if col not in input_data.columns]
         if missing_cols:
             defaults = pd.DataFrame(0, index=input_data.index, columns=missing_cols)

@@ -15,7 +15,16 @@ const Layout = () => {
       <StatusBar barStyle="dark-content" backgroundColor="white" translucent={false} />
       <Stack>
         <Stack.Screen  name="housePricePrediction" options={{ 
-            title: "Mulyankan",
+            title: "House Prediction",
+            headerTitleStyle: { fontSize: 20, fontWeight: "semibold", color: "#fff" },
+            headerStyle: { backgroundColor: "#FDB541" },
+             headerLeft: () => (
+                          <TouchableOpacity onPress={() => router.back()} style={{ marginLeft: 0 }}>
+                            <Ionicons name="arrow-back" size={24} color="white" />
+                          </TouchableOpacity>)
+         }}/>
+        <Stack.Screen  name="ConstructionPrediction" options={{ 
+            title: "Construction Prediction",
             headerTitleStyle: { fontSize: 20, fontWeight: "semibold", color: "#fff" },
             headerStyle: { backgroundColor: "#FDB541" },
              headerLeft: () => (

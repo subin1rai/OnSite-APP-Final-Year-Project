@@ -44,6 +44,8 @@ import addprofile from "@/assets/icons/add-profile.png";
 import ellipsis from "@/assets/icons/ellipsis.png";
 import edit from "@/assets/icons/edit.png";
 import dropdown from "@/assets/icons/dropdown.png";
+import house from "@/assets/images/modern-house.png";
+import engineer from "@/assets/icons/engineer.png";
 
 export const images = {
     onboarding1,
@@ -55,6 +57,8 @@ export const images = {
 
 export const icons = {
     arrowDown,
+    
+    house,
     arrowUp,
     addprofile,
     backArrow,
@@ -94,7 +98,8 @@ export const icons = {
     bell,
     ellipsis,
     edit,
-    dropdown
+    dropdown,
+    engineer
 };
 
 export const onboarding = [
