@@ -46,7 +46,6 @@ const ConstructionPrediction = () => {
     const [response, setResponse] = useState(null);
     const [predictionValue, setPredictionValue] = useState(0);
 
-    // Option lists
     const houseTypes = [
         "apartment", 
         "modern", 
@@ -106,7 +105,6 @@ const ConstructionPrediction = () => {
             { value: bathrooms, name: "Bathrooms" }
         ];
 
-        // Check for empty fields
         for (const field of numericFields) {
             if (!field.value || field.value.trim() === "") {
                 Alert.alert("Validation Error", `${field.name} is required`);
@@ -127,7 +125,6 @@ const ConstructionPrediction = () => {
         return true;
     };
 
-    // Prepare all possible one-hot encoded values
     const prepareOneHotEncodedData = () => {
         const oneHotData: { [key: string]: number } = {};
         
@@ -173,7 +170,7 @@ const ConstructionPrediction = () => {
     };
 
     const handlePrediction = async () => {
-        Keyboard.dismiss(); // Hide keyboard when submitting form
+        Keyboard.dismiss(); 
         
         if (!validateInputs()) return;
         
@@ -181,13 +178,11 @@ const ConstructionPrediction = () => {
         try {
             // Prepare numeric data
             const numericData = {
-                "Total Area (sq. ft.)": parseFloat(area),
+                "Total Area (sq. ft.)": parseInt(floors) * parseFloat(area),
                 "Floors": parseInt(floors),
                 "Bedrooms": parseInt(bedrooms),
                 "Bathrooms": parseInt(bathrooms)
             };
-            
-            // Prepare one-hot encoded data for categorical fields
             const oneHotData = prepareOneHotEncodedData();
             
             // Combine all data
@@ -206,7 +201,6 @@ const ConstructionPrediction = () => {
             } else if (!responseData.data || responseData.data.construction_predicted_price === undefined) {
                 Alert.alert("Prediction Error", "Unexpected response format from server.");
             } else {
-                // Store prediction value separately and show result modal
                 setPredictionValue(responseData.data.construction_predicted_price);
                 setResultModalVisible(true);
             }
@@ -234,7 +228,6 @@ const ConstructionPrediction = () => {
         setPredictionValue(0);
     };
 
-    // Custom dropdown item component
     const DropdownItem = ({ item, selected, onPress }: { item: string | { label: string }, selected: boolean, onPress: () => void }) => (
         <TouchableOpacity 
             className={`py-3 px-1 border-b border-gray-100 flex-row justify-between items-center ${selected ? 'bg-yellow-50' : ''}`}
@@ -405,13 +398,6 @@ const ConstructionPrediction = () => {
                             ) : (
                                 <Text className="text-white font-semibold text-base">Calculate Construction Cost</Text>
                             )}
-                        </TouchableOpacity>
-
-                        <TouchableOpacity 
-                            className="border border-gray-300 py-4 rounded-xl items-center"
-                            onPress={resetForm}
-                        >
-                            <Text className="text-gray-700 font-medium text-base">Reset Form</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -628,7 +614,6 @@ const ConstructionPrediction = () => {
                         </View>
                     </Modal>
 
-                    {/* Additional Features Modal */}
                     <Modal
                         animationType="none"
                         transparent={true}
@@ -663,7 +648,6 @@ const ConstructionPrediction = () => {
                         </View>
                     </Modal>
 
-                    {/* Result Modal - Styled to match the example */}
                     <Modal
                         animationType="fade"
                         transparent={true}

@@ -29,6 +29,20 @@ const Layout = () => {
           }}
         />
         <Stack.Screen
+          name="project_setting"
+          options={{
+            title: "Project Setting",
+            headerStyle: { backgroundColor: "#FDB541" },
+            headerTitleStyle: { fontSize: 20, fontWeight: "semibold", color: "#fff" },
+            headerTintColor: "#fff",
+            headerLeft: () => (
+              <TouchableOpacity onPress={() => router.back()} style={{ marginLeft: 0 }}>
+                <Ionicons name="arrow-back" size={24} color="white" />
+              </TouchableOpacity>
+            ),
+          }}
+        />
+        <Stack.Screen
           name="all_files" options={{ headerShown: false }}  />
         <Stack.Screen name="project_home" options={{ headerShown: false }} />
       </Stack>

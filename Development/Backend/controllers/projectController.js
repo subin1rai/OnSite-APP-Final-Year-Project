@@ -123,8 +123,8 @@ const getProject = async (req, res) => {
 
 const projectById = async (req, res) => {
   try {
-    const projectId = req.query?.id;
-
+    const projectId = req.body;
+    console.log(projectId);
     if (!projectId) {
       return res.status(400).json({ message: "Project id is required" });
     }

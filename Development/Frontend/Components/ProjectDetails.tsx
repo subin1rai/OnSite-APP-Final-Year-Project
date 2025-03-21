@@ -1,4 +1,5 @@
 import { icons } from '@/constants'
+import { router } from 'expo-router';
 import React, { useState } from 'react'
 import { Image, Text, TouchableOpacity, View, Modal, FlatList } from 'react-native'
 
@@ -40,7 +41,7 @@ const ProjectDetails = () => {
       <View className="border-b border-gray-300 my-2" />
 
       {/* Project Settings */}
-      <TouchableOpacity className="flex flex-row justify-between items-center py-4">
+      <TouchableOpacity className="flex flex-row justify-between items-center py-4" onPress={() => router.push("/(project)/project_setting")}>
         <Text className="text-lg font-medium">Project Settings</Text>
         <Image source={icons.edit} className="w-6 h-6" />
       </TouchableOpacity>

@@ -17,7 +17,7 @@ import useUser from "@/context/User";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import ProjectDetails from "@/Components/ProjectDetails";
-import { useProjectStore } from "@/store/projectStore"; // adjust path accordingly
+import { useProjectStore } from "@/store/projectStore"; 
 type Project = {
   id: number;
   projectName: string;
@@ -39,9 +39,12 @@ const Home = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
+  const [isMulyankanOpen, setIsMulyankanOpen] = useState(false);
 
   const snapPoints = ["30%"];
+  const mulyankanSnapPoints = ["25%"];
   const bottomSheetRef = useRef<BottomSheet>(null);
+  const mulyankanBottomSheetRef = useRef<BottomSheet>(null);
 
   const handleOpenPress = useCallback((index:number) => {
     if (!isOpen) {
@@ -53,6 +56,16 @@ const Home = () => {
   const handleClosePress = () => {
     bottomSheetRef.current?.close();
     setIsOpen(false);
+  };
+
+  const handleMulyankanOpen = () => {
+    mulyankanBottomSheetRef.current?.expand();
+    setIsMulyankanOpen(true);
+  };
+
+  const handleMulyankanClose = () => {
+    mulyankanBottomSheetRef.current?.close();
+    setIsMulyankanOpen(false);
   };
 
   const getProject = async () => {
@@ -70,7 +83,6 @@ const Home = () => {
 
   const handleProjectClick = (selectedProject: Project) => {
     setIsOpen(false);
-    // Saving the project data in the Zustand store.
     console.log(selectedProject);
     useProjectStore.getState().setSelectedProject(selectedProject);
     router.push("/(project)/project_home");
@@ -104,18 +116,22 @@ const Home = () => {
   useEffect(() => {
     getProject();
     setIsOpen(false);
+    setIsMulyankanOpen(false);
   }, []);
 
   return (
     <SafeAreaView className="flex-1 bg-white z-0">
-      {isOpen && (
-        <View style={styles.redOverlay} onTouchStart={handleClosePress} />
+      {(isOpen || isMulyankanOpen) && (
+        <View 
+          style={styles.redOverlay} 
+          onTouchStart={isOpen ? handleClosePress : handleMulyankanClose} 
+        />
       )}
       <View className="mx-4">
         {/* Header Section */}
         <View className="flex flex-row gap-2 justify-between items-center">
           <View className="flex-row gap-2 items-center">
-            {/* ✅ Fixed User Profile Image Handling */}
+          
             {user?.image ? (
               <Image source={{ uri: user.image }} className="w-10 h-10 rounded-full" />
             ) : (
@@ -148,7 +164,7 @@ const Home = () => {
             </View>
             <Text>Vendor</Text>
           </TouchableOpacity>
-          <TouchableOpacity className="items-center gap-2" onPress={()=>{router.push('../(Mulyankan)/ConstructionPrediction')}}>
+          <TouchableOpacity className="items-center gap-2" onPress={handleMulyankanOpen}>
             <View className="bg-[#FEEDCF] p-6 rounded-md items-center gap-2">
               <Image source={icons.ai} className="w-10 h-10" />
             </View>
@@ -234,16 +250,69 @@ const Home = () => {
         }
       />
 
-      {/* BottomSheet */}
+      {/* Project BottomSheet */}
       <BottomSheet
         ref={bottomSheetRef}
-        index={-1} // Ensure BottomSheet starts closed
+        index={-1}
         snapPoints={snapPoints}
         enablePanDownToClose={true}
         onClose={handleClosePress}
         containerStyle={{ zIndex: 20 }}
       >
         <BottomSheetView>{isOpen && <ProjectDetails />}</BottomSheetView>
+      </BottomSheet>
+
+      {/* Mulyankan BottomSheet */}
+      <BottomSheet
+        ref={mulyankanBottomSheetRef}
+        index={-1} // Ensure BottomSheet starts closed
+        snapPoints={mulyankanSnapPoints}
+        enablePanDownToClose={true}
+        onClose={handleMulyankanClose}
+        containerStyle={{ zIndex: 20 }}
+      >
+        <BottomSheetView>
+          <View className="p-5">
+            <Text className="text-[22px] font-bold text-center mb-6 text-[#333]">Mulyankan</Text>
+
+            <View className="mb-8">
+              <TouchableOpacity 
+                className="flex-row items-center bg-white p-4 rounded-xl mb-4 border border-gray-100 "
+               
+                onPress={() => {
+                  handleMulyankanClose();
+                  router.push("/(Mulyankan)/housePricePrediction");
+                }}
+              >
+                <View className="bg-[#FEEDCF] p-3 rounded-lg mr-4">
+                  <Image source={icons.house} className="w-8 h-8" />
+                </View>
+                <View className="flex-1">
+                  <Text className="text-[18px] font-semibold text-[#333]">House Price</Text>
+                  <Text className="text-[14px] text-gray-500 mt-1">Evaluate and predict house price</Text>
+                </View>
+                <Icon name="chevron-right" size={24} color="#FCAC29" />
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                className="flex-row items-center bg-white p-4 rounded-xl border border-gray-100"
+                onPress={() => {
+                  handleMulyankanClose();
+                  router.push("/(Mulyankan)/ConstructionPrediction");
+                }}
+              >
+                <View className="bg-[#FEEDCF] p-3 rounded-lg mr-4">
+                  <Image source={icons.engineer} className="w-8 h-8" />
+                </View>
+                <View className="flex-1">
+                  <Text className="text-[18px] font-semibold text-[#333]">Construction Price</Text>
+                  <Text className="text-[14px] text-gray-500 mt-1">Calculate and predict construction price</Text>
+                </View>
+                <Icon name="chevron-right" size={24} color="#FCAC29" />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </BottomSheetView>
       </BottomSheet>
     </SafeAreaView>
   );
@@ -258,6 +327,13 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     zIndex: 10,
+  },
+  optionCard: {
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
 });
 export default Home;
