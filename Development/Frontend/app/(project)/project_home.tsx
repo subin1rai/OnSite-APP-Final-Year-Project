@@ -22,8 +22,6 @@ const Project_home = () => {
   const { selectedProject } = useProjectStore();
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
-
-  // Explicitly type the ref
   const horizontalScrollRef = useRef<ScrollView | null>(null);
 
   const onRefresh = useCallback(() => {
