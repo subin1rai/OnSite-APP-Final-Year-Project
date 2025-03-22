@@ -46,12 +46,13 @@ const Home = () => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const mulyankanBottomSheetRef = useRef<BottomSheet>(null);
 
-  const handleOpenPress = useCallback((index:number) => {
-    if (!isOpen) {
-      bottomSheetRef.current?.expand();
-      setIsOpen(true);
-    }
-  }, [isOpen]);
+const handleOpenPress = (project: Project) => {
+  useProjectStore.getState().setSelectedProject(project);
+  if (!isOpen) {
+    bottomSheetRef.current?.expand();
+    setIsOpen(true);
+  }
+};
 
   const handleClosePress = () => {
     bottomSheetRef.current?.close();
@@ -220,8 +221,9 @@ const Home = () => {
                   <View>
                     <View className="flex-row justify-between items-center pb-2">
                       <Text className="text-[22px]">0%</Text>
+                      {/* //when i click this set the seelected project in the zustand store */}
                       <TouchableOpacity
-                        onPress={() => handleOpenPress(0)}
+                        onPress={() => handleOpenPress(item)}
                         className="p-2"
                       >
                         <Image source={icons.ellipsis} className="w-1 h-4" />

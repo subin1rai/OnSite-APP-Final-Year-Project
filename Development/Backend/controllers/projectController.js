@@ -123,8 +123,8 @@ const getProject = async (req, res) => {
 
 const projectById = async (req, res) => {
   try {
-    const projectId = req.body;
-    console.log(projectId);
+    const projectId = req.query?.id;
+    
     if (!projectId) {
       return res.status(400).json({ message: "Project id is required" });
     }
@@ -134,10 +134,11 @@ const projectById = async (req, res) => {
     const projectData = await prisma.project.findFirst({
       where: { id: parseInt(projectId) },
       include: {
+        budgets: true,
         projectWorkers: {
           include: {
             worker: true,
-            attendance: true,
+            attendance: true
           },
         },
       },
@@ -146,6 +147,7 @@ const projectById = async (req, res) => {
     if (!projectData) {
       return res.status(404).json({ message: "Project not found" });
     }
+    console.log(projectData)
 
     // Transform the data structure
     const transformedProject = {
@@ -160,6 +162,9 @@ const projectById = async (req, res) => {
         builderId: projectData.builderId,
         createdAt: projectData.createdAt,
         updatedAt: projectData.updatedAt,
+        budget:  projectData.budgets.map(bb=>({
+          amount: bb.amount
+        })),
         worker: projectData.projectWorkers.map(pw => ({
           id: pw.worker.id,
           projectWorkerId: pw.id,
@@ -171,7 +176,7 @@ const projectById = async (req, res) => {
         }))
       }
     };
-
+console.log("project data",transformedProject);
     return res.status(200).json(transformedProject);
   } catch (error) {
     console.error(error);

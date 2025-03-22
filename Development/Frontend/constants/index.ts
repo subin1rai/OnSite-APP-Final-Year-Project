@@ -46,6 +46,7 @@ import edit from "@/assets/icons/edit.png";
 import dropdown from "@/assets/icons/dropdown.png";
 import house from "@/assets/images/modern-house.png";
 import engineer from "@/assets/icons/engineer.png";
+import trash from "@/assets/icons/delete.png";
 
 export const images = {
     onboarding1,
@@ -99,7 +100,8 @@ export const icons = {
     ellipsis,
     edit,
     dropdown,
-    engineer
+    engineer,
+    trash
 };
 
 export const onboarding = [
