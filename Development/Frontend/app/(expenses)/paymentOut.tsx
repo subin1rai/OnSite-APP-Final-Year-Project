@@ -27,28 +27,85 @@ import { useBudgetStore } from "@/store/budgetStore";
 import apiHandler from "@/context/ApiHandler";
 import { router } from "expo-router";
 
-const PaymentOut = () => {
+// Define types
+interface Category {
+  id: number;
+  name: string;
+}
 
+interface CategoryListProps {
+  handleCloseBottomSheet: () => void;
+  onSelectCategory: (category: Category) => void;
+}
+
+interface PayloadType {
+  budgetId: string;
+  vendorId: string;
+  amount: number;
+  type: string;
+  category: string;
+  note: string;
+}
+
+const CategoryList: React.FC<CategoryListProps> = ({ handleCloseBottomSheet, onSelectCategory }) => {
+  const categories: Category[] = [
+    { id: 1, name: "Bills" },
+    { id: 2, name: "Supplies" },
+    { id: 3, name: "Services" },
+  ];
+
+  return (
+    <View className="px-4">
+      <View className="flex-row justify-between items-center mb-2">
+        <Text className="text-xl font-bold">Select Category</Text>
+      </View>
+      
+      {categories.map((category) => (
+        <TouchableOpacity
+          key={category.id}
+          className="border-b border-gray-200 py-4"
+          onPress={() => {
+            onSelectCategory(category);
+            handleCloseBottomSheet();
+          }}
+        >
+          <Text className="text-lg">{category.name}</Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
+};
+
+const PaymentOut = () => {
   const { selectedVendor } = useVendorStore();
-  const {budget} = useBudgetStore();
-  const [amount, setAmount] = useState("");
-    const [addTransaction, setAddTransaction] = useState("");
-  const [note, setNote] = useState("");
+  const { budget } = useBudgetStore();
+  const [amount, setAmount] = useState<string>("");
+  const [note, setNote] = useState<string>("");
   const bottomSheetRef = useRef<BottomSheet>(null);
 
+  // Category state
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [bottomSheetContent, setBottomSheetContent] = useState<"vendor" | "category">("vendor");
+
   // Payment Date state
-  const [paymentDate, setPaymentDate] = useState(dayjs());
-  const [openPaymentDatePicker, setOpenPaymentDatePicker] = useState(false);
+  const [paymentDate, setPaymentDate] = useState<dayjs.Dayjs>(dayjs());
+  const [openPaymentDatePicker, setOpenPaymentDatePicker] = useState<boolean>(false);
 
-  const snapPoints = ["80%"];
+  const snapPoints = ["50%"];
 
-  const handleOpenBottomSheet = useCallback(() => {
+  const handleOpenBottomSheet = useCallback((content: "vendor" | "category") => {
+    setBottomSheetContent(content);
     bottomSheetRef.current?.expand();
   }, []);
 
   const handleCloseBottomSheet = useCallback(() => {
     bottomSheetRef.current?.close();
   }, []);
+
+  // Handle category selection
+  const handleSelectCategory = (category: Category) => {
+    setSelectedCategory(category);
+  };
 
   // Update payment date and close the modal.
   const handlePaymentDateChange = (date: dayjs.Dayjs) => {
@@ -58,7 +115,6 @@ const PaymentOut = () => {
 
   // Handle transaction submission to the API.
   const handleSubmit = async () => {
-    console.log(selectedVendor);
     if (!selectedVendor) {
       alert("Please select a vendor");
       return;
@@ -67,31 +123,38 @@ const PaymentOut = () => {
       alert("Please enter an amount");
       return;
     }
+    if (!selectedCategory) {
+      alert("Please select a category");
+      return;
+    }
     if (!budget?.budgets[0].id) {
       alert("Budget ID is missing");
       return;
     }
-    const payload = {
-      budgetId: budget.budgets[0].id,
-      vendorId: selectedVendor.id,
+    
+    const payload: PayloadType = {
+      budgetId: budget.budgets[0].id.toString(),
+      vendorId: selectedVendor.id.toString(),
       amount: parseFloat(amount),
-      type: "expense",
+      type: "Debit",
+      category: selectedCategory.name,
       note: note,
     };
-    console.log(payload)
+    
+    console.log(payload);
     try {
-       const token = await SecureStore.getItemAsync("AccessToken");
-        const response = await apiHandler.post("/budget/add-transaction", payload,{
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json"
-            }
-        })   ;
-        console.log(response.data);
-        router.push('../(expenses)/budget')
-        return response.data;
+      const token = await SecureStore.getItemAsync("AccessToken");
+      const response = await apiHandler.post("/budget/add-transaction", payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+      console.log(response.data);
+      router.replace('../(expenses)/budget');
+      return response.data;
     } catch (error) {
-        console.error("Error submitting transaction:", error);
+      console.error("Error submitting transaction:", error);
     }
   };
 
@@ -102,13 +165,13 @@ const PaymentOut = () => {
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <SafeAreaView className="flex-1">
-          <ScrollView className="flex-1 px-4 pt-6">
-            {/* Payment Date Section */}
+          <ScrollView className="flex-1 px-4 pt-2">
+            {/* Header with Payment Date */}
             <View className="flex-row justify-between items-center mt-4">
-              <Text className="text-lg font-semibold">Payment In</Text>
+              <Text className="text-2xl font-bold text-gray-800">Payment Out</Text>
               <TouchableOpacity
                 onPress={() => setOpenPaymentDatePicker(true)}
-                className="flex-row items-center bg-gray-300 px-4 py-2 rounded-md"
+                className="flex-row items-center bg-gray-100 px-4 py-2 rounded-lg"
               >
                 <Ionicons name="calendar" size={18} color="#6B7280" />
                 <Text className="ml-2 text-gray-700">
@@ -118,48 +181,67 @@ const PaymentOut = () => {
             </View>
 
             {/* Vendor Selection Field */}
-            <View className="mt-4">
-              <Text className="text-lg text-gray-600 mb-3">Select Vendor</Text>
-              <TouchableOpacity onPress={handleOpenBottomSheet}>
-                <Text className="border border-gray-300 rounded-md px-4 py-4 text-lg">
+            <View className="mt-6">
+              <Text className="text-lg text-gray-600 mb-2">Select Vendor</Text>
+              <TouchableOpacity 
+                onPress={() => handleOpenBottomSheet("vendor")}
+                className="border border-gray-300 rounded-lg px-4 py-3 bg-gray-50"
+              >
+                <Text className="text-lg text-gray-800">
                   {selectedVendor ? selectedVendor.VendorName : "Select Vendor"}
                 </Text>
               </TouchableOpacity>
             </View>
 
+            {/* Category Selection Field */}
+            <View className="mt-6">
+              <Text className="text-lg text-gray-600 mb-2">Category</Text>
+              <TouchableOpacity 
+                onPress={() => handleOpenBottomSheet("category")}
+                className="border border-gray-300 rounded-lg px-4 py-3 bg-gray-50"
+              >
+                <Text className="text-lg text-gray-800">
+                  {selectedCategory ? selectedCategory.name : "Select Category"}
+                </Text>
+              </TouchableOpacity>
+            </View>
+
             {/* Amount Input Field */}
-            <View className="mt-4">
-              <Text className="text-lg text-gray-600 mb-3">Amount</Text>
+            <View className="mt-6">
+              <Text className="text-lg text-gray-600 mb-2">Amount</Text>
               <TextInput
                 placeholder="Enter amount"
                 keyboardType="numeric"
                 value={amount}
                 onChangeText={setAmount}
-                className="border border-gray-300 rounded-md px-4 py-4 text-lg text-gray-700"
+                className="border border-gray-300 rounded-lg px-4 py-3 text-lg text-gray-800 bg-gray-50"
               />
             </View>
 
             {/* Note Input Field */}
-            <View className="mt-4">
-              <Text className="text-lg text-gray-600 mb-3">Note</Text>
+            <View className="mt-6">
+              <Text className="text-lg text-gray-600 mb-2">Note</Text>
               <TextInput
                 placeholder="Enter note"
                 value={note}
                 onChangeText={setNote}
                 multiline
-                className="border border-gray-300 rounded-md px-4 py-4 text-lg text-gray-700"
+                numberOfLines={3}
+                className="border border-gray-300 rounded-lg px-4 py-3 text-lg text-gray-800 bg-gray-50"
               />
             </View>
 
             {/* Save Button */}
-            <TouchableOpacity onPress={handleSubmit} className="mt-6 py-4 rounded-md bg-[#FCA311]">
-              <Text className="text-center text-white font-semibold text-lg">
+            <TouchableOpacity 
+              onPress={handleSubmit} 
+              className="mt-8 py-3 rounded-lg bg-[#FCA311] mb-6"
+            >
+              <Text className="text-center text-white font-bold text-lg">
                 Save
               </Text>
             </TouchableOpacity>
           </ScrollView>
 
-          {/* Bottom Sheet for VendorList with backdrop */}
           <BottomSheet
             ref={bottomSheetRef}
             index={-1}
@@ -175,25 +257,38 @@ const PaymentOut = () => {
             )}
           >
             <BottomSheetView className="flex-1">
-              <VendorList handleCloseBottomSheet={handleCloseBottomSheet} />
+              {bottomSheetContent === "vendor" ? (
+                <VendorList handleCloseBottomSheet={handleCloseBottomSheet} />
+              ) : (
+                <CategoryList 
+                  handleCloseBottomSheet={handleCloseBottomSheet} 
+                  onSelectCategory={handleSelectCategory}
+                />
+              )}
             </BottomSheetView>
           </BottomSheet>
 
           {/* Payment Date Picker Modal */}
           <Modal visible={openPaymentDatePicker} transparent animationType="slide">
             <View className="flex-1 bg-black/50 justify-center items-center">
-              {/* Touchable overlay to dismiss the modal when tapping outside */}
               <TouchableWithoutFeedback onPress={() => setOpenPaymentDatePicker(false)}>
                 <View className="absolute inset-0" />
               </TouchableWithoutFeedback>
               <View className="bg-white p-5 rounded-lg w-11/12 border border-gray-300 shadow-lg">
-                <Text className="mb-4 text-lg font-semibold">Select Payment Date</Text>
+                <View className="flex-row justify-between items-center mb-4">
+                  <Text className="text-lg font-bold">Select Payment Date</Text>
+                  <TouchableOpacity onPress={() => setOpenPaymentDatePicker(false)}>
+                    <Ionicons name="close" size={24} color="#000" />
+                  </TouchableOpacity>
+                </View>
                 <DateTimePicker
                   mode="single"
                   date={paymentDate.toDate()}
-                  onChange={(params) => {
+                  onChange={(params: { date: any }) => {
                     if (params.date) {
                       handlePaymentDateChange(dayjs(params.date));
+                    } else {
+                      console.warn("Selected date is null");
                     }
                   }}
                 />

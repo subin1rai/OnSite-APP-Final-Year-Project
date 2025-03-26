@@ -16,8 +16,7 @@ except Exception as e:
 try:
     labor_model = joblib.load("LaborCostModel.pkl")
     material_model = joblib.load("MaterialCostModel.pkl")
-    # Assuming the feature names for the construction model are already available
-    construction_feature_columns = labor_model.feature_names_in_.tolist()  # Same features as for both models
+    construction_feature_columns = labor_model.feature_names_in_.tolist() 
 except Exception as e:
     print("Error loading construction models:", str(e))
     construction_feature_columns = []
@@ -36,13 +35,11 @@ def format_rupees(value):
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
-        # Parse the incoming JSON data
         data = request.get_json()
 
         if not data:
             return jsonify({"error": "No input data provided"}), 400
 
-        # Check for body key and load the data accordingly
         if "body" in data:
             data = json.loads(data["body"])
 

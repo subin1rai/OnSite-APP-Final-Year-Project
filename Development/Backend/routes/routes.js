@@ -15,6 +15,7 @@ const { uploadDocument, getAllDocument, deleteDocuments } = require("../controll
 const upload = workerController.upload;  
 const multer = require('multer');
 const { predictModel, constructionModel } = require("../controllers/modelController.js");
+const { getProjectTrialBalance } = require("../controllers/reportController.js");
 const multiUpload = multer({ dest: "uploads/" });
 
 // Authentication routes
@@ -77,5 +78,7 @@ router.post("/document/delete", deleteDocuments);
 
 router.post("/predict", predictModel);
 router.post("/construction", constructionModel);
+
+router.get("/report",authMiddleware(), getProjectTrialBalance);
 
 module.exports = router;

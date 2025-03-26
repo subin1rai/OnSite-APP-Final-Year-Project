@@ -83,7 +83,7 @@ model Attendance {
 
 model Budget {
   id        Int      @id @default(autoincrement())
-amount    Float
+  amount    Float
   inHand    Float?
   projectId Int
   project   Project  @relation(fields: [projectId], references: [id])
@@ -113,6 +113,7 @@ model Transaction {
   amount    Int
   type      String?
   note      String?
+  category  String?
   vendorId  Int?
   vendor    Vendor?  @relation(fields: [vendorId], references: [id])
   budgetId  Int

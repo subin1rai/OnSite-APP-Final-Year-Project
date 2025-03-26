@@ -1,7 +1,7 @@
 import React from "react";
 import { Stack } from "expo-router";
 import { StatusBar, TouchableOpacity } from "react-native";
-import { Ionicons } from "@expo/vector-icons"; // Import back button icon
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import "../../global.css";
 import Toast from "react-native-toast-message";

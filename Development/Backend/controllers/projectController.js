@@ -64,7 +64,7 @@ const createProject = async (req, res) => {
       const newProject = await prisma.project.create({
         data: {
           projectName,
-          ownerName: "subin", 
+          ownerName, 
           builderId: req.user.userId,
           location,
           startDate: new Date(startDate),
