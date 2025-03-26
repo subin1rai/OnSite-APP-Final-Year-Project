@@ -3,7 +3,7 @@ import * as SecureStore from 'expo-secure-store';
 import {jwtDecode} from 'jwt-decode';
 
 interface DecodedToken {
-  exp: number; // Expiration timestamp in seconds
+  exp: number; 
   [key: string]: any; 
 }
 
@@ -35,7 +35,6 @@ const AuthService = {
     if (isExpired) {
       console.log("Token expired");
       await AuthService.removeToken();
-      // Use an absolute path for redirection.
       router.replace("/(auth)/sign_in");
     }
   },

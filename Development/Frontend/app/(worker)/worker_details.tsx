@@ -159,11 +159,11 @@ const WorkerDetails = () => {
         "/initialize-khalti",
         {
           workerId,
-          projectId,
+          projectId,      
           totalSalary,
           month: fixedMonth,
           year: parseInt(year),
-          website_url: "http://localhost:3099",
+          website_url: "https://21b5-2001-df7-be80-3a7a-fc8b-13b0-a5f6-94d6.ngrok-free.app",
         },
         {
           headers: { "Content-Type": "application/json" },
@@ -185,7 +185,7 @@ const WorkerDetails = () => {
 
   // ✅ WebView Navigation Handler
   const handleWebViewNavigation = (navState: any) => {
-    if (navState.url.includes("localhost:3099")) {
+    if (navState.url.includes("localhost:3098")) {
       setPaymentUrl(null);
       setPaymentSuccess(true);
       fetchWorkerDetails(); 

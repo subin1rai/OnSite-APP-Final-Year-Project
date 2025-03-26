@@ -58,13 +58,11 @@ async function initializePayment(req, res) {
         purchase_order_id,
         status
       } = req.query;
-      
-      // Step 1: Ensure payment status is completed
+      console.log(req.query);
       if (status !== "Completed") {
         return res.status(400).json({ success: false, message: "Payment not completed" });
       }
   
-      // Step 2: Verify the payment with Khalti API
       const khaltiResponse = await verifyKhaltiPayment(pidx);
       if (!khaltiResponse || khaltiResponse.status !== "Completed") {
         return res.status(400).json({ success: false, message: "Khalti verification failed" });
@@ -72,7 +70,6 @@ async function initializePayment(req, res) {
   
       const [workerId, projectId, month, year] = purchase_order_id.split("-");
   
-      // Step 3: Update payment status in the database
       const updatedPayment = await prisma.payment.updateMany({
         where: {
           workerId: parseInt(workerId),
@@ -93,9 +90,9 @@ async function initializePayment(req, res) {
         return res.status(404).json({ success: false, message: "No matching payment found" });
       }
   
-      // Step 4: Fetch all attendance records for the worker in the given month
-      const startDate = new Date(year, month - 1, 1); // First day of the month
-      const endDate = new Date(year, month, 0, 23, 59, 59); // Last day of the month
+      //Fetch all attendance records for the worker in the given month
+      const startDate = new Date(year, month - 1, 1); 
+      const endDate = new Date(year, month, 0, 23, 59, 59); 
   
       console.log(`Fetching attendance records for WorkerID: ${workerId}, ProjectID: ${projectId} between ${startDate} and ${endDate}`);
   
@@ -118,7 +115,7 @@ async function initializePayment(req, res) {
         return res.status(404).json({ success: false, message: "No attendance records found for this worker in the given month." });
       }
   
-      // Step 5: Update all attendance records to mark them as paid
+      //Update all attendance records to mark them as paid
       const updatedAttendance = await prisma.attendance.updateMany({
         where: {
           id: { in: attendanceRecords.map(att => att.id) },
@@ -128,13 +125,32 @@ async function initializePayment(req, res) {
         },
       });
   
-      console.log(`Updated Attendance Count: ${updatedAttendance.count}`);
+      const project = await prisma.project.findFirst({
+        where: { id: parseInt(projectId) },
+        include: {
+          budgets: true,
+        },
+      });
+      console.log(`Updated Attendance Count: ${project}`);
+
+      //create a payment record in the transaction
+      const transaction = await prisma.transaction.create({
+        data: {
+          // workerId: parseInt(workerId),
+          budgetId: parseInt(project.budgets[0].id),
+          type: "expense",
+          category: "salary",
+          note: `Salary Payment for ${month} ${year}`,
+          amount: parseFloat(total_amount),
+        },
+      });
   
       return res.json({
         success: true,
         message: "Payment verified, updated in database, and attendance marked as paid",
         updatedPayment,
         updatedAttendance,
+        transaction
       });
   
     } catch (error) {

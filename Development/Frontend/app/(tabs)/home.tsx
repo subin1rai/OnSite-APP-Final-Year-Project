@@ -171,12 +171,12 @@ const handleOpenPress = (project: Project) => {
             </View>
             <Text>Mulyankan</Text>
           </TouchableOpacity>
-          <View className="items-center gap-2">
+          <TouchableOpacity className="items-center gap-2" onPress={()=>{router.push('../(report)/report')}}>
             <View className="bg-[#FEEDCF] p-6 rounded-md items-center gap-2">
               <Image source={icons.report} className="w-10 h-10" />
             </View>
             <Text>Report</Text>
-          </View>
+          </TouchableOpacity>
         </View>
 
         {/* Project Section Header */}

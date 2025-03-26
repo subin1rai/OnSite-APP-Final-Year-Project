@@ -32,7 +32,7 @@ const getBudget = async (req, res) => {
 // add Transcation on budget 
 const addTransaction = async (req, res) => {
   try {
-    const { budgetId, vendorId, note, amount, type } = req.body;
+    const { budgetId, vendorId, note, amount, type, category } = req.body;
     // Validate input
     if (!budgetId || !amount || !type) {
       return res.status(400).json({ error: "Missing required fields" });
@@ -48,9 +48,9 @@ const addTransaction = async (req, res) => {
 
     // Calculate updated inHand amount
     let updatedInHand = budget.inHand || 0;
-    if (type === "inHand") {
+    if (type === "Credit") {
       updatedInHand += parseFloat(amount);
-    } else if (type === "expense") {
+    } else if (type === "Debit") {
       updatedInHand -= parseFloat(amount);
     }
 
@@ -68,6 +68,7 @@ const addTransaction = async (req, res) => {
         amount: parseFloat(amount),
         type,
         note,
+        category
       },
     });
 

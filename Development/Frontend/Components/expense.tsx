@@ -20,7 +20,6 @@ import dayjs from "dayjs";
 const Expense = () => {
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const bottomSheetRef = useRef<BottomSheet>(null);
-  // "transaction" stores the entire response from the backend
   const [transaction, setTransaction] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -37,7 +36,6 @@ const Expense = () => {
     setIsBottomSheetOpen(false);
   };
 
-  // Prepare the payload using the budget id from the store.
   const payload = {
     budgetId: budget?.budgets[0]?.id,
   };
@@ -73,7 +71,6 @@ const Expense = () => {
     await fetchTransaction();
   }, []);
 
-  // Extract the transactions array from the fetched data.
   const transactionsList =
     transaction &&
     transaction.transactions &&
