@@ -12,7 +12,6 @@ const createProject = async (req, res) => {
     } = req.body;
     const user = req.user;
 
-    // Validate that all required fields are present
     if (
       !projectName ||
       !ownerName ||
@@ -32,7 +31,6 @@ const createProject = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    // Ensure startDate and endDate are valid Date objects
     if (
       isNaN(new Date(startDate).getTime()) ||
       isNaN(new Date(endDate).getTime())
@@ -64,7 +62,7 @@ const createProject = async (req, res) => {
       const newProject = await prisma.project.create({
         data: {
           projectName,
-          ownerName, 
+          ownerName,
           builderId: req.user.userId,
           location,
           startDate: new Date(startDate),
@@ -124,7 +122,7 @@ const getProject = async (req, res) => {
 const projectById = async (req, res) => {
   try {
     const projectId = req.query?.id;
-    
+
     if (!projectId) {
       return res.status(400).json({ message: "Project id is required" });
     }
@@ -138,7 +136,7 @@ const projectById = async (req, res) => {
         projectWorkers: {
           include: {
             worker: true,
-            attendance: true
+            attendance: true,
           },
         },
       },
@@ -147,7 +145,7 @@ const projectById = async (req, res) => {
     if (!projectData) {
       return res.status(404).json({ message: "Project not found" });
     }
-    console.log(projectData)
+    console.log(projectData);
 
     // Transform the data structure
     const transformedProject = {
@@ -162,21 +160,21 @@ const projectById = async (req, res) => {
         builderId: projectData.builderId,
         createdAt: projectData.createdAt,
         updatedAt: projectData.updatedAt,
-        budget:  projectData.budgets.map(bb=>({
-          amount: bb.amount
+        budget: projectData.budgets.map((bb) => ({
+          amount: bb.amount,
         })),
-        worker: projectData.projectWorkers.map(pw => ({
+        worker: projectData.projectWorkers.map((pw) => ({
           id: pw.worker.id,
           projectWorkerId: pw.id,
           name: pw.worker.name,
           contact: pw.worker.contact,
           profile: pw.worker.profile,
           designation: pw.worker.designation,
-          attendance: pw.attendance
-        }))
-      }
+          attendance: pw.attendance,
+        })),
+      },
     };
-console.log("project data",transformedProject);
+    console.log("project data", transformedProject);
     return res.status(200).json(transformedProject);
   } catch (error) {
     console.error(error);
@@ -194,7 +192,6 @@ const addWorkerToProject = async (req, res) => {
       data: {
         project: { connect: { id: parseInt(projectId) } },
         worker: { connect: { id: parseInt(workerId) } },
-        
       },
     });
     return res.status(200).json(projectWorker);
@@ -203,10 +200,83 @@ const addWorkerToProject = async (req, res) => {
     return res.status(500).json({ error: "Internal Server error" });
   }
 };
+const shareProject = async (req, res) => {
+  try {
+      const { projectId, shareId } = req.body;
+
+      if (!projectId || !shareId) {
+          return res.status(400).json({ message: "Project ID and Share ID are required." });
+      }
+
+      console.log("Project ID:", projectId, "Share ID:", shareId);
+
+      // Check if shareId is valid
+      const user = await prisma.user.findUnique({
+          where: { shareid: parseInt(shareId) },
+      });
+
+      if (!user) {
+          return res.status(404).json({ message: "Invalid shareId. User not found." });
+      }
+
+      // Check if the project exists
+      const project = await prisma.project.findUnique({
+          where: { id: parseInt(projectId) },
+      });
+
+      if (!project) {
+          return res.status(404).json({ message: "Invalid project. Project not found." });
+      }
+
+      // Prevent overwriting existing clientId
+      if (project.clientId) {
+          return res.status(400).json({ message: "This project already has a client assigned." });
+      }
+
+      // Assign the user as the client of the project
+      const updatedProject = await prisma.project.update({
+          where: { id: parseInt(projectId) },
+          data: { clientId: user.id }
+      });
+
+      return res.status(200).json({ 
+          updatedProject, 
+          message: "User successfully added to the project."
+      });
+
+  } catch (error) {
+      console.error("Error adding user to project:", error);
+      return res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+};
+
+const projectDetails = async (req, res) => {
+ try {
+   const { projectId } = req.body;
+   console.log(projectId)
+   if (!projectId) {
+     return res.status(400).json({ message: "Project ID is required" });
+   }
+   const project = await prisma.project.findFirst({
+     where: { id: parseInt(projectId) },
+     include: {
+      client: true,
+     },
+   });
+   return res.status(200).json(project);
+ } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  
+ }
+}
 
 module.exports = {
   createProject,
   getProject,
   addWorkerToProject,
   projectById,
+  shareProject,
+  projectDetails
+
 };

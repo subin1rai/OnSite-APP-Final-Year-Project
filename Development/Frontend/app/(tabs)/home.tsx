@@ -41,7 +41,7 @@ const Home = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMulyankanOpen, setIsMulyankanOpen] = useState(false);
 
-  const snapPoints = ["30%"];
+  const snapPoints = ["40%"];
   const mulyankanSnapPoints = ["25%"];
   const bottomSheetRef = useRef<BottomSheet>(null);
   const mulyankanBottomSheetRef = useRef<BottomSheet>(null);
@@ -267,7 +267,7 @@ const handleOpenPress = (project: Project) => {
       {/* Mulyankan BottomSheet */}
       <BottomSheet
         ref={mulyankanBottomSheetRef}
-        index={-1} // Ensure BottomSheet starts closed
+        index={-1} 
         snapPoints={mulyankanSnapPoints}
         enablePanDownToClose={true}
         onClose={handleMulyankanClose}

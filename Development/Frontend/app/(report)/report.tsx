@@ -88,7 +88,7 @@ const formatCurrency = (amount: number): string => {
 
 const PRIMARY_COLOR = '#FDB541';
 
-const Report: React.FC = () => {
+const Report= () => {
   const [reportData, setReportData] = useState<ReportData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<'summary' | 'charts'>('summary');

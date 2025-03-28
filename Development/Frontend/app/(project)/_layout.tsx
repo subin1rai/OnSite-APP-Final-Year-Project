@@ -45,6 +45,12 @@ const Layout = () => {
         <Stack.Screen
           name="all_files" options={{ headerShown: false }}  />
         <Stack.Screen name="project_home" options={{ headerShown: false }} />
+        <Stack.Screen name="share_project" options={{title:"Share Project",  headerLeft: () => (
+              <TouchableOpacity onPress={() => router.back()} style={{ marginLeft: 0 }}>
+                <Ionicons name="arrow-back" size={24} color="black" />
+              </TouchableOpacity>
+            ),}
+      } />
       </Stack>
       <Toast />
     </GestureHandlerRootView>

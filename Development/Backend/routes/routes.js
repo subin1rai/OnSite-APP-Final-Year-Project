@@ -29,6 +29,8 @@ router.get("/project", authMiddleware(), projectController.getProject);
 router.post("/project/create", authMiddleware(), projectController.createProject);
 router.post("/project/addWorker", authMiddleware(), projectController.addWorkerToProject);
 router.post("/singleProject", projectController.projectById);
+router.put("/shareProject", projectController.shareProject);
+router.post("/projectDetails", projectController.projectDetails);
 
 // Budget routes
 router.get("/project/:id/budget", budgetController.getBudget);
