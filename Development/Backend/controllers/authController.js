@@ -28,10 +28,14 @@ const signUp = async (req, res) => {
 
     const hashPassword = await bcrypt.hash(password, salt);
 
+    //generate random unique 5 digit number
+     const randomId = Math.floor(10000 + Math.random() * 90000);
+
     const user = await prisma.user.create({
       data: {
         username: name,
         email: email,
+        shareid: parseInt(randomId),
         password: hashPassword,
       },
     });

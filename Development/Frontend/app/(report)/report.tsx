@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, SafeAreaView } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, SafeAreaView, Platform, Alert } from 'react-native';
 import { BarChart, PieChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
 import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import apiHandler from '@/context/ApiHandler';
 import * as SecureStore from "expo-secure-store";
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
+import * as FileSystem from 'expo-file-system';
+import { captureRef } from 'react-native-view-shot';
+import { StatusBar } from 'expo-status-bar';
 
 // Define TypeScript interfaces
 interface Summary {
@@ -83,10 +88,11 @@ const formatCurrency = (amount: number): string => {
 
 const PRIMARY_COLOR = '#FDB541';
 
-const Report: React.FC = () => {
+const Report= () => {
   const [reportData, setReportData] = useState<ReportData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<'summary' | 'charts'>('summary');
+  const [exporting, setExporting] = useState<boolean>(false);
   const screenWidth = Dimensions.get('window').width;
 
   useEffect(() => {
@@ -112,6 +118,404 @@ const Report: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+  const generatePDF = async () => {
+    try {
+      setExporting(true);
+      
+      // Generate HTML content for PDF
+      const htmlContent = await generateHTMLContent();
+      
+      // Create PDF file
+      const { uri } = await Print.printToFileAsync({ 
+        html: htmlContent,
+        base64: false
+      });
+      
+    
+      if (Platform.OS === 'ios') {
+        await Sharing.shareAsync(uri);
+      } 
+      
+      else {
+        const pdfName = `financial_report_${new Date().getTime()}.pdf`;
+        const destination = FileSystem.documentDirectory + pdfName;
+        
+        await FileSystem.copyAsync({
+          from: uri,
+          to: destination
+        });
+        
+        await Sharing.shareAsync(destination, {
+          mimeType: 'application/pdf',
+          dialogTitle: 'Download Financial Report',
+          UTI: 'com.adobe.pdf'
+        });
+      }
+      
+      setExporting(false);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      Alert.alert('Error', 'Failed to generate the report. Please try again.');
+      setExporting(false);
+    }
+  };
+
+
+  const generateHTMLContent = async () => {
+    if (!reportData) return '';
+    
+    const { summary, transactionsByCategory, transactionsByMonth, projects } = reportData;
+    
+    // Create charts for PDF using chart.js
+    const monthLabels = transactionsByMonth.map(item => item.month);
+    const incomeData = transactionsByMonth.map(item => item.income);
+    const expenseData = transactionsByMonth.map(item => item.expense);
+    
+    // Generate pie chart data
+    const pieChartColors = [
+      '#FDB541', '#10B981', '#F59E0B', '#EF4444', 
+      '#8B5CF6', '#EC4899', '#3B82F6', '#06B6D4'
+    ];
+    
+    const pieChartData = transactionsByCategory.map((item, index) => ({
+      category: item.category,
+      value: Math.abs(item.income || item.expense),
+      color: pieChartColors[index % pieChartColors.length]
+    }));
+
+    // Current date for the report
+    const currentDate = new Date().toLocaleDateString('en-IN', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+
+    return `
+      <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Financial Report</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #333;
+      background-color: #fff;
+      line-height: 1.5;
+    }
+    .container {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      border-bottom: 2px solid #2C3E50;
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+    .logo-area {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .report-title {
+      font-size: 28px;
+      font-weight: bold;
+      color: #2C3E50;
+      margin: 0;
+    }
+    .report-date {
+      font-size: 14px;
+      color: #7F8C8D;
+      margin-top: 5px;
+    }
+    .section {
+      margin-bottom: 40px;
+      page-break-inside: avoid;
+    }
+    .section-title {
+      font-size: 20px;
+      color: #2C3E50;
+      margin-bottom: 15px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #EAEAEA;
+    }
+    .summary-box {
+      background-color: #F8F9FA;
+      border-left: 4px solid #3498DB;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .metrics-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .metric-box {
+      flex: 1;
+      min-width: calc(50% - 15px);
+      background-color: #F8F9FA;
+      padding: 15px;
+      border-radius: 5px;
+    }
+    .metric-title {
+      font-size: 14px;
+      color: #7F8C8D;
+      margin: 0 0 5px 0;
+    }
+    .metric-value {
+      font-size: 22px;
+      font-weight: bold;
+      margin: 0;
+    }
+    .positive {
+      color: #27AE60;
+    }
+    .negative {
+      color: #E74C3C;
+    }
+    .neutral {
+      color: #3498DB;
+    }
+    .budget-progress {
+      margin: 15px 0;
+    }
+    .progress-bar-container {
+      height: 10px;
+      background-color: #EAEAEA;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      background-color: #3498DB;
+    }
+    .progress-text {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #7F8C8D;
+      margin-top: 5px;
+    }
+    .chart-container {
+      height: 300px;
+      margin: 20px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #EAEAEA;
+    }
+    th {
+      background-color: #F8F9FA;
+      font-weight: bold;
+      color: #2C3E50;
+    }
+    tr:nth-child(even) {
+      background-color: #F8F9FA;
+    }
+    .chart-legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 15px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+    }
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+    .page-break {
+      page-break-before: always;
+    }
+      .logoimag{
+        height: 100px;
+        width: 100px;
+      }
+    .footer {
+      margin-top: 30px;
+      padding-top: 15px;
+      border-top: 1px solid #EAEAEA;
+      text-align: center;
+      font-size: 12px;
+      color: #7F8C8D;
+    }
+    @media print {
+      body {
+        font-size: 12pt;
+      }
+      .section {
+        page-break-inside: avoid;
+      }
+      .page-break {
+        page-break-before: always;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo-area">
+        <div>
+          <h1 class="report-title">Financial Report</h1>
+          <p class="report-date">${currentDate}</p>
+        </div>
+        <div >
+          <img class="logoimag" src="https://res.cloudinary.com/diag9maev/image/upload/v1743001208/0_dld0zx.png" alt="Company Logo" />
+        </div>
+      </div>
+    </div>
+    
+    <!-- Executive Summary -->
+    <div class="section">
+      <h2 class="section-title">Executive Summary</h2>
+      <div class="summary-box">
+        <p>This report provides a comprehensive overview of the financial status as of ${currentDate}. Key metrics show a ${summary.netBalance >= 0 ? 'positive' : 'negative'} trend with budget utilization at ${((summary.totalExpenses / summary.totalBudget) * 100).toFixed(1)}% and a ${summary.budgetBalance >= 0 ? 'healthy' : 'concerning'} balance maintained.</p>
+      </div>
+      
+      <div class="metrics-grid">
+        <div class="metric-box">
+          <h3 class="metric-title">Total Budget</h3>
+          <p class="metric-value neutral">${formatCurrency(summary.totalBudget)}</p>
+          <div class="budget-progress">
+            <div class="progress-bar-container">
+              <div class="progress-bar" style="width: ${Math.min(100, (summary.totalExpenses / summary.totalBudget) * 100)}%;"></div>
+            </div>
+            <div class="progress-text">
+              <span>${formatCurrency(summary.totalExpenses)} used (${((summary.totalExpenses / summary.totalBudget) * 100).toFixed(1)}%)</span>
+              <span>${formatCurrency(summary.budgetBalance)} remaining</span>
+            </div>
+          </div>
+        </div>
+        <div class="metric-box">
+          <h3 class="metric-title">Net Balance</h3>
+          <p class="metric-value ${summary.netBalance >= 0 ? 'positive' : 'negative'}">${formatCurrency(summary.netBalance)}</p>
+        </div>
+      </div>
+    </div>
+    
+    
+    <!-- Projects Overview -->
+    <div class="section">
+      <h2 class="section-title">Projects Overview</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Project</th>
+            <th>Status</th>
+            <th>Budget</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${projects.map(project => `
+            <tr>
+              <td>${project.name}</td>
+              <td>${project.status}</td>
+              <td>${formatCurrency(project.budget)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Footer -->
+    <div class="footer">
+      <p>This report is confidential and intended for internal use only.</p>
+      <p>Generated automatically on ${currentDate}. For questions, please contact finance@company.com</p>
+    </div>
+  </div>
+
+  <script>
+    // Monthly Income vs Expenses Chart
+    const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+    new Chart(monthlyCtx, {
+      type: 'bar',
+      data: {
+        labels: ${JSON.stringify(monthLabels)},
+        datasets: [
+          {
+            label: 'Income',
+            data: ${JSON.stringify(incomeData)},
+            backgroundColor: '#27AE60',
+            borderColor: '#27AE60',
+            borderWidth: 1
+          },
+          {
+            label: 'Expenses',
+            data: ${JSON.stringify(expenseData)},
+            backgroundColor: '#E74C3C',
+            borderColor: '#E74C3C',
+            borderWidth: 1
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: function(value) {
+                return '₹' + value.toLocaleString('en-IN');
+              }
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          }
+        }
+      }
+    });
+
+    // Category Breakdown Chart
+    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+    new Chart(categoryCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ${JSON.stringify(pieChartData.map(item => item.category))},
+        datasets: [{
+          data: ${JSON.stringify(pieChartData.map(item => item.value))},
+          backgroundColor: ${JSON.stringify(pieChartData.map(item => item.color))},
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+    `;
   };
 
   const getStatusColor = (balance: number): string => {
@@ -175,10 +579,9 @@ const Report: React.FC = () => {
       {
         data: transactionsByMonth.flatMap(item => [item.income, item.expense]),
         color: (opacity = 1, _index?: number) => {
-          // Alternate colors between green (income) and red (expense)
           return _index !== undefined && _index % 2 === 0 
-            ? `rgba(16, 185, 129, ${opacity})` // Green for income
-            : `rgba(239, 68, 68, ${opacity})`; // Red for expense
+            ? `rgba(16, 185, 129, ${opacity})` 
+            : `rgba(239, 68, 68, ${opacity})`; 
         }
       }
     ],
@@ -200,7 +603,9 @@ const Report: React.FC = () => {
       <View className="pb-4 px-4 flex-row items-center justify-between">
         <View/>
         <Text className="text-black text-2xl font-semibold">Financial Report</Text>
+        <TouchableOpacity onPress={generatePDF}>
         <Ionicons name="document-text-outline" size={24} color="black" />
+        </TouchableOpacity>
       </View>
 
       {/* Navigation Tabs */}

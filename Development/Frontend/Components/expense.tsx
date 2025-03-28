@@ -95,7 +95,7 @@ const Expense = () => {
         </Text>
       </View>
       <View>
-      <Text className={`text-lg font-medium ${item.type === "inHand" ? "text-green-500" : "text-red-500"}`}>
+      <Text className={`text-lg font-medium ${item.type === "Credit" ? "text-green-500" : "text-red-500"}`}>
   NRP. {item.amount}
 </Text>
       </View>

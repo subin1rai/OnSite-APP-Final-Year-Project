@@ -14,6 +14,7 @@ import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { icons } from "@/constants";
 import { useProjectStore } from "@/store/projectStore";
+import apiHandler from "@/context/ApiHandler";
 
 const { width } = Dimensions.get("window");
 
@@ -33,6 +34,9 @@ const Project_home = () => {
       setRefreshing(false);
     }, 1000);
   }, []);
+
+
+
 
   if (!selectedProject) {
     return (
