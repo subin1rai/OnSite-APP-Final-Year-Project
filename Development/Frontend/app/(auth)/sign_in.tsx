@@ -30,8 +30,12 @@ const SignIn = () => {
       const result = await user_login(form.email, form.password);
       if (result?.status == 200) {
         await SecureStore.setItemAsync("AccessToken", result.token);
-        router.replace("../(tabs)/home");
-      
+        if (result.user.role === "client") {
+          router.replace("../(client)/clientHome");
+        }
+        else{
+          router.replace("../(tabs)/home");
+        }
       } else {
         Alert.alert("Error", "Invalid credentials");
       }

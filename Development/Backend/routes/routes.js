@@ -8,6 +8,7 @@ const attendanceController = require("../controllers/attendaceController.js");
 const chatController = require("../controllers/chatController.js");
 const workerController = require("../controllers/workerController.js");
 const vendorController = require("../controllers/vendorController.js");
+const clientController = require("../controllers/clientController.js");
 const userController = require("../controllers/userController");
 const threeDModelController = require("../controllers/threeDModelController.js");
 const { initializePayment, verifyPayment } = require("../controllers/paymentController");
@@ -81,6 +82,7 @@ router.post("/document/delete", deleteDocuments);
 router.post("/predict", predictModel);
 router.post("/construction", constructionModel);
 
-router.get("/report",authMiddleware(), getProjectTrialBalance);
+router.get("/report",authMiddleware(), getProjectTrialBalance);                
 
+router.get("/client",authMiddleware(), clientController.clientData );                
 module.exports = router;

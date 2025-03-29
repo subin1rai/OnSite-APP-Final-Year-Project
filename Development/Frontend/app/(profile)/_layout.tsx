@@ -16,7 +16,22 @@ const Layout = () => {
 
       <Stack>
         <Stack.Screen  name="editProfile" />
+       <Stack.Screen
+                name="FAQs"
+                options={{
+                    title: "FAQs",
+                  
+                  headerTitleStyle: { fontSize: 20, fontWeight: "semibold", color: "black" },
+                  headerTintColor: "#fff",
+                  headerLeft: () => (
+                    <TouchableOpacity onPress={() => router.back()} style={{ marginLeft: 0 }}>
+                      <Ionicons name="arrow-back" size={24} color="black" />
+                    </TouchableOpacity>
+                  ),
+                }}
+              />
       </Stack>
+
       <Toast />
     </GestureHandlerRootView>
 

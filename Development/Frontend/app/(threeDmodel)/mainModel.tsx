@@ -18,11 +18,19 @@ import { useThreeDModelStore } from "@/store/threeDmodelStore";
 import { useProjectStore } from "@/store/projectStore";
 import Add3Dmodel from "@/Components/Add3Dmodel";
 import { router } from "expo-router";
+import * as SecureStore from "expo-secure-store";
+import { jwtDecode } from "jwt-decode";
 
+interface DecodedToken {
+  role: string;
+  exp: number;
+  [key: string]: any;
+}
 const MainModel = () => {
   const { threeDModels, fetchThreeDModels, clearThreeDModels } = useThreeDModelStore();
   const { selectedProject } = useProjectStore();
   const [isOpen, setIsOpen] = useState(false);
+  const [role, setRole] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -35,6 +43,23 @@ const MainModel = () => {
       fetchThreeDModels().finally(() => setLoading(false)); 
     }
   }, [selectedProject]);
+
+  useEffect(() => {
+    const getRoleFromToken = async () => {
+      const token = await SecureStore.getItemAsync("AccessToken");
+      if (token) {
+        try {
+          const decoded = jwtDecode<DecodedToken>(token);
+          setRole(decoded.role || null);
+        } catch (err) {
+          console.error("Invalid token", err);
+          setRole(null);
+        }
+      }
+    };
+
+    getRoleFromToken();
+  }, []);
 
   // Refresh Control Handler
   const onRefresh = async () => {
@@ -74,13 +99,19 @@ const handleModelClick = (selectedModelData: any) => {
             marginTop: Platform.OS === "ios" ? 60 : StatusBar.currentHeight,
           }}
         >
-          <Ionicons name="arrow-back" size={24} color="white" />
+          <TouchableOpacity onPress={() => router.back()}>
+            <Ionicons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
           <Text className="text-white text-2xl font-medium tracking-widest">
             3D Model
           </Text>
-          <TouchableOpacity onPress={openBottomSheet}>
-            <Ionicons name="add" size={24} color="white" />
-          </TouchableOpacity>
+          {role === "builder" ? (
+               <TouchableOpacity onPress={openBottomSheet}>
+               <Ionicons name="add" size={24} color="white" />
+             </TouchableOpacity>
+          ) :<View/>}
+
+    
         </View>
       </SafeAreaView>
 
