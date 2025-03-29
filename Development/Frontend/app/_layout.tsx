@@ -7,6 +7,7 @@ import { LogBox, StatusBar, Text, View, ActivityIndicator } from "react-native";
 import Toast from "react-native-toast-message";
 import AuthService from "@/context/AuthContext"; 
 import { SocketProvider } from "@/socketContext"; 
+import { jwtDecode } from "jwt-decode";
 
 // Prevent the splash screen from auto-hiding.
 SplashScreen.preventAutoHideAsync();
@@ -34,18 +35,31 @@ export default function RootLayout() {
   const checkAuthStatus = async () => {
     try {
       console.log("Checking authentication...");
+      const token = await AuthService.getToken();
       const isExpired = await AuthService.isTokenExpired();
-      console.log("Token expired:", isExpired);
 
-      if (isExpired) {
+      if (!token || isExpired) {
         await AuthService.removeToken();
         setIsAuthenticated(false);
         setTimeout(() => {
           router.replace("/(auth)/sign_in");
         }, 0);
-      } else {
-        setIsAuthenticated(true);
+        return;
       }
+
+      const decoded: any = jwtDecode(token);
+      const role = decoded?.role;
+      console.log("User role:", role);
+
+      setIsAuthenticated(true);
+
+      // Role-based redirect
+      if (role === "client") {
+        setTimeout(() => {
+          router.replace("/(client)/clientHome");
+        }, 0);
+      }
+
     } catch (error) {
       console.error("Error checking authentication:", error);
       await AuthService.removeToken();
@@ -90,6 +104,7 @@ export default function RootLayout() {
           <Stack.Screen name="(files)" options={{ headerShown: false }} />
           <Stack.Screen name="(report)" options={{ headerShown: false }} />
           <Stack.Screen name="(Mulyankan)" options={{ headerShown: false }} />
+          <Stack.Screen name="(client)" options={{ headerShown: false }} />
         </Stack>
         <Toast />
       </>
