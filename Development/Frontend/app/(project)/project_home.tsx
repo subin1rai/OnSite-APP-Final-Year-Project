@@ -15,7 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { icons } from "@/constants";
 import { useProjectStore } from "@/store/projectStore";
 import apiHandler from "@/context/ApiHandler";
-
+import { useTaskStore } from "@/store/taskStore";
 const { width } = Dimensions.get("window");
 
 const Project_home = () => {
@@ -24,22 +24,25 @@ const Project_home = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const horizontalScrollRef = useRef<ScrollView | null>(null);
-  interface Task {
-    id: string;
-    status: string;
-    [key: string]: any; // Add other properties as needed
-  }
-
-  const [tasks, setTasks] = useState<Task[]>([]);
-
-  // Mock progress for demonstration
-  const progressPercentage = 68;
+  const { tasks, projectProgress, setTasks, setProjectProgress } = useTaskStore();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    setTimeout(() => {
+    fetchTasks().then(() => {
       setRefreshing(false);
-    }, 1000);
+    });
+  }, []);
+
+  // Calculate progress based on completed vs total tasks
+  const calculateProgress = useCallback((taskList) => {
+    if (!taskList || taskList.length === 0) return 0;
+    
+    const completedTasks = taskList.filter(task => task.status === "Completed").length;
+    const totalTasks = taskList.length;
+    
+    // Calculate percentage and round to nearest integer
+    const percentage = Math.round((completedTasks / totalTasks) * 100);
+    return percentage;
   }, []);
 
   const fetchTasks = async () => {
@@ -47,7 +50,12 @@ const Project_home = () => {
       const response = await apiHandler.post("/task", {
         projectId: selectedProject?.id,
       });
-      setTasks(response.data);
+      const taskData = response.data || [];
+      setTasks(taskData);
+      
+      // Calculate and set project progress
+      const progress = calculateProgress(taskData);
+      setProjectProgress(progress);
     } catch (error) {
       console.error("Failed to fetch tasks:", error);
     }
@@ -59,10 +67,18 @@ const Project_home = () => {
     }
   }, [selectedProject]);
 
-  const filteredTasksByStatus = (status: any) => {
+  const filteredTasksByStatus = (status) => {
     return tasks.filter((task) => task.status === status);
   };
   const activeTaskCount = filteredTasksByStatus("inProgress").length;
+
+  // Function to determine color based on progress
+  const getProgressColor = (progress) => {
+    if (progress >= 75) return "#10B981"; // Green for high progress
+    if (progress >= 50) return "#F59E0B"; // Yellow for medium progress
+    if (progress >= 25) return "#F97316"; // Orange for low progress
+    return "#EF4444"; // Red for very low progress
+  };
 
   if (!selectedProject) {
     return (
@@ -76,7 +92,6 @@ const Project_home = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      {/*ScrollView with RefreshControl */}
       <View style={{ flex: 1 }}>
         {/* Header & Project Details */}
         <View style={{ paddingHorizontal: 16, paddingVertical: 12 }}>
@@ -169,7 +184,7 @@ const Project_home = () => {
                 </View>
               </View>
 
-              {/* Progress Circle */}
+              {/* Fixed Progress Circle */}
               <View
                 style={{
                   flex: 1,
@@ -187,14 +202,10 @@ const Project_home = () => {
                     justifyContent: "center",
                     alignItems: "center",
                     borderColor: "#F3F4F6",
-                    borderLeftColor:
-                      progressPercentage > 60 ? "#10B981" : "#F59E0B",
-                    borderBottomColor:
-                      progressPercentage > 25
-                        ? progressPercentage > 60
-                          ? "#10B981"
-                          : "#F59E0B"
-                        : "#F3F4F6",
+                    ...(projectProgress >= 0 && { borderLeftColor: getProgressColor(projectProgress) }),
+                    ...(projectProgress >= 25 && { borderBottomColor: getProgressColor(projectProgress) }),
+                    ...(projectProgress >= 50 && { borderRightColor: getProgressColor(projectProgress) }),
+                    ...(projectProgress >= 75 && { borderTopColor: getProgressColor(projectProgress) }),
                     transform: [{ rotate: "45deg" }],
                   }}
                 >
@@ -210,7 +221,7 @@ const Project_home = () => {
                     }}
                   >
                     <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-                      {progressPercentage}%
+                      {projectProgress}%
                     </Text>
                   </View>
                 </View>
@@ -224,7 +235,9 @@ const Project_home = () => {
             <View style={{ flexDirection: "row", marginTop: 12 }}>
               <View
                 style={{
-                  backgroundColor: "rgba(236, 253, 245, 0.8)",
+                  backgroundColor: projectProgress >= 50 
+                    ? "rgba(236, 253, 245, 0.8)" 
+                    : "rgba(254, 226, 226, 0.8)",
                   paddingHorizontal: 12,
                   paddingVertical: 6,
                   borderRadius: 16,
@@ -232,9 +245,13 @@ const Project_home = () => {
                 }}
               >
                 <Text
-                  style={{ color: "#065F46", fontSize: 13, fontWeight: "500" }}
+                  style={{ 
+                    color: projectProgress >= 50 ? "#065F46" : "#991B1B", 
+                    fontSize: 13, 
+                    fontWeight: "500" 
+                  }}
                 >
-                  On Schedule
+                  {projectProgress >= 50 ? "On Schedule" : "Behind Schedule"}
                 </Text>
               </View>
               <View
@@ -255,7 +272,7 @@ const Project_home = () => {
             </View>
           </View>
 
-          {/* Actions section remains unchanged */}
+          {/* Actions section */}
           <Text style={{ marginTop: 12, fontSize: 24, fontWeight: "600" }}>
             Action
           </Text>
@@ -299,7 +316,7 @@ const Project_home = () => {
           </View>
         </View>
 
-        {/* Enhanced Tab Bar */}
+        {/* Tab Bar and Content remaining code... */}
         <View
           style={{
             backgroundColor: "#F9FAFB",
@@ -397,7 +414,6 @@ const Project_home = () => {
         </View>
 
         <ScrollView
-          //  style={{flex}}
           contentContainerStyle={{ flexGrow: 1 }}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -462,7 +478,7 @@ const Project_home = () => {
                     <Text
                       style={{ fontSize: 14, color: "#6B7280", marginTop: 2 }}
                     >
-                      123 Main Street, New York
+                      {selectedProject.location || "123 Main Street, New York"}
                     </Text>
                   </View>
                 </View>
@@ -488,7 +504,7 @@ const Project_home = () => {
                     <Text
                       style={{ fontSize: 15, fontWeight: "500", marginTop: 2 }}
                     >
-                      John Smith
+                      {selectedProject.ownerName || "John Smith"}
                     </Text>
                   </View>
                   <View>
@@ -498,7 +514,7 @@ const Project_home = () => {
                     <Text
                       style={{ fontSize: 15, fontWeight: "500", marginTop: 2 }}
                     >
-                      NYC-123
+                      {selectedProject.siteCode || "NYC-123"}
                     </Text>
                   </View>
                   <View>
@@ -506,7 +522,7 @@ const Project_home = () => {
                     <Text
                       style={{ fontSize: 15, fontWeight: "500", marginTop: 2 }}
                     >
-                      2,500 sqft
+                      {selectedProject.size || "2,500 sqft"}
                     </Text>
                   </View>
                 </View>
@@ -571,15 +587,13 @@ const Project_home = () => {
                 <Text
                   style={{ fontSize: 14, color: "#4B5563", lineHeight: 20 }}
                 >
-                  Last inspection on March 15. Foundation work completed.
-                  Electrical wiring in progress. Next inspection scheduled for
-                  April 1.
+                  {selectedProject.notes || 
+                    "Last inspection on March 15. Foundation work completed. Electrical wiring in progress. Next inspection scheduled for April 1."}
                 </Text>
               </View>
             </View>
 
             {/* Task Tab Content */}
-            
             <View
               style={{
                 width: width,
@@ -589,12 +603,12 @@ const Project_home = () => {
               }}
             >
               <View className="flex-row items-center justify-end mb-2 gap-1">
-              <TouchableOpacity onPress={()=>router.push("/(project)/task")}>
-              <Text className="text-[#FCAC29]">View all</Text>
-            </TouchableOpacity>
-              <Ionicons name="arrow-forward" color={"#FCAC29"}/>
-
+                <TouchableOpacity onPress={() => router.push("/(project)/task")}>
+                  <Text className="text-[#FCAC29]">View all</Text>
+                </TouchableOpacity>
+                <Ionicons name="arrow-forward" color={"#FCAC29"}/>
               </View>
+              
               {/* Task stats */}
               <View
                 style={{
@@ -658,13 +672,6 @@ const Project_home = () => {
                 </View>
               </View>
 
-              {/* Add task button
-              <TouchableOpacity className=" flex-row justify-end">
-                <Text className="font-medium text-[#FCAC29]"
-                >
-                  + Add New Task
-                </Text>
-              </TouchableOpacity> */}
               {/* Task List */}
               <View
                 style={{
@@ -738,14 +745,14 @@ const Project_home = () => {
                               style={{
                                 fontSize: 12,
                                 color:
-                                  task.status === "completed"
+                                  task.status === "Completed"
                                     ? "#166534"
                                     : task.status === "Delayed"
                                     ? "#991B1B"
                                     : "#92400E",
                               }}
                             >
-                              {task.status}
+                              {task.status === "inProgress" ? "In Progress" : task.status}
                             </Text>
                           </View>
                         </View>

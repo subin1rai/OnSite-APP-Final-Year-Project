@@ -20,6 +20,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AddTask from "@/Components/AddTask";
 import { useProjectStore } from "@/store/projectStore";
 import apiHandler from "@/context/ApiHandler";
+import { useTaskStore } from "@/store/taskStore";
 
 interface TaskType {
   id: number;
@@ -29,9 +30,17 @@ interface TaskType {
   createdAt?: string;
 }
 
+interface TaskStore {
+  tasks: TaskType[];
+  setTasks: (tasks: TaskType[]) => void;
+  projectProgress: number;
+  setProjectProgress: (progress: number) => void;
+}
+
 const TaskScreen = () => {
   const { selectedProject } = useProjectStore();
-  const [tasks, setTasks] = useState<TaskType[]>([]);
+  // const [tasks, setTasks] = useState<TaskType[]>([]);
+  const { tasks, setTasks } = useTaskStore();
   const [searchText, setSearchText] = useState("");
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -62,7 +71,8 @@ const TaskScreen = () => {
           new Date(b.createdAt || "").getTime() - new Date(a.createdAt || "").getTime()
       );
   
-      setTasks(sortedTasks);
+  
+      setTasks(sortedTasks); 
     } catch (err) {
       console.error("Failed to fetch tasks", err);
     } finally {
@@ -155,9 +165,10 @@ const TaskScreen = () => {
     }
   };
 
-  const filteredTasks = tasks.filter((task) =>
-    task.name.toLowerCase().includes(searchText.toLowerCase())
+  const filteredTasks = (tasks || []).filter((task) =>
+    task.name?.toLowerCase().includes(searchText.toLowerCase())
   );
+  
 
   const getStatusColor = (status: string) => {
     switch (status) {

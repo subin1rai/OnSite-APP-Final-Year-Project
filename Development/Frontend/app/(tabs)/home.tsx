@@ -17,7 +17,9 @@ import useUser from "@/context/User";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import ProjectDetails from "@/Components/ProjectDetails";
-import { useProjectStore } from "@/store/projectStore"; 
+import { useProjectStore } from "@/store/projectStore";
+import apiHandler from "@/context/ApiHandler";
+import { useProjectProgressStore } from "@/store/projectProgressStore";
 type Project = {
   id: number;
   projectName: string;
@@ -40,19 +42,19 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [isMulyankanOpen, setIsMulyankanOpen] = useState(false);
-
+  const { setProjectProgress, projectProgressMap } = useProjectProgressStore();
   const snapPoints = ["40%"];
   const mulyankanSnapPoints = ["25%"];
   const bottomSheetRef = useRef<BottomSheet>(null);
   const mulyankanBottomSheetRef = useRef<BottomSheet>(null);
 
-const handleOpenPress = (project: Project) => {
-  useProjectStore.getState().setSelectedProject(project);
-  if (!isOpen) {
-    bottomSheetRef.current?.expand();
-    setIsOpen(true);
-  }
-};
+  const handleOpenPress = (project: Project) => {
+    useProjectStore.getState().setSelectedProject(project);
+    if (!isOpen) {
+      bottomSheetRef.current?.expand();
+      setIsOpen(true);
+    }
+  };
 
   const handleClosePress = () => {
     bottomSheetRef.current?.close();
@@ -75,6 +77,21 @@ const handleOpenPress = (project: Project) => {
     try {
       const result = await all_project();
       setProject(result);
+
+      for (const proj of result) {
+        try {
+          const res = await apiHandler.post("/task", { projectId: proj.id });
+          const tasks = res.data || [];
+          const completed = tasks.filter(
+            (t: any) => t.status === "Completed"
+          ).length;
+          const progress = Math.round((completed / (tasks.length || 1)) * 100);
+          setProjectProgress(proj.id, progress);
+        } catch (err) {
+          console.error("Failed to fetch tasks for project", proj.id);
+          setProjectProgress(proj.id, 0);
+        }
+      }
     } catch (error) {
       console.error("Error fetching projects:", error);
     } finally {
@@ -96,7 +113,7 @@ const handleOpenPress = (project: Project) => {
       if (isExpired) {
         console.log("Token expired. Redirecting to login...");
         await AuthService.removeToken();
-        router.replace("/(auth)/sign_in"); 
+        router.replace("/(auth)/sign_in");
         return;
       }
       await getProject();
@@ -123,20 +140,25 @@ const handleOpenPress = (project: Project) => {
   return (
     <SafeAreaView className="flex-1 bg-white z-0">
       {(isOpen || isMulyankanOpen) && (
-        <View 
-          style={styles.redOverlay} 
-          onTouchStart={isOpen ? handleClosePress : handleMulyankanClose} 
+        <View
+          style={styles.redOverlay}
+          onTouchStart={isOpen ? handleClosePress : handleMulyankanClose}
         />
       )}
       <View className="mx-4">
         {/* Header Section */}
         <View className="flex flex-row gap-2 justify-between items-center">
           <View className="flex-row gap-2 items-center">
-          
             {user?.image ? (
-              <Image source={{ uri: user.image }} className="w-10 h-10 rounded-full" />
+              <Image
+                source={{ uri: user.image }}
+                className="w-10 h-10 rounded-full"
+              />
             ) : (
-              <Image source={images.imageProfile} className="w-10 h-10 rounded-full" />
+              <Image
+                source={images.imageProfile}
+                className="w-10 h-10 rounded-full"
+              />
             )}
 
             <View>
@@ -153,25 +175,43 @@ const handleOpenPress = (project: Project) => {
 
         {/* First row of actions */}
         <View className="flex-row justify-between mt-4">
-          <TouchableOpacity className="items-center gap-2" onPress={()=>{router.push('../(worker)/worker_list')}}>
+          <TouchableOpacity
+            className="items-center gap-2"
+            onPress={() => {
+              router.push("../(worker)/worker_list");
+            }}
+          >
             <View className="bg-[#FEEDCF] p-6 rounded-md items-center gap-2">
               <Image source={icons.worker} className="w-10 h-10" />
             </View>
             <Text>Worker</Text>
           </TouchableOpacity>
-          <TouchableOpacity className="items-center gap-2 justify-center" onPress={()=>{router.push('../(vendor)/vendor_list')}}>
+          <TouchableOpacity
+            className="items-center gap-2 justify-center"
+            onPress={() => {
+              router.push("../(vendor)/vendor_list");
+            }}
+          >
             <View className="bg-[#FEEDCF] p-6 rounded-md items-center gap-2">
               <Image source={icons.vendor} className="w-10 h-10" />
             </View>
             <Text>Vendor</Text>
           </TouchableOpacity>
-          <TouchableOpacity className="items-center gap-2" onPress={handleMulyankanOpen}>
+          <TouchableOpacity
+            className="items-center gap-2"
+            onPress={handleMulyankanOpen}
+          >
             <View className="bg-[#FEEDCF] p-6 rounded-md items-center gap-2">
               <Image source={icons.ai} className="w-10 h-10" />
             </View>
             <Text>Mulyankan</Text>
           </TouchableOpacity>
-          <TouchableOpacity className="items-center gap-2" onPress={()=>{router.push('../(report)/report')}}>
+          <TouchableOpacity
+            className="items-center gap-2"
+            onPress={() => {
+              router.push("../(report)/report");
+            }}
+          >
             <View className="bg-[#FEEDCF] p-6 rounded-md items-center gap-2">
               <Image source={icons.report} className="w-10 h-10" />
             </View>
@@ -187,7 +227,7 @@ const handleOpenPress = (project: Project) => {
             onPress={() => router.push("/(project)/create_project")}
           >
             <Icon name="add" size={24} color={"#FCAC29"} />
-            <Text className="text-[20px] font-normal text-[#FCAC29]">       
+            <Text className="text-[20px] font-normal text-[#FCAC29]">
               Projects
             </Text>
           </TouchableOpacity>
@@ -220,7 +260,10 @@ const handleOpenPress = (project: Project) => {
                   </View>
                   <View>
                     <View className="flex-row justify-between items-center pb-2">
-                      <Text className="text-[22px]">0%</Text>
+                      <Text className="text-[22px]">
+                        {projectProgressMap[item.id] ?? 0}%
+                      </Text>
+
                       {/* //when i click this set the seelected project in the zustand store */}
                       <TouchableOpacity
                         onPress={() => handleOpenPress(item)}
@@ -267,7 +310,7 @@ const handleOpenPress = (project: Project) => {
       {/* Mulyankan BottomSheet */}
       <BottomSheet
         ref={mulyankanBottomSheetRef}
-        index={-1} 
+        index={-1}
         snapPoints={mulyankanSnapPoints}
         enablePanDownToClose={true}
         onClose={handleMulyankanClose}
@@ -275,12 +318,13 @@ const handleOpenPress = (project: Project) => {
       >
         <BottomSheetView>
           <View className="p-5">
-            <Text className="text-[22px] font-bold text-center mb-6 text-[#333]">Mulyankan</Text>
+            <Text className="text-[22px] font-bold text-center mb-6 text-[#333]">
+              Mulyankan
+            </Text>
 
             <View className="mb-8">
-              <TouchableOpacity 
+              <TouchableOpacity
                 className="flex-row items-center bg-white p-4 rounded-xl mb-4 border border-gray-100 "
-               
                 onPress={() => {
                   handleMulyankanClose();
                   router.push("/(Mulyankan)/housePricePrediction");
@@ -290,13 +334,17 @@ const handleOpenPress = (project: Project) => {
                   <Image source={icons.house} className="w-8 h-8" />
                 </View>
                 <View className="flex-1">
-                  <Text className="text-[18px] font-semibold text-[#333]">House Price</Text>
-                  <Text className="text-[14px] text-gray-500 mt-1">Evaluate and predict house price</Text>
+                  <Text className="text-[18px] font-semibold text-[#333]">
+                    House Price
+                  </Text>
+                  <Text className="text-[14px] text-gray-500 mt-1">
+                    Evaluate and predict house price
+                  </Text>
                 </View>
                 <Icon name="chevron-right" size={24} color="#FCAC29" />
               </TouchableOpacity>
-              
-              <TouchableOpacity 
+
+              <TouchableOpacity
                 className="flex-row items-center bg-white p-4 rounded-xl border border-gray-100"
                 onPress={() => {
                   handleMulyankanClose();
@@ -307,8 +355,12 @@ const handleOpenPress = (project: Project) => {
                   <Image source={icons.engineer} className="w-8 h-8" />
                 </View>
                 <View className="flex-1">
-                  <Text className="text-[18px] font-semibold text-[#333]">Construction Price</Text>
-                  <Text className="text-[14px] text-gray-500 mt-1">Calculate and predict construction price</Text>
+                  <Text className="text-[18px] font-semibold text-[#333]">
+                    Construction Price
+                  </Text>
+                  <Text className="text-[14px] text-gray-500 mt-1">
+                    Calculate and predict construction price
+                  </Text>
                 </View>
                 <Icon name="chevron-right" size={24} color="#FCAC29" />
               </TouchableOpacity>
