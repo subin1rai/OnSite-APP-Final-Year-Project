@@ -31,6 +31,7 @@ import imageProfile from "@/assets/images/profile.png";
 import worker from "@/assets/icons/worker.png";
 import vendor from "@/assets/icons/vendor.png";
 import threed from "@/assets/icons/3d.png";
+import three from "@/assets/icons/3dmodel.png";
 import ai from "@/assets/icons/ai.png";
 import conversation from "@/assets/icons/conversation.png";
 import report from "@/assets/icons/report.png";
@@ -47,6 +48,8 @@ import dropdown from "@/assets/icons/dropdown.png";
 import house from "@/assets/images/modern-house.png";
 import engineer from "@/assets/icons/engineer.png";
 import trash from "@/assets/icons/delete.png";
+import todo from "@/assets/icons/todo.png";
+import Chatamico from "@/assets/icons/Chat-amico.png";
 
 export const images = {
     onboarding1,
@@ -58,8 +61,9 @@ export const images = {
 
 export const icons = {
     arrowDown,
-    
+    todo,
     house,
+    Chatamico,
     arrowUp,
     addprofile,
     backArrow,
@@ -67,6 +71,7 @@ export const icons = {
     checkmark,
     conversation,
     close,
+    three,
     dollar,
     email,
     eyecross,

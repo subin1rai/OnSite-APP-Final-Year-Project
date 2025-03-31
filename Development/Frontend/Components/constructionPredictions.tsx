@@ -15,8 +15,13 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import apiHandler from "@/context/ApiHandler";
 
-// Add onPredictionComplete callback to pass the prediction result back to parent
-const ConstructionPredictions = ({ onPredictionComplete, initialArea = "", initialLocation = "" }) => {
+interface ConstructionPredictionsProps {
+    onPredictionComplete?: (predictedPrice: number, buildingSummary: Record<string, any>) => void;
+    initialArea?: string;
+    initialLocation?: string;
+}
+
+const ConstructionPredictions: React.FC<ConstructionPredictionsProps> = ({ onPredictionComplete, initialArea = "", initialLocation = "" }) => {
     // Numeric fields
     const [area, setArea] = useState(initialArea || "");
     const [floors, setFloors] = useState("");
@@ -55,7 +60,7 @@ const ConstructionPredictions = ({ onPredictionComplete, initialArea = "", initi
     const parkingOptions = ["yes", "no"];
     const additionalFeatures = ["none", "basement", "garden", "solar panels", "swimming pool"];
 
-    const formatNumber = (num) => {
+    const formatNumber = (num:any) => {
         if (num === undefined || num === null) return "0";
         return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
@@ -89,7 +94,7 @@ const ConstructionPredictions = ({ onPredictionComplete, initialArea = "", initi
     };
 
     const prepareOneHotEncodedData = () => {
-        const oneHotData = {};
+        const oneHotData: Record<string, number> = {};
         
         // Set all options to 0
         houseTypes.forEach(type => {
@@ -196,8 +201,7 @@ const ConstructionPredictions = ({ onPredictionComplete, initialArea = "", initi
         }
     };
 
-    // Component UI remains the same...
-    const DropdownItem = ({ item, selected, onPress }) => (
+    const DropdownItem: React.FC<{ item: string | { label: string; value: string }; selected: boolean; onPress: () => void }> = ({ item, selected, onPress }) => (
         <TouchableOpacity 
             className={`py-3 px-1 border-b border-gray-100 flex-row justify-between items-center ${selected ? 'bg-yellow-50' : ''}`}
             onPress={onPress}
@@ -227,8 +231,7 @@ const ConstructionPredictions = ({ onPredictionComplete, initialArea = "", initi
                     showsVerticalScrollIndicator={false}
                     keyboardShouldPersistTaps="handled"
                 >
-                    {/* Rest of the component JSX as before... */}
-                    
+                   
                     {/* Building Dimensions */}
                     <View className="bg-white rounded-2xl p-4 mb-4 shadow-sm">
                         <Text className="text-lg font-semibold text-gray-800 mb-3">Building Specifications</Text>

@@ -28,7 +28,7 @@ model User {
   Requestfrom      Request[]     @relation("RequestFrom")
   Requestuser      Request[]     @relation("RequestUser")
 
-  Project Project[] @relation("BuilderRelation")
+  Project       Project[] @relation("BuilderRelation")
   clientProject Project[] @relation("ClientRelation")
 }
 
@@ -51,6 +51,18 @@ model Project {
   threeDModel    threeDModel[]
   Payment        Payment[]
   DocumentFiles  DocumentFiles[]
+  Task           Task[]
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  status      String
+  createdAt   DateTime @default(now())
+  isVisible   Boolean?
+  projectid   Int
+  project     Project  @relation(fields: [projectid], references: [id])
 }
 
 model Worker {

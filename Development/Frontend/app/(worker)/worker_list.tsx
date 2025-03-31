@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import MainWorker from "@/Components/MainWorker";
 import { useWorkerStore } from "@/store/workerStore";
+import { router } from "expo-router";
 
 const WorkerList = () => {
   const { workers, fetchWorkers } = useWorkerStore();
@@ -48,7 +49,9 @@ const WorkerList = () => {
       <SafeAreaView className="bg-[#ffb133]">
         <View className="bg-[#ffb133] flex-row justify-between mt-16 items-center px-4 pb-[10px]"
           style={{ marginTop: Platform.OS === "ios" ? 60 : StatusBar.currentHeight }}>
+          <TouchableOpacity onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
           <Text className="text-white text-2xl font-medium tracking-widest">Workers</Text>
           <TouchableOpacity onPress={openBottomSheet}>
             <Ionicons name="add" size={24} color="white" />

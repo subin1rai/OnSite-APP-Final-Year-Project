@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import MainVendor from "@/Components/MainVendor";
 import { useVendorsStore } from "@/store/mainVendorStore";
+import { router } from "expo-router";
 
 const VendorList = () => {
   const { vendors, fetchVendors } = useVendorsStore();
@@ -50,8 +51,9 @@ const VendorList = () => {
         <View
           className="bg-[#ffb133] flex-row justify-between mt-16 items-center px-4 pb-[10px]"
           style={{ marginTop: Platform.OS === "ios" ? 60 : StatusBar.currentHeight }}
-        >
-          <Ionicons name="arrow-back" size={24} color="white" />
+        ><TouchableOpacity onPress={() => router.back()}>
+                  <Ionicons name="arrow-back" size={24} color="white" />
+                  </TouchableOpacity>  <Ionicons name="arrow-back" size={24} color="white" />
           <Text className="text-white text-2xl font-medium tracking-widest">Vendors</Text>
           <TouchableOpacity onPress={openBottomSheet}>
             <Ionicons name="add" size={24} color="white" />

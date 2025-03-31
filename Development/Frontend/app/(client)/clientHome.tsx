@@ -303,7 +303,7 @@ const clientHome = () => {
                   </View>
                 </View>
                 <TouchableOpacity className="p-2 bg-gray-100 rounded-full" onPress={() => router.push("/(threeDmodel)/mainModel")}>
-                  <Image source={icons.threed} className="w-8 h-8" />
+                  <Image source={icons.three} className="w-8 h-8" />
                 </TouchableOpacity>
               </View>
 
