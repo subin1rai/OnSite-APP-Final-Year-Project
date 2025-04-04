@@ -3,19 +3,19 @@ import { useFonts } from "expo-font";
 import { Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import "react-native-reanimated";
-import { LogBox, StatusBar, Text, View, ActivityIndicator } from "react-native";
+import { StatusBar, Text, View, ActivityIndicator } from "react-native";
 import Toast from "react-native-toast-message";
-import AuthService from "@/context/AuthContext"; 
-import { SocketProvider } from "@/socketContext"; 
+import AuthService from "@/context/AuthContext";
+import { SocketProvider } from "@/socketContext";
 import { jwtDecode } from "jwt-decode";
+import { initializationNotification } from "@/context/notifications";
 
-// Prevent the splash screen from auto-hiding.
 SplashScreen.preventAutoHideAsync();
-LogBox.ignoreLogs(["Clerk:"]);
 
 export default function RootLayout() {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
   const [fontsLoaded] = useFonts({
     "Jakarta-Bold": require("../assets/fonts/PlusJakartaSans-Bold.ttf"),
     "Jakarta-ExtraBold": require("../assets/fonts/PlusJakartaSans-ExtraBold.ttf"),
@@ -32,12 +32,13 @@ export default function RootLayout() {
     }
   }, [fontsLoaded]);
 
+
   const checkAuthStatus = async () => {
     try {
-      console.log("Checking authentication...");
+      initializationNotification();
       const token = await AuthService.getToken();
       const isExpired = await AuthService.isTokenExpired();
-
+      
       if (!token || isExpired) {
         await AuthService.removeToken();
         setIsAuthenticated(false);
@@ -46,22 +47,23 @@ export default function RootLayout() {
         }, 0);
         return;
       }
-
+      
       const decoded: any = jwtDecode(token);
       const role = decoded?.role;
-      console.log("User role:", role);
+      const userId = decoded?.userId;
+
+      // if (userId) {
+      //   setUserId(userId.toString());
+      // }
 
       setIsAuthenticated(true);
 
-      // Role-based redirect
       if (role === "client") {
         setTimeout(() => {
           router.replace("/(client)/clientHome");
         }, 0);
       }
-
     } catch (error) {
-      console.error("Error checking authentication:", error);
       await AuthService.removeToken();
       setIsAuthenticated(false);
       setTimeout(() => {
@@ -69,7 +71,7 @@ export default function RootLayout() {
       }, 0);
     }
   };
-
+  
   useEffect(() => {
     setTimeout(() => {
       checkAuthStatus();
@@ -78,7 +80,14 @@ export default function RootLayout() {
 
   if (!fontsLoaded || isAuthenticated === null) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#fff" }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
         <ActivityIndicator size="large" color="#0000ff" />
         <Text>Loading...</Text>
       </View>
@@ -86,9 +95,13 @@ export default function RootLayout() {
   }
 
   return (
-    <SocketProvider> 
+    <SocketProvider>
       <>
-        <StatusBar barStyle="dark-content" backgroundColor="black" translucent={false} />
+        <StatusBar
+          barStyle="dark-content"
+          backgroundColor="black"
+          translucent={false}
+        />
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
