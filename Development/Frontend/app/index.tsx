@@ -1,8 +1,9 @@
 import { Redirect } from "expo-router";
-import { SafeAreaView, StatusBar, Text } from "react-native";
+import registerNNPushToken from "native-notify";
 
 const index = () => {
-  return <Redirect href="/(auth)/welcome" />
+  registerNNPushToken(28966, "O50kS3CBDq8CYkr3yCKdB7");
+  return <Redirect href="/(auth)/welcome" />;
 };
 
 export default index;

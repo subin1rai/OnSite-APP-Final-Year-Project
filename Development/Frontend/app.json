@@ -17,7 +17,6 @@
       "config": {
         "usesNonExemptEncryption": false
       }
-
     },
     "android": {
       "adaptiveIcon": {
@@ -37,6 +36,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "0ff7e631-9032-4783-9aa7-d1526b29d472"
+      }
+    },
+    "owner": "subinrai"
   }
 }
