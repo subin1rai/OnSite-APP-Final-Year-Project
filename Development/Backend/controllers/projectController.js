@@ -210,13 +210,15 @@ const shareProject = async (req, res) => {
 
       console.log("Project ID:", projectId, "Share ID:", shareId);
 
+    
       // Check if shareId is valid
       const user = await prisma.user.findUnique({
           where: { shareid: parseInt(shareId) },
       });
 
       if (!user) {
-          return res.status(404).json({ message: "Invalid shareId. User not found." });
+        console.warn("Invalid shareId:", user);
+          return res.status(404).json({ message: "Invalid shareId." });
       }
 
       // Check if the project exists

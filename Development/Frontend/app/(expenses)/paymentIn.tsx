@@ -284,7 +284,7 @@ const PaymentIn: React.FC = () => {
                 <DateTimePicker
                   mode="single"
                   date={paymentDate.toDate()}
-                  onChange={(params: { date: DateType }) => {
+                  onChange={(params: { date: any }) => {
                     if (params.date) {
                       handlePaymentDateChange(dayjs(params.date));
                     } else {

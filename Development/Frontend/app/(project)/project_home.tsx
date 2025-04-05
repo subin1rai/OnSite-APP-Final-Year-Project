@@ -109,7 +109,11 @@ const Project_home = () => {
             <Text style={{ fontSize: 20, fontWeight: "500" }}>
               {selectedProject.projectName}
             </Text>
-            <Image source={icons.bell} style={{ width: 32, height: 32 }} />
+           <TouchableOpacity
+                      onPress={() => router.push("../(notification)/notification")}
+                    >
+                      <Image source={icons.bell} className="w-8 h-8" />
+                    </TouchableOpacity>
           </View>
 
           {/* Enhanced Project Details Card */}

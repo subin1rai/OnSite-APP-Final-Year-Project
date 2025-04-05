@@ -168,7 +168,11 @@ const Home = () => {
               </Text>
             </View>
           </View>
-          <Image source={icons.bell} className="w-8 h-8" />
+          <TouchableOpacity
+            onPress={() => router.push("../(notification)/notification")}
+          >
+            <Image source={icons.bell} className="w-8 h-8" />
+          </TouchableOpacity>
         </View>
 
         <Text className="pt-4 font-semibold text-[24px]">Action</Text>

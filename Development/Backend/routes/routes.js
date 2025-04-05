@@ -11,6 +11,7 @@ const vendorController = require("../controllers/vendorController.js");
 const clientController = require("../controllers/clientController.js");
 const taskController = require("../controllers/taskController.js");
 const userController = require("../controllers/userController");
+const notificationController = require("../controllers/notificationController");
 const threeDModelController = require("../controllers/threeDModelController.js");
 const {
   initializePayment,
@@ -142,5 +143,8 @@ router.post("/task/add", taskController.addTask);
 router.post("/task", taskController.getTask);
 router.put("/task/:id", taskController.updateTask);     
 router.delete("/task/:id", taskController.deleteTask);   
+
+router.get('/notification', authMiddleware(), notificationController.getNoficitation);
+router.delete('/notification/:id', authMiddleware(), notificationController.deleteNotification);
 
 module.exports = router;

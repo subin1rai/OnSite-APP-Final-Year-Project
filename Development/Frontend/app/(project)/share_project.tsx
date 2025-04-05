@@ -10,7 +10,8 @@ import {
   Modal,
   StatusBar,
   SafeAreaView,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  ActivityIndicator
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -24,10 +25,17 @@ interface ProjectData {
     }[];
 }
 
+interface ErrorState {
+  visible: boolean;
+  message: string;
+}
+
 const ShareProject = () => {
     const { selectedProject } = useProjectStore();
     const [code, setCode] = useState<string[]>(['', '', '', '', '']);
     const [showSuccess, setShowSuccess] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<ErrorState>({ visible: false, message: '' });
     const inputRefs = useRef<(TextInput | null)[]>([]);
     
     // Initialize refs array
@@ -74,6 +82,7 @@ const ShareProject = () => {
         const inviteCode = code.join('');
         if (inviteCode.length === 5) {
             try {
+                setLoading(true);
                 const response = await apiHandler.put('/shareProject', {
                     projectId: selectedProject?.id,
                     shareId: inviteCode
@@ -81,10 +90,34 @@ const ShareProject = () => {
                 
                 // Show success alert
                 setShowSuccess(true);
-            
+                setLoading(false);
+            } catch (error: any) {
+                setLoading(false);
+                // Handle different error types
+                let errorMessage = "Something went wrong. Please try again.";
                 
-            } catch (error) {
-                console.log("Error adding user");
+                if (error.response) {
+                    // The request was made and the server responded with a status code
+                    // that falls out of the range of 2xx
+                    if (error.response.status === 404) {
+                        errorMessage = "Invalid invitation code. Please check and try again.";
+                    } else if (error.response.status === 401) {
+                        errorMessage = "You don't have permission to add users to this project.";
+                    } else if (error.response.status === 409) {
+                        errorMessage = "This user is already part of the project.";
+                    } else if (error.response.data && error.response.data.message) {
+                        errorMessage = error.response.data.message;
+                    }
+                } else if (error.request) {
+                    // The request was made but no response was received
+                    errorMessage = "Network error. Please check your connection.";
+                }
+                
+                setError({
+                    visible: true,
+                    message: errorMessage
+                });
+                console.log("Error adding user:", error);
             }
         }
     };
@@ -92,6 +125,10 @@ const ShareProject = () => {
     const closeSuccess = () => {
         setShowSuccess(false);
         setCode(['', '', '', '', '']);
+    };
+
+    const closeError = () => {
+        setError({ ...error, visible: false });
     };
 
     // Function to dismiss keyboard when tapping outside
@@ -140,12 +177,16 @@ const ShareProject = () => {
                         </View>
                         
                         <TouchableOpacity 
-                            className={`bg-[#FDB541] rounded-xl py-4 items-center ${code.join('').length !== 5 ? 'opacity-50' : ''}`}
+                            className={`bg-[#FDB541] rounded-xl py-4 items-center ${(code.join('').length !== 5 || loading) ? 'opacity-50' : ''}`}
                             onPress={handleInvite}
-                            disabled={code.join('').length !== 5}
+                            disabled={code.join('').length !== 5 || loading}
                             style={{ elevation: 1 }}
                         >
-                            <Text className="text-white font-semibold">Send Invitation</Text>
+                            {loading ? (
+                                <ActivityIndicator color="white" size="small" />
+                            ) : (
+                                <Text className="text-white font-semibold">Send Invitation</Text>
+                            )}
                         </TouchableOpacity>
                     </View>
                     
@@ -181,10 +222,56 @@ const ShareProject = () => {
                                 </View>
                                 
                                 <View className="flex-row justify-end mt-2">
-                                
                                     <TouchableOpacity 
                                         className="py-2 px-5 rounded-lg bg-gray-100"
                                         onPress={closeSuccess}
+                                    >
+                                        <Text className="text-gray-700 font-medium">Close</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
+
+                {/* Error Alert Modal */}
+                <Modal
+                    transparent={true}
+                    visible={error.visible}
+                    animationType="fade"
+                    onRequestClose={closeError}
+                >
+                    <View className="flex-1 justify-center items-center" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                        <View className="w-10/12 bg-white rounded-2xl overflow-hidden" style={{ elevation: 5 }}>
+                            {/* Error color bar */}
+                            <View className="h-2 bg-red-500" />
+                            
+                            <View className="p-5">
+                                <View className="flex-row items-center mb-4">
+                                    <View className="w-12 h-12 rounded-full bg-red-50 items-center justify-center mr-3">
+                                        <Ionicons name="alert-circle" size={28} color="#EF4444" />
+                                    </View>
+                                    <View className="flex-1">
+                                        <Text className="text-lg font-bold text-gray-800">Error</Text>
+                                        <Text className="text-gray-600">{error.message}</Text>
+                                    </View>
+                                </View>
+                                
+                                <View className="flex-row justify-end mt-2">
+                                    <TouchableOpacity 
+                                        className="py-2 px-5 rounded-lg bg-red-50 mr-2"
+                                        onPress={() => {
+                                            closeError();
+                                            setCode(['', '', '', '', '']);
+                                            inputRefs.current[0]?.focus();
+                                        }}
+                                    >
+                                        <Text className="text-red-700 font-medium">Try Again</Text>
+                                    </TouchableOpacity>
+                                    
+                                    <TouchableOpacity 
+                                        className="py-2 px-5 rounded-lg bg-gray-100"
+                                        onPress={closeError}
                                     >
                                         <Text className="text-gray-700 font-medium">Close</Text>
                                     </TouchableOpacity>

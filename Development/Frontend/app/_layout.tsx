@@ -117,6 +117,7 @@ export default function RootLayout() {
           <Stack.Screen name="(files)" options={{ headerShown: false }} />
           <Stack.Screen name="(report)" options={{ headerShown: false }} />
           <Stack.Screen name="(Mulyankan)" options={{ headerShown: false }} />
+          <Stack.Screen name="(notification)" options={{ headerShown: false }} />
           <Stack.Screen name="(client)" options={{ headerShown: false }} />
         </Stack>
         <Toast />
