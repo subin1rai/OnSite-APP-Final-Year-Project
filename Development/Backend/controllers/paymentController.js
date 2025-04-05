@@ -144,7 +144,21 @@ async function initializePayment(req, res) {
           amount: parseFloat(total_amount),
         },
       });
-  
+
+      const worker = await prisma.worker.findFirst({
+        where: { id: parseInt(workerId) },
+      });
+      
+      const message = `Payment of ${month} of ${worker.name} has been paid.`;
+
+      const notification = await tx.notification.create({
+        data: {
+          userId: req.user.userId,
+          message,
+        },
+      });
+      notificationService(req.user.userId, "OnSite", message);
+      
       return res.json({
         success: true,
         message: "Payment verified, updated in database, and attendance marked as paid",

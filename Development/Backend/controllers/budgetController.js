@@ -1,4 +1,5 @@
 const prisma = require("../utils/prisma.js");
+const { notificationService } = require("./notificationController.js");
 
 const getBudget = async (req, res) => {
   const { id } = req.params;
@@ -10,9 +11,9 @@ const getBudget = async (req, res) => {
       },
       include: {
         budgets: {
-          include:{
-            Transaction: true
-          }
+          include: {
+            Transaction: true,
+          },
         },
       },
     });
@@ -25,97 +26,119 @@ const getBudget = async (req, res) => {
     return res.status(200).json(project);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "An error occurred while fetching the project budget." });
+    return res
+      .status(500)
+      .json({ error: "An error occurred while fetching the project budget." });
   }
 };
 
-// add Transcation on budget 
+// add Transcation on budget
 const addTransaction = async (req, res) => {
+  const { budgetId, vendorId, note, amount, type, category } = req.body;
+  const userId = req.user.userId;
+  console.log(userId);
+  if (!budgetId || !amount || !type) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
   try {
-    const { budgetId, vendorId, note, amount, type, category } = req.body;
-    // Validate input
-    if (!budgetId || !amount || !type) {
-      return res.status(400).json({ error: "Missing required fields" });
-    }
+    const result = await prisma.$transaction(async (tx) => {
+      // 1. Fetch budget
+      const budget = await tx.budget.findUnique({
+        where: { id: parseInt(budgetId) },
+      });
 
-    const budget = await prisma.budget.findUnique({
-      where: { id: parseInt(budgetId) },
+      if (!budget) {
+        throw new Error("Budget not found");
+      }
+
+      // 2. Update in-hand based on transaction type
+      let updatedInHand = budget.inHand || 0;
+      const numericAmount = parseFloat(amount);
+
+      if (type === "Credit") {
+        updatedInHand += numericAmount;
+      } else if (type === "Debit") {
+        updatedInHand -= numericAmount;
+      }
+
+      const updatedBudget = await tx.budget.update({
+        where: { id: budget.id },
+        data: { inHand: updatedInHand },
+      });
+
+      // 3. Create transaction
+      const transaction = await tx.transaction.create({
+        data: {
+          budgetId: budget.id,
+          vendorId: vendorId ? parseInt(vendorId) : null,
+          amount: numericAmount,
+          type,
+          note,
+          category,
+        },
+      });
+
+      const message = `A new transaction of amount ${numericAmount} has been added as a ${type.toLowerCase()}.`;
+
+      const notification = await tx.notification.create({
+        data: {
+          userId: req.user.userId,
+          message,
+        },
+      });
+      notificationService(req.user.userId, "OnSite", message);
+      return {
+        transaction,
+        updatedBudget,
+        notification,
+      };
     });
 
-    if (!budget) {
-      return res.status(404).json({ error: "Budget not found" });
-    }
-
-    // Calculate updated inHand amount
-    let updatedInHand = budget.inHand || 0;
-    if (type === "Credit") {
-      updatedInHand += parseFloat(amount);
-    } else if (type === "Debit") {
-      updatedInHand -= parseFloat(amount);
-    }
-
-    // Update the budget
-    const updatedBudget = await prisma.budget.update({
-      where: { id: budget.id },
-      data: { inHand: updatedInHand },
-    });
-
-    // Create transaction
-    const transaction = await prisma.transaction.create({
-      data: {
-        budgetId: budget.id,
-        vendorId: vendorId ? parseInt(vendorId) : null,
-        amount: parseFloat(amount),
-        type,
-        note,
-        category
-      },
-    });
-
-    console.log("Transaction added successfully:", transaction);
     return res.status(200).json({
       message: "Transaction added successfully",
-      transaction,
-      updatedBudget,
+      ...result,
     });
   } catch (error) {
-    console.error("Error adding transaction:", error);
-    return res.status(500).json({ error: "An error occurred while processing the transaction." });
+    console.error(" Transaction failed:", error);
+    return res.status(500).json({
+      error: "An error occurred while processing the transaction.",
+    });
   }
 };
 
 const allTransaction = async (req, res) => {
   try {
-    const {budgetId} = req.body;
+    const { budgetId } = req.body;
     console.log(budgetId);
     const transactions = await prisma.budget.findFirst({
-      where:{
-        id:parseInt(budgetId),
+      where: {
+        id: parseInt(budgetId),
       },
       include: {
         Transaction: {
-          include:{
-            vendor:{
-              select:{
+          include: {
+            vendor: {
+              select: {
                 VendorName: true,
-                contact:true
-              }
-            }
-          }
-        }
+                contact: true,
+              },
+            },
+          },
+        },
       },
     });
-    
+
     console.log("All transactions:", transactions);
     return res.status(200).json({ message: "All transactions", transactions });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "Internal Server Error!"});
+    return res.status(500).json({ error: "Internal Server Error!" });
   }
-} 
+};
 
 module.exports = {
   getBudget,
   addTransaction,
-  allTransaction
+  allTransaction,
 };
