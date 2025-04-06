@@ -150,6 +150,15 @@ const Profile = () => {
               <Ionicons name="chevron-forward" size={24} color={"gray"} />
             </View>
           </TouchableOpacity>
+          <TouchableOpacity className="flex-row items-center mt-4 gap-4" onPress={() => router.push("/(profile)/beBuilder")}>
+            <View className="p-4 bg-blue-50 rounded-lg">
+            <Image source={icons.builder} className="w-8 h-8" />
+            </View>
+            <View className="flex-1 flex-row items-center justify-between py-2">
+              <Text className="text-lg font-medium text-gray-600 ">Be a builder</Text>
+              <Ionicons name="chevron-forward" size={24} color={"gray"} />
+            </View>
+          </TouchableOpacity>
 
           {/* Logout */}
           <TouchableOpacity className="flex-row items-center mt-4 gap-4" onPress={handleLogout}>

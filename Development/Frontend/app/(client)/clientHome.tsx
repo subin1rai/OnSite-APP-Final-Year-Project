@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  RefreshControl,
 } from "react-native";
 import { useRouter } from "expo-router";
 import AuthService from "@/context/AuthContext";
@@ -48,6 +49,7 @@ const clientHome = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeProject, setActiveProject] = useState<Project | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   const fetchDetails = async () => {
     try {
@@ -69,8 +71,14 @@ const clientHome = () => {
       console.error("Error fetching client projects:", error);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchDetails();
+  }, []);
 
   useEffect(() => {
     fetchDetails();
@@ -126,7 +134,7 @@ const clientHome = () => {
 
     if (transactions.length === 0) {
       return (
-        <View className="p-4 items-center">
+        <View className="px-4 pb-4 items-center">
           <Text className="text-gray-500">No transactions found</Text>
         </View>
       );
@@ -169,7 +177,7 @@ const clientHome = () => {
                 }`}
               >
                 {transaction.type === "Credit" ? "+" : "-"} Rs.{" "}
-                {transaction.amount.toLocaleString()}
+                {transaction.amount}
               </Text>
               <Text className="text-xs text-gray-500">
                 {new Date(transaction.createdAt).toLocaleDateString()}
@@ -230,12 +238,12 @@ const clientHome = () => {
         <View className="flex-row justify-between mt-4">
           <View>
             <Text className="text-xs text-gray-500">Total Budget</Text>
-            <Text className="font-bold">Rs. {total.toLocaleString()}</Text>
+            <Text className="font-bold">Rs. {total}</Text>
           </View>
           <View>
             <Text className="text-xs text-gray-500">Remaining</Text>
             <Text className={`font-bold ${inHand < 0 ? "text-red-500" : ""}`}>
-              Rs. {inHand.toLocaleString()}
+              Rs. {inHand}
             </Text>
           </View>
           <View>
@@ -263,15 +271,29 @@ const clientHome = () => {
         <View className="flex-row justify-between items-center">
           <View>
             <Text className="text-xl font-bold">My Projects</Text>
-            <Text className="text-gray-700">Welcome back ! {activeProject?.ownerName}</Text>
+            <Text className="text-gray-700">
+              Welcome back ! {activeProject?.ownerName}
+            </Text>
           </View>
-          <TouchableOpacity className="p-2">
+          <TouchableOpacity
+            onPress={() => router.push("../(notification)/notification")}
+          >
             <Image source={icons.bell} className="w-8 h-8" />
           </TouchableOpacity>
         </View>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl 
+            refreshing={refreshing} 
+            onRefresh={onRefresh}
+            colors={['#FCA311']} 
+            tintColor="#FCA311"
+          />
+        }
+      >
         {/* Active Project Details */}
         {activeProject && (
           <View className="mt-6 px-4">
@@ -302,7 +324,10 @@ const clientHome = () => {
                     </View>
                   </View>
                 </View>
-                <TouchableOpacity className="p-2 bg-gray-100 rounded-full" onPress={() => router.push("/(threeDmodel)/mainModel")}>
+                <TouchableOpacity
+                  className="p-2 bg-gray-100 rounded-full"
+                  onPress={() => router.push("/(threeDmodel)/mainModel")}
+                >
                   <Image source={icons.three} className="w-8 h-8" />
                 </TouchableOpacity>
               </View>
@@ -364,7 +389,7 @@ const clientHome = () => {
                       <Text>Total Budget</Text>
                     </View>
                     <Text className="font-bold">
-                      Rs. {activeProject.budgets[0].amount.toLocaleString()}
+                      Rs. {activeProject.budgets[0].amount}
                     </Text>
                   </View>
 
@@ -386,7 +411,7 @@ const clientHome = () => {
                           : "text-green-500"
                       }`}
                     >
-                      Rs. {activeProject.budgets[0].inHand.toLocaleString()}
+                      Rs. {activeProject.budgets[0].inHand}
                     </Text>
                   </View>
 
@@ -409,14 +434,13 @@ const clientHome = () => {
               )}
             </View>
 
-            <View className="bg-white rounded-lg  p-4 mb-4">
+            <View className="bg-white rounded-lg p-4 mb-4">
               <View className="flex-row justify-between items-center mb-4">
                 <Text className="font-bold text-lg">Recent Transactions</Text>
                 <TouchableOpacity>
                   <Text className="text-yellow-500 text-sm">See All</Text>
                 </TouchableOpacity>
               </View>
-
               {renderLatestTransactions()}
             </View>
           </View>

@@ -6,8 +6,10 @@ import {
   Text,
   TouchableOpacity,
   View,
+  RefreshControl,
+  ScrollView,
 } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { router } from 'expo-router';
 import * as SecureStore from "expo-secure-store";
@@ -24,6 +26,7 @@ interface ChatUser {
 
 const Chat: React.FC = () => {
   const [chats, setChats] = useState<ChatUser[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
   
   const getUsers = async () => {
     try {
@@ -44,9 +47,15 @@ const Chat: React.FC = () => {
       setChats(response.data.friends || []);
     } catch (error) {
       console.error("Error fetching users:", error);
+    } finally {
+      setRefreshing(false);
     }
   };
   
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    getUsers();
+  }, []);
 
   useEffect(() => {
     getUsers();
@@ -69,18 +78,35 @@ const Chat: React.FC = () => {
         </View>
       </View>
 
-      <View style={styles.chatContainer}>
+      <ScrollView 
+        style={styles.chatContainer}
+        refreshControl={
+          <RefreshControl 
+            refreshing={refreshing} 
+            onRefresh={onRefresh}
+            colors={['#FCA311']} 
+            tintColor="#FCA311"
+          />
+        }
+      >
         {chats.length > 0 ? (
           chats.map((item) => (
             <ChatItem item={item} key={item.id} />
           ))
         ) : (
           <View style={styles.noChats}>
-            <Text style={styles.noChatsText}>No Chats yet</Text>
+            <MaterialIcons name="chat-bubble-outline" size={70} color="#FCA311" />
+            <Text style={styles.noChatsText}>No Chats Yet</Text>
             <Text style={styles.noChatsSubtext}>Start messaging a friend</Text>
+            <TouchableOpacity 
+              style={styles.startChatButton}
+              onPress={() => router.push('../(chat)/usersScreen')}
+            >
+              <Text style={styles.startChatButtonText}>Find Friends</Text>
+            </TouchableOpacity>
           </View>
         )}
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -102,21 +128,39 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   chatContainer: {
+    flex: 1,
     padding: 10,
   },
   noChats: {
-    height: 300,
+    height: 400,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 20,
   },
   noChatsText: {
+    marginTop: 16,
+    fontSize: 18,
+    fontWeight: '600',
+    textAlign: 'center',
+    color: '#333',
+  },
+  noChatsSubtext: {
+    marginTop: 8,
+    fontSize: 14,
     textAlign: 'center',
     color: 'gray',
   },
-  noChatsSubtext: {
-    marginTop: 4,
-    color: 'gray',
+  startChatButton: {
+    marginTop: 24,
+    backgroundColor: '#FCA311',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 20,
   },
+  startChatButtonText: {
+    color: 'white',
+    fontWeight: '600',
+  }
 });
 
 export default Chat;

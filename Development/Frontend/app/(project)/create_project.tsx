@@ -118,7 +118,7 @@ const CreateProject = () => {
     setPredictionValue(value);
     setBuildingSummary(summary);
     setShowPrediction(true);
-    handleClosePress(); // Close bottom sheet after prediction
+    handleClosePress(); 
   };
 
   // Apply the predicted amount to the budget

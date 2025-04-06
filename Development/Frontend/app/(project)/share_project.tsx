@@ -14,6 +14,7 @@ import {
   ActivityIndicator
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import * as SecureStore from "expo-secure-store";
 
 interface ProjectData {
     projectName: string;
@@ -79,6 +80,7 @@ const ShareProject = () => {
     };
 
     const handleInvite = async () => {
+              const token = await SecureStore.getItemAsync("AccessToken");
         const inviteCode = code.join('');
         if (inviteCode.length === 5) {
             try {
@@ -86,6 +88,11 @@ const ShareProject = () => {
                 const response = await apiHandler.put('/shareProject', {
                     projectId: selectedProject?.id,
                     shareId: inviteCode
+                },{
+                    headers:{
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    }
                 });
                 
                 // Show success alert
