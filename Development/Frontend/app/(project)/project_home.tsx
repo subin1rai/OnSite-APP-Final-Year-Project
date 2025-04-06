@@ -17,14 +17,21 @@ import { useProjectStore } from "@/store/projectStore";
 import apiHandler from "@/context/ApiHandler";
 import { useTaskStore } from "@/store/taskStore";
 const { width } = Dimensions.get("window");
+interface SitePhoto {
+  id: string;
+  fileUrl: string;
+  fileType: string;
+}
 
 const Project_home = () => {
   const router = useRouter();
   const { selectedProject } = useProjectStore();
   const [refreshing, setRefreshing] = useState(false);
+  const [documents, setDocuments] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
   const horizontalScrollRef = useRef<ScrollView | null>(null);
-  const { tasks, projectProgress, setTasks, setProjectProgress } = useTaskStore();
+  const { tasks, projectProgress, setTasks, setProjectProgress } =
+    useTaskStore();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -34,12 +41,14 @@ const Project_home = () => {
   }, []);
 
   // Calculate progress based on completed vs total tasks
-  const calculateProgress = useCallback((taskList) => {
+  const calculateProgress = useCallback((taskList: any) => {
     if (!taskList || taskList.length === 0) return 0;
-    
-    const completedTasks = taskList.filter(task => task.status === "Completed").length;
+
+    const completedTasks = taskList.filter(
+      (task: any) => task.status === "Completed"
+    ).length;
     const totalTasks = taskList.length;
-    
+
     // Calculate percentage and round to nearest integer
     const percentage = Math.round((completedTasks / totalTasks) * 100);
     return percentage;
@@ -52,7 +61,7 @@ const Project_home = () => {
       });
       const taskData = response.data || [];
       setTasks(taskData);
-      
+
       // Calculate and set project progress
       const progress = calculateProgress(taskData);
       setProjectProgress(progress);
@@ -61,23 +70,47 @@ const Project_home = () => {
     }
   };
 
+  const fetchDocuments = async () => {
+    try {
+      const response = await apiHandler.post("/allDocument", {
+        projectId: selectedProject?.id,
+      });
+
+      if (response.data?.data) {
+        const filteredDocs = response.data.data.filter((doc) => {
+          const ext = doc.file?.split(".").pop().toLowerCase();
+          return ["jpg", "jpeg", "png", "pdf"].includes(ext);
+        });
+
+        const topDocs = filteredDocs
+          .sort((a, b) => b.id - a.id) // Use `id` if no `createdAt`
+          .slice(0, 3);
+
+        setDocuments(topDocs);
+      }
+    } catch (error) {
+      console.error("Failed to fetch documents:", error);
+    }
+  };
+
   useEffect(() => {
     if (selectedProject?.id) {
       fetchTasks();
+      fetchDocuments();
     }
   }, [selectedProject]);
 
-  const filteredTasksByStatus = (status) => {
+  const filteredTasksByStatus = (status: any) => {
     return tasks.filter((task) => task.status === status);
   };
   const activeTaskCount = filteredTasksByStatus("inProgress").length;
 
   // Function to determine color based on progress
-  const getProgressColor = (progress) => {
-    if (progress >= 75) return "#10B981"; // Green for high progress
-    if (progress >= 50) return "#F59E0B"; // Yellow for medium progress
-    if (progress >= 25) return "#F97316"; // Orange for low progress
-    return "#EF4444"; // Red for very low progress
+  const getProgressColor = (progress: any) => {
+    if (progress >= 75) return "#10B981";
+    if (progress >= 50) return "#F59E0B";
+    if (progress >= 25) return "#F97316";
+    return "#EF4444";
   };
 
   if (!selectedProject) {
@@ -109,11 +142,11 @@ const Project_home = () => {
             <Text style={{ fontSize: 20, fontWeight: "500" }}>
               {selectedProject.projectName}
             </Text>
-           <TouchableOpacity
-                      onPress={() => router.push("../(notification)/notification")}
-                    >
-                      <Image source={icons.bell} className="w-8 h-8" />
-                    </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => router.push("../(notification)/notification")}
+            >
+              <Image source={icons.bell} className="w-8 h-8" />
+            </TouchableOpacity>
           </View>
 
           {/* Enhanced Project Details Card */}
@@ -206,10 +239,18 @@ const Project_home = () => {
                     justifyContent: "center",
                     alignItems: "center",
                     borderColor: "#F3F4F6",
-                    ...(projectProgress >= 0 && { borderLeftColor: getProgressColor(projectProgress) }),
-                    ...(projectProgress >= 25 && { borderBottomColor: getProgressColor(projectProgress) }),
-                    ...(projectProgress >= 50 && { borderRightColor: getProgressColor(projectProgress) }),
-                    ...(projectProgress >= 75 && { borderTopColor: getProgressColor(projectProgress) }),
+                    ...(projectProgress >= 0 && {
+                      borderLeftColor: getProgressColor(projectProgress),
+                    }),
+                    ...(projectProgress >= 25 && {
+                      borderBottomColor: getProgressColor(projectProgress),
+                    }),
+                    ...(projectProgress >= 50 && {
+                      borderRightColor: getProgressColor(projectProgress),
+                    }),
+                    ...(projectProgress >= 75 && {
+                      borderTopColor: getProgressColor(projectProgress),
+                    }),
                     transform: [{ rotate: "45deg" }],
                   }}
                 >
@@ -239,9 +280,10 @@ const Project_home = () => {
             <View style={{ flexDirection: "row", marginTop: 12 }}>
               <View
                 style={{
-                  backgroundColor: projectProgress >= 50 
-                    ? "rgba(236, 253, 245, 0.8)" 
-                    : "rgba(254, 226, 226, 0.8)",
+                  backgroundColor:
+                    projectProgress >= 50
+                      ? "rgba(236, 253, 245, 0.8)"
+                      : "rgba(254, 226, 226, 0.8)",
                   paddingHorizontal: 12,
                   paddingVertical: 6,
                   borderRadius: 16,
@@ -249,10 +291,10 @@ const Project_home = () => {
                 }}
               >
                 <Text
-                  style={{ 
-                    color: projectProgress >= 50 ? "#065F46" : "#991B1B", 
-                    fontSize: 13, 
-                    fontWeight: "500" 
+                  style={{
+                    color: projectProgress >= 50 ? "#065F46" : "#991B1B",
+                    fontSize: 13,
+                    fontWeight: "500",
                   }}
                 >
                   {projectProgress >= 50 ? "On Schedule" : "Behind Schedule"}
@@ -545,7 +587,7 @@ const Project_home = () => {
                   <Text style={{ fontSize: 16, fontWeight: "600" }}>
                     Site Photos
                   </Text>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={() => router.push("/(project)/all_files")}>
                     <Text style={{ fontSize: 14, color: "#4B5563" }}>
                       View All
                     </Text>
@@ -553,18 +595,51 @@ const Project_home = () => {
                 </View>
 
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                  {[1, 2, 3].map((item) => (
-                    <View
-                      key={item}
-                      style={{
-                        width: 120,
-                        height: 90,
-                        backgroundColor: "#F3F4F6",
-                        borderRadius: 8,
-                        marginRight: 8,
-                      }}
-                    />
-                  ))}
+                  {documents.map((doc, index) => {
+                    const ext = doc.file?.split(".").pop().toLowerCase();
+                    const isImage = ["jpg", "jpeg", "png"].includes(ext);
+
+                    return (
+                      <TouchableOpacity
+                        key={index}
+                        style={{
+                          width: 120,
+                          height: 90,
+                          backgroundColor: "#F3F4F6",
+                          borderRadius: 8,
+                          marginRight: 8,
+                          overflow: "hidden",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        {isImage ? (
+                          <Image
+                            source={{ uri: doc.file }}
+                            style={{ width: "100%", height: "100%" }}
+                            resizeMode="cover"
+                          />
+                        ) : (
+                          <View style={{ alignItems: "center" }}>
+                            <Ionicons
+                              name="document-text"
+                              size={32}
+                              color="#9CA3AF"
+                            />
+                            <Text
+                              style={{
+                                fontSize: 12,
+                                color: "#6B7280",
+                                marginTop: 4,
+                              }}
+                            >
+                              PDF
+                            </Text>
+                          </View>
+                        )}
+                      </TouchableOpacity>
+                    );
+                  })}
                 </ScrollView>
               </View>
 
@@ -591,7 +666,7 @@ const Project_home = () => {
                 <Text
                   style={{ fontSize: 14, color: "#4B5563", lineHeight: 20 }}
                 >
-                  {selectedProject.notes || 
+                  {selectedProject.notes ||
                     "Last inspection on March 15. Foundation work completed. Electrical wiring in progress. Next inspection scheduled for April 1."}
                 </Text>
               </View>
@@ -607,12 +682,14 @@ const Project_home = () => {
               }}
             >
               <View className="flex-row items-center justify-end mb-2 gap-1">
-                <TouchableOpacity onPress={() => router.push("/(project)/task")}>
+                <TouchableOpacity
+                  onPress={() => router.push("/(project)/task")}
+                >
                   <Text className="text-[#FCAC29]">View all</Text>
                 </TouchableOpacity>
-                <Ionicons name="arrow-forward" color={"#FCAC29"}/>
+                <Ionicons name="arrow-forward" color={"#FCAC29"} />
               </View>
-              
+
               {/* Task stats */}
               <View
                 style={{
@@ -756,7 +833,9 @@ const Project_home = () => {
                                     : "#92400E",
                               }}
                             >
-                              {task.status === "inProgress" ? "In Progress" : task.status}
+                              {task.status === "inProgress"
+                                ? "In Progress"
+                                : task.status}
                             </Text>
                           </View>
                         </View>

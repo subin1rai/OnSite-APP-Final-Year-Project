@@ -47,6 +47,7 @@ import edit from "@/assets/icons/edit.png";
 import dropdown from "@/assets/icons/dropdown.png";
 import house from "@/assets/images/modern-house.png";
 import engineer from "@/assets/icons/engineer.png";
+import builder from "@/assets/icons/builder.png";
 import trash from "@/assets/icons/delete.png";
 import todo from "@/assets/icons/todo.png";
 import Chatamico from "@/assets/icons/Chat-amico.png";
@@ -64,6 +65,7 @@ export const icons = {
     todo,
     house,
     Chatamico,
+    builder,
     arrowUp,
     addprofile,
     backArrow,

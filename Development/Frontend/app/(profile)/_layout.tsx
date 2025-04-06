@@ -30,6 +30,20 @@ const Layout = () => {
                   ),
                 }}
               />
+       <Stack.Screen
+                name="beBuilder"
+                options={{
+                    title: "Become a Builder",
+                  
+                  headerTitleStyle: { fontSize: 18, fontWeight: "semibold", color: "black" },
+                  headerTintColor: "#fff",
+                  headerLeft: () => (
+                    <TouchableOpacity onPress={() => router.back()} style={{ marginLeft: 0 }}>
+                      <Ionicons name="arrow-back" size={24} color="black" />
+                    </TouchableOpacity>
+                  ),
+                }}
+              />
       </Stack>
 
       <Toast />

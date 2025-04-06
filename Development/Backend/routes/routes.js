@@ -52,7 +52,7 @@ router.post(
   projectController.addWorkerToProject
 );
 router.post("/singleProject", projectController.projectById);
-router.put("/shareProject", projectController.shareProject);
+router.put("/shareProject", authMiddleware(), projectController.shareProject);
 router.post("/projectDetails", projectController.projectDetails);
 
 // Budget routes
@@ -137,6 +137,7 @@ router.post("/construction", constructionModel);
 router.get("/report", authMiddleware(), getProjectTrialBalance);
 
 router.get("/client", authMiddleware(), clientController.clientData);
+router.post("/register-builder", authMiddleware(), clientController.registerBuilder);
 
 //task
 router.post("/task/add", taskController.addTask);

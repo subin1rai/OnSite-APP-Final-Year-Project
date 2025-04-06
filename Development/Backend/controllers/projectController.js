@@ -1,4 +1,5 @@
 const prisma = require("../utils/prisma.js");
+const { notificationService } = require("./notificationController.js");
 
 const createProject = async (req, res) => {
   try {
@@ -202,76 +203,93 @@ const addWorkerToProject = async (req, res) => {
 };
 const shareProject = async (req, res) => {
   try {
-      const { projectId, shareId } = req.body;
+    const username = req.user.username;
 
-      if (!projectId || !shareId) {
-          return res.status(400).json({ message: "Project ID and Share ID are required." });
-      }
+    const { projectId, shareId } = req.body;
 
-      console.log("Project ID:", projectId, "Share ID:", shareId);
-
-    
-      // Check if shareId is valid
-      const user = await prisma.user.findUnique({
-          where: { shareid: parseInt(shareId) },
+    if (!projectId || !shareId) {
+      return res.status(400).json({
+        message: "Project ID and Share ID are required.",
       });
+    }
 
-      if (!user) {
-        console.warn("Invalid shareId:", user);
-          return res.status(404).json({ message: "Invalid shareId." });
-      }
+    // Validate shared user
+    const user = await prisma.user.findUnique({
+      where: { shareid: parseInt(shareId) },
+    });
 
-      // Check if the project exists
-      const project = await prisma.project.findUnique({
-          where: { id: parseInt(projectId) },
-      });
+    if (!user) {
+      return res.status(404).json({ message: "Invalid shareId." });
+    }
 
-      if (!project) {
-          return res.status(404).json({ message: "Invalid project. Project not found." });
-      }
+    // Validate project
+    const project = await prisma.project.findUnique({
+      where: { id: parseInt(projectId) },
+    });
 
-      // Prevent overwriting existing clientId
-      if (project.clientId) {
-          return res.status(400).json({ message: "This project already has a client assigned." });
-      }
+    if (!project) {
+      return res
+        .status(404)
+        .json({ message: "Invalid project. Project not found." });
+    }
 
-      // Assign the user as the client of the project
-      const updatedProject = await prisma.project.update({
-          where: { id: parseInt(projectId) },
-          data: { clientId: user.id }
-      });
+    if (project.clientId) {
+      return res
+        .status(400)
+        .json({ message: "This project already has a client assigned." });
+    }
 
-      return res.status(200).json({ 
-          updatedProject, 
-          message: "User successfully added to the project."
-      });
+    const message = `Project ${project.projectName} has been shared with by ${username}.`;
 
+    const [updatedProject, notification] = await prisma.$transaction([
+      prisma.project.update({
+        where: { id: parseInt(projectId) },
+        data: { clientId: user.id },
+      }),
+
+      prisma.notification.create({
+        data: {
+          userId: user.id,
+          message,
+        },
+      }),
+
+    ]);
+
+    // Send push notification outside transaction
+    notificationService(user.id, "OnSite", message);
+
+    return res.status(200).json({
+      updatedProject,
+      message: "User successfully added to the project.",
+    });
   } catch (error) {
-      console.error("Error adding user to project:", error);
-      return res.status(500).json({ message: "Internal Server Error", error: error.message });
+    console.error("Error adding user to project:", error);
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 };
 
 const projectDetails = async (req, res) => {
- try {
-   const { projectId } = req.body;
-   console.log(projectId)
-   if (!projectId) {
-     return res.status(400).json({ message: "Project ID is required" });
-   }
-   const project = await prisma.project.findFirst({
-     where: { id: parseInt(projectId) },
-     include: {
-      client: true,
-     },
-   });
-   return res.status(200).json(project);
- } catch (error) {
+  try {
+    const { projectId } = req.body;
+    console.log(projectId);
+    if (!projectId) {
+      return res.status(400).json({ message: "Project ID is required" });
+    }
+    const project = await prisma.project.findFirst({
+      where: { id: parseInt(projectId) },
+      include: {
+        client: true,
+      },
+    });
+    return res.status(200).json(project);
+  } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
-  
- }
-}
+  }
+};
 
 module.exports = {
   createProject,
@@ -279,6 +297,5 @@ module.exports = {
   addWorkerToProject,
   projectById,
   shareProject,
-  projectDetails
-
+  projectDetails,
 };
