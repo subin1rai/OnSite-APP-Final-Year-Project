@@ -1,6 +1,7 @@
 const prisma = require("../utils/prisma.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const passwordValidator = require('password-validator');
 
 const signUp = async (req, res) => {
   try {

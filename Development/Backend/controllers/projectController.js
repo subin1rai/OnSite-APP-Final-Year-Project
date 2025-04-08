@@ -291,6 +291,30 @@ const projectDetails = async (req, res) => {
   }
 };
 
+const updateStatus = async (req, res) => {
+  try {
+    const { projectId, status } = req.body;
+    console.log(projectId, status);
+    if (!projectId || !status) {
+      return res.status(400).json({ message: "Project ID and status are required" });
+    }
+    const project = await prisma.project.findFirst({
+      where: { id: parseInt(projectId) },
+    });
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+    const updatedProject = await prisma.project.update({
+      where: { id: parseInt(projectId) },
+      data: { status },
+    });
+    return res.status(200).json(updatedProject);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 module.exports = {
   createProject,
   getProject,
@@ -298,4 +322,5 @@ module.exports = {
   projectById,
   shareProject,
   projectDetails,
+  updateStatus
 };

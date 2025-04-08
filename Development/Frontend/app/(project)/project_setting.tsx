@@ -17,6 +17,7 @@ interface ProjectData {
   projectName: string;
   location?: string;
   startDate?: string;
+  status?: string;
   endDate?: string;
   budget: {
     amount: number;
@@ -115,7 +116,7 @@ const ProjectSetting = () => {
           <View className="flex-row bg-white rounded-xl px-4 py-4 gap-3 justify-between">
             <Text className="font-medium">Project Status</Text>
            <View>
-           <Text>OnGoing</Text>
+           <Text>{projectData.status}</Text>
            </View>
           </View>
           {/*delete */}
