@@ -57,6 +57,7 @@ model Project {
   builderId      Int
   clientId       Int?
   client         User?           @relation("ClientRelation", fields: [clientId], references: [id])
+  clientName     String?
   builder        User            @relation("BuilderRelation", fields: [builderId], references: [id])
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt

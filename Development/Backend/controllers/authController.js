@@ -6,7 +6,6 @@ const passwordValidator = require('password-validator');
 const signUp = async (req, res) => {
   try {
     const { name, email, password, confirmPassword } = req.body;
-    console.log(req.body);
     if (!name || !email || !password || !confirmPassword) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -47,7 +46,6 @@ const signUp = async (req, res) => {
     });
     return result;
   } catch (error) {
-    console.log(error);
     res
       .status(500)
       .json({ message: "Internal server error", error: error.message });
@@ -91,7 +89,6 @@ const login = async (req, res) => {
       status: 200,
     });
   } catch (error) {
-    console.log(error);
     res
       .status(500)
       .json({ message: "Internal server error", error: error.message });
@@ -129,7 +126,6 @@ const checkTokenExpiration = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
     res
       .status(500)
       .json({ message: "Internal server error", error: error.message });
@@ -155,7 +151,6 @@ const logout = async (req, res) => {
       token: invalidatedToken,
     });
   } catch (error) {
-    console.log(error);
     return res
       .status(500)
       .json({ message: "Internal server error", error: error.message });
