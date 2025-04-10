@@ -51,6 +51,7 @@ import builder from "@/assets/icons/builder.png";
 import trash from "@/assets/icons/delete.png";
 import todo from "@/assets/icons/todo.png";
 import Chatamico from "@/assets/icons/Chat-amico.png";
+import emergency from "@/assets/icons/emergency.png";
 
 export const images = {
     onboarding1,
@@ -66,6 +67,7 @@ export const icons = {
     house,
     Chatamico,
     builder,
+    emergency,
     arrowUp,
     addprofile,
     backArrow,

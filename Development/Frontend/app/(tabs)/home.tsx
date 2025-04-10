@@ -20,6 +20,7 @@ import ProjectDetails from "@/Components/ProjectDetails";
 import { useProjectStore } from "@/store/projectStore";
 import apiHandler from "@/context/ApiHandler";
 import { useProjectProgressStore } from "@/store/projectProgressStore";
+
 type Project = {
   id: number;
   projectName: string;
@@ -43,6 +44,7 @@ const Home = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMulyankanOpen, setIsMulyankanOpen] = useState(false);
   const { setProjectProgress, projectProgressMap } = useProjectProgressStore();
+  const { selectedProject } = useProjectStore();
   const snapPoints = ["40%"];
   const mulyankanSnapPoints = ["25%"];
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -101,7 +103,6 @@ const Home = () => {
 
   const handleProjectClick = (selectedProject: Project) => {
     setIsOpen(false);
-    console.log(selectedProject);
     useProjectStore.getState().setSelectedProject(selectedProject);
     router.push("/(project)/project_home");
   };
@@ -130,6 +131,20 @@ const Home = () => {
     if (hours >= 17 && hours < 21) return "Good Evening";
     return "Good Night";
   };
+
+  // Update project list when selectedProject changes (to reflect status changes)
+  useEffect(() => {
+    if (selectedProject && project.length > 0) {
+      // Find the project in the list and update it with the new status
+      const updatedProjects = project.map((proj) =>
+        proj.id === selectedProject.id
+          ? { ...proj, status: selectedProject.status }
+          : proj
+      );
+
+      setProject(updatedProjects);
+    }
+  }, [selectedProject]);
 
   useEffect(() => {
     getProject();
@@ -244,6 +259,14 @@ const Home = () => {
         keyExtractor={(item: Project) => String(item.id)}
         renderItem={({ item, index }: { item: Project; index: number }) => {
           const isLastItem = index === project.length - 1;
+          // Check if this is the currently selected project
+          const isSelected = selectedProject?.id === item.id;
+
+          // Use the most up-to-date status
+          const currentStatus = isSelected
+            ? selectedProject.status
+            : item.status;
+
           return (
             <TouchableOpacity onPress={() => handleProjectClick(item)}>
               <View
@@ -268,7 +291,6 @@ const Home = () => {
                         {projectProgressMap[item.id] ?? 0}%
                       </Text>
 
-                      {/* //when i click this set the seelected project in the zustand store */}
                       <TouchableOpacity
                         onPress={() => handleOpenPress(item)}
                         className="p-2"
@@ -277,8 +299,20 @@ const Home = () => {
                       </TouchableOpacity>
                     </View>
                     <View className="flex-row gap-2 items-center">
-                      <View className="bg-[#FCA311] h-3 w-3 rounded-xl"></View>
-                      <Text>On Going</Text>
+                      <View
+                        className={`h-3 w-3 rounded-xl ${
+                          currentStatus === "OnGoing"
+                            ? "bg-blue-500"
+                            : currentStatus === "Completed"
+                            ? "bg-green-500"
+                            : currentStatus === "Pending"
+                            ? "bg-yellow-500"
+                            : currentStatus === "Cancelled"
+                            ? "bg-red-500"
+                            : "bg-[#FCA311]"
+                        }`}
+                      ></View>
+                      <Text>{currentStatus}</Text>
                     </View>
                   </View>
                 </View>
@@ -394,4 +428,5 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
 });
+
 export default Home;

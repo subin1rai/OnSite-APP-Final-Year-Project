@@ -54,6 +54,7 @@ router.post(
 router.post("/singleProject", projectController.projectById);
 router.put("/shareProject", authMiddleware(), projectController.shareProject);
 router.post("/projectDetails", projectController.projectDetails);
+router.post("/updateStatus", projectController.updateStatus);
 
 // Budget routes
 router.get("/project/:id/budget", budgetController.getBudget);

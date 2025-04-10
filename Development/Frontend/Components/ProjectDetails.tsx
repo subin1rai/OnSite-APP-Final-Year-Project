@@ -41,8 +41,7 @@ interface Status {
 }
 
 const ProjectDetails: React.FC = () => {
-  const { selectedProject } = useProjectStore();
-  const [status, setStatus] = useState<string>("OnGoing");
+  const { selectedProject, setSelectedProject } = useProjectStore();
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [projectData, setProjectData] = useState<Project | null>(null);
 
@@ -53,13 +52,38 @@ const ProjectDetails: React.FC = () => {
     { label: "Cancelled", color: "bg-red-500" },
   ];
 
-  const handleStatusChange = (newStatus: string) => {
-    setStatus(newStatus);
-    setModalVisible(false);
+  const handleStatusChange = async (newStatus: string) => {
+    try {
+      const response = await apiHandler.post("/updateStatus", {
+        projectId: selectedProject?.id,
+        status: newStatus,
+      });
+      
+      // Get the complete updated project data from the API response
+      const updatedProject = response.data;
+      
+      // Update the local component state
+      setProjectData(updatedProject);
+      
+      // Update the selectedProject in the store with all updated properties
+      if (selectedProject) {
+        setSelectedProject({
+          ...selectedProject,
+          ...updatedProject, // Merge all updated properties from API
+          status: newStatus  // Ensure status is definitely updated
+        });
+      }
+      
+      setModalVisible(false);
+    } catch (error) {
+      console.error("Error updating project status:", error);
+      Alert.alert("Error", "Failed to update project status");
+    }
   };
 
   const handleShareProject = () => {
-    if (projectData?.client) {
+    // Check selectedProject first (most up-to-date data), then fallback to projectData
+    if (selectedProject?.client) {
       Alert.alert(
         "Project already shared",
         "This project has already been shared with a client."
@@ -81,7 +105,19 @@ const ProjectDetails: React.FC = () => {
           projectId: selectedProject?.id,
         }
       );
-      setProjectData(response.data);
+      
+      const fetchedProject = response.data;
+      
+      // Update both local state and global store with complete project data
+      setProjectData(fetchedProject);
+      
+      // Merge fetched data into the store to ensure all properties are up-to-date
+      if (selectedProject && fetchedProject) {
+        setSelectedProject({
+          ...selectedProject,
+          ...fetchedProject
+        });
+      }
     } catch (error) {
       console.error("Error fetching project details:", error);
     }
@@ -91,17 +127,20 @@ const ProjectDetails: React.FC = () => {
     fetchProject();
   }, []);
 
+  // Always use the status from the Zustand store (most up-to-date)
+  const currentStatus = selectedProject?.status || "OnGoing";
+
   return (
     <View className="p-4 bg-white">
       {/* Project Status */}
       <View className="flex flex-row justify-between items-center py-4">
         <Text className="text-lg font-medium">Project Status</Text>
         <TouchableOpacity
-          className="flex flex-row gap-2 items-center"
+          className="flex flex-row gap-2 items-center "
           onPress={() => setModalVisible(true)}
         >
-          <View className={`w-3 h-3 rounded-full ${getStatusColor(status)}`} />
-          <Text className="text-lg">{status}</Text>
+          <View className={`w-3 h-3 rounded-full ${getStatusColor(currentStatus)}`} />
+          <Text className="text-lg">{currentStatus}</Text>
           <Image source={icons.dropdown} className="w-6 h-6" />
         </TouchableOpacity>
       </View>
@@ -114,9 +153,9 @@ const ProjectDetails: React.FC = () => {
       >
         <Text className="text-lg font-medium">Share Project</Text>
 
-        {projectData?.client?.shareid ? (
+        {selectedProject?.client?.shareid ? (
           <Image
-            source={{ uri: projectData.client.image || images.imageProfile }}
+            source={{ uri: selectedProject.client.image || images.imageProfile }}
             className="w-9 h-9 rounded-full"
           />
         ) : (
@@ -144,7 +183,7 @@ const ProjectDetails: React.FC = () => {
         animationType="fade"
         onRequestClose={() => setModalVisible(false)}
       >
-        <View className="absolute top-24 right-6 w-40 bg-white shadow-lg rounded-lg border border-gray-200 p-2">
+        <View className="absolute bottom-1 right-6 w-40 bg-white shadow-lg rounded-lg border border-gray-200 p-2">
           <FlatList
             data={statuses}
             keyExtractor={(item) => item.label}

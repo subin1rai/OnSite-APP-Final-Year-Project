@@ -53,7 +53,7 @@ const VendorList = () => {
           style={{ marginTop: Platform.OS === "ios" ? 60 : StatusBar.currentHeight }}
         ><TouchableOpacity onPress={() => router.back()}>
                   <Ionicons name="arrow-back" size={24} color="white" />
-                  </TouchableOpacity>  <Ionicons name="arrow-back" size={24} color="white" />
+                  </TouchableOpacity> 
           <Text className="text-white text-2xl font-medium tracking-widest">Vendors</Text>
           <TouchableOpacity onPress={openBottomSheet}>
             <Ionicons name="add" size={24} color="white" />
