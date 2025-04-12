@@ -14,6 +14,8 @@ model User {
   username         String?
   password         String?
   image            String?
+  otp              String?
+  otp_expiry       DateTime?
   shareid          Int?          @unique
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @default(now()) @updatedAt
