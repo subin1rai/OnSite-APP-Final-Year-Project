@@ -38,6 +38,8 @@ router.get("/", authController.root);
 router.post("/user/signUp", authController.signUp);
 router.post("/user/login", authController.login);
 router.post("/user/requestotp", authController.requestOTP);
+router.post("/user/resetpassword", authController.resetPassword);
+router.post("/user/verifyotp", authController.verifyOTP);
 router.post("/logout", authMiddleware(), authController.logout);
 
 // Project routes

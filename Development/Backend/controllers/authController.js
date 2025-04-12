@@ -215,6 +215,7 @@ const requestOTP = async (req, res) => {
 const verifyOTP = async (req, res) => {
   try {
     const { email, otp } = req.body;
+    console.log(req.body);
     const user = await prisma.user.findUnique({
       where: {
         email: email,
@@ -263,7 +264,7 @@ const resetPassword = async (req, res) => {
     if (password !== confirmPassword) {
       return res.status(400).json({ message: "Passwords do not match" });
     }
-    
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     await prisma.user.update({
