@@ -1,12 +1,7 @@
-const express = require("express");
 const http = require("http");
-const routes = require("./routes/routes");
 const { initializeSocket } = require('./controllers/socketController');
 require("dotenv").config();
-
-const app = express();
-app.use(express.json());
-app.use("/api", routes);
+const app = require('./app'); 
 
 const server = http.createServer(app);
 initializeSocket(server);

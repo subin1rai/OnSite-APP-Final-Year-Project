@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { message } = require("../utils/prisma");
 
 const authMiddleware = (roles = []) => {
   return (req, res, next) => {
@@ -15,14 +16,12 @@ const authMiddleware = (roles = []) => {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
-      console.log(req.user);
       if (roles.length && !roles.includes(req.user.role)) {
         return res.status(403).send("Forbidden");
       }
       next();
     } catch (err) {
-      console.log("Token validation error:", err);
-      return res.status(400).send("Invalid Token");
+      return res.status(401).json({error:"Invalid Token"});
     }
   };
 };

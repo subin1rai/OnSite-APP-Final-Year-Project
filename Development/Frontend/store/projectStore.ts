@@ -1,5 +1,5 @@
-// projectStore.ts
-import {create} from "zustand";
+import { create } from "zustand";
+
 export interface Worker {
   id: number;
   projectId: number;
@@ -27,15 +27,31 @@ export interface Project {
   createdAt: string;
   updatedAt: string;
   projectWorkers: Worker[];
+  client?: {
+    id: number;
+    email: string;
+    role: string;
+    username: string;
+    image: string | null;
+    shareid?: number;
+  };
 }
+
 interface ProjectStore {
   selectedProject: Project | null;
   setSelectedProject: (project: Project) => void;
+  updateProjectStatus: (status: string) => void;
   clearSelectedProject: () => void;
 }
 
 export const useProjectStore = create<ProjectStore>((set) => ({
   selectedProject: null,
   setSelectedProject: (project) => set({ selectedProject: project }),
+  updateProjectStatus: (status) => 
+    set((state) => ({
+      selectedProject: state.selectedProject 
+        ? { ...state.selectedProject, status } 
+        : null
+    })),
   clearSelectedProject: () => set({ selectedProject: null }),
 }));
