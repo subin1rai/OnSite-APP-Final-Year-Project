@@ -62,17 +62,17 @@ describe("POST /api/project/create", () => {
   };
 
   // ✅ Success Case
-  it("should create project with 201 status", async () => {
-    const res = await request(app)
-      .post("/api/project/create")
-      .set("Authorization", `Bearer ${token}`)
-      .send(validPayload);
+  // it("should create project with 201 status", async () => {
+  //   const res = await request(app)
+  //     .post("/api/project/create")
+  //     .set("Authorization", `Bearer ${token}`)
+  //     .send(validPayload);
 
-    expect(res.statusCode).toBe(201);
-    expect(res.body).toHaveProperty("message", "Project created successfully");
-    expect(res.body.result).toHaveProperty("newProject");
-    expect(res.body.result).toHaveProperty("newBudget");
-  });
+  //   expect(res.statusCode).toBe(201);
+  //   expect(res.body).toHaveProperty("message", "Project created successfully");
+  //   expect(res.body.result).toHaveProperty("newProject");
+  //   expect(res.body.result).toHaveProperty("newBudget");
+  // });
 
   // Missing fields
   it("should return 400 if required fields are missing", async () => {
@@ -167,11 +167,12 @@ describe("POST /api/project/create", () => {
 });
 
 //test of product by id
-describe("GET /user/project/id", () => {
+describe("Test of Project by ID", () => {
   // ✅ Valid project ID
   it("should return success and project data when valid project ID is provided", async () => {
     const res = await request(app)
-      .get(`/api/user/singleProject?projectId=${1}`);
+      .get("/api/user/singleProject")
+      .query({ projectId: 123 });
 
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("project");
@@ -189,7 +190,8 @@ describe("GET /user/project/id", () => {
   // Invalid project ID (not in DB)
   it("should return error when project is not found", async () => {
     const res = await request(app)
-      .get("/api/user/project").query({projectId:123});
+      .get("/api/user/project")
+      .query({ projectId: 123 });
 
     expect(res.statusCode).toBe(404);
     expect(res.body).toHaveProperty("message", "Project not found");

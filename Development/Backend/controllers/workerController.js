@@ -9,9 +9,8 @@ const upload = multer({ storage: storage });
 
 const addWorker = async (req, res) => {
   try {
-    const { name, contact, designation, salary} = req.body;
+    const { name, contact, designation, salary } = req.body;
     const user = req.user.userId;
-    console.log(req.body);
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
     }
@@ -30,7 +29,8 @@ const addWorker = async (req, res) => {
             profile: result.secure_url,
             designation: designation,
             salary: salary,
-            builderId: user
+            builderId: user,
+            isVisible: true,
           },
         });
 
@@ -46,40 +46,56 @@ const addWorker = async (req, res) => {
   }
 };
 
-const allWorkers = async(req,res)=>{
+const allWorkers = async (req, res) => {
   try {
     const user = req.user.userId;
-    console.log("hello",user);
     const workers = await prisma.worker.findMany({
       where: {
-        builderId: user,
-      }
+        isVisible: true,
+        builderId: user
+      },
     });
-    
-    return res.status(200).json({message:"All workers",status:200,workers});
+
+    return res
+      .status(200)
+      .json({ message: "All workers", status: 200, workers });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "Internal Server Error" });  
+    return res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
 
 const workerDetails = async (req, res) => {
   try {
     const { workerId, projectId } = req.body;
-    console.log("Fetching details for Worker ID:", workerId, "Project ID:", projectId);
-
     if (!workerId || !projectId) {
-      return res.status(400).json({ error: "Worker ID and Project ID are required" });
+      return res
+        .status(400)
+        .json({ error: "Worker ID and Project ID are required" });
     }
 
+    const workerData = await prisma.worker.findFirst(
+      {where:{
+        id:workerId,
+        isVisible:true
+      }}
+    )
+    console.log(workerData);
+    if(!workerData) return res.status(402).json({error:"Worker not found"});
+
     const worker = await prisma.worker.findUnique({
-      where: { id: workerId },
+      where: { id: workerId, isVisible:true},
       include: {
         projectWorkers: {
           where: { projectId: projectId },
           include: {
             attendance: {
-              select: { date: true, status: true, shifts: true, paymentStatus: true },
+              select: {
+                date: true,
+                status: true,
+                shifts: true,
+                paymentStatus: true,
+              },
             },
           },
         },
@@ -87,7 +103,9 @@ const workerDetails = async (req, res) => {
     });
 
     if (!worker || worker.projectWorkers.length === 0) {
-      return res.status(404).json({ error: "No attendance found for this worker in this project" });
+      return res
+        .status(404)
+        .json({ error: "No attendance found for this worker in this project" });
     }
 
     // Group attendance by month
@@ -112,7 +130,7 @@ const workerDetails = async (req, res) => {
         date: record.date,
         status: record.status,
         shifts: record.shifts || 0,
-        paymentStatus: record.paymentStatus || "pending", // Default to "pending" if null
+        paymentStatus: record.paymentStatus || "pending"
       });
 
       // Calculate salary (1000 per shift assumption)
@@ -138,7 +156,34 @@ const workerDetails = async (req, res) => {
   }
 };
 
+const removeWorker = async (req, res) => {
+  try {
+    const { workerId } = req.body;
+    console.log(workerId);
+    if (!workerId)
+      return res.status(400).json({ error: "Worker Id is requiered" });
+    const workerData = await prisma.worker.findFirst({
+      where: {
+        id: workerId,
+        isVisible: true,
+      },
+    });
+    if (!workerData) return res.status(400).json({ error: "Worker not found" });
+    const result = await prisma.worker.update({
+      where: {
+        id: workerData.id,
+      },
+      data: {
+        isVisible: false,
+      },
+    });
+    return res.status(200).json({
+      message: "Worker Delelted Successfully!",
+    });
+  } catch (error) {
+    console.error("Error fetching worker details:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
-
-
-module.exports = { upload, addWorker, allWorkers,workerDetails};
+module.exports = { upload, addWorker, allWorkers, workerDetails, removeWorker };

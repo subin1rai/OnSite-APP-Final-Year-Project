@@ -103,6 +103,8 @@ const getProject = async (req, res) => {
         },
       },
     });
+    if(!project) return res.status(404).json({message:"Project not found"});
+
     return res.status(200).json(project);
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });
@@ -112,7 +114,7 @@ const getProject = async (req, res) => {
 const projectById = async (req, res) => {
   try {
     const projectId = req.query?.id;
-
+    console.log(projectId);
     if (!projectId) {
       return res.status(400).json({ message: "Project id is required" });
     }
@@ -154,6 +156,7 @@ const projectById = async (req, res) => {
           id: pw.worker.id,
           projectWorkerId: pw.id,
           name: pw.worker.name,
+          isVisible:pw.worker.isVisible,
           contact: pw.worker.contact,
           profile: pw.worker.profile,
           designation: pw.worker.designation,
@@ -185,6 +188,7 @@ const addWorkerToProject = async (req, res) => {
     return res.status(500).json({ error: "Internal Server error" });
   }
 };
+
 const shareProject = async (req, res) => {
   try {
     const username = req.user.username;

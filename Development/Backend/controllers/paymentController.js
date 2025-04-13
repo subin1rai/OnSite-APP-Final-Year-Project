@@ -146,7 +146,7 @@ async function initializePayment(req, res) {
       });
 
       const worker = await prisma.worker.findFirst({
-        where: { id: parseInt(workerId) },
+        where: { id: parseInt(workerId),isVisible:true },
       });
       
       const message = `Payment of ${month} of ${worker.name} has been paid.`;
