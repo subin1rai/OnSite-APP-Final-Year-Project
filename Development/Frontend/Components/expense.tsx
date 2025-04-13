@@ -103,7 +103,7 @@ const Expense = () => {
   );
 
   return (
-    <View className="h-full relative">
+    <View className="h-full relative ">
       <FlatList
         data={transactionsList}
         keyExtractor={(item) => item.id.toString()}

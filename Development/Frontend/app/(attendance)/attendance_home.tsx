@@ -26,8 +26,6 @@ const AttendanceHome = () => {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const { workers, fetchWorkers,setSelectedWorker} = useAttendanceStore();
-
-  // Bottom sheet state and refs
   const [isAddWorkerSheetOpen, setIsAddWorkerSheetOpen] = useState(false);
   const [isUpdateWorkerSheetOpen, setIsUpdateWorkerSheetOpen] = useState(false);
   const snapPoints = ["50%", "70%"];
@@ -154,7 +152,6 @@ const AttendanceHome = () => {
     handleUpdateWorkerOpen();
   };
   const setWorkerClick =(worker: Worker) => {
-    console.log("Selected Worker:", worker);
     setSelectedWorker(worker); 
     router.push("/(worker)/worker_details");
   };

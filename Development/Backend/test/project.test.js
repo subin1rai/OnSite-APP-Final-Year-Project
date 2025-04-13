@@ -2,7 +2,7 @@ const request = require("supertest");
 const app = require("../app");
 const prisma = require("../utils/prisma");
 
-describe("GET /project", () => {
+describe("Project Details", () => {
   let token;
 
   beforeAll(async () => {
@@ -14,8 +14,7 @@ describe("GET /project", () => {
     token = loginRes.body.token;
   });
 
-  //checking token
-  it("should return 200 when token is valid", async () => {
+  it("returns project list when token is valid", async () => {
     const res = await request(app)
       .get("/api/project")
       .set("Authorization", `Bearer ${token}`);
@@ -23,24 +22,24 @@ describe("GET /project", () => {
     expect(res.statusCode).toBe(200);
   });
 
-  //testing missing value
-  it("should return 401 when token is missing", async () => {
+  it("returns error when token is missing", async () => {
     const res = await request(app).get("/api/project");
+
     expect(res.statusCode).toBe(401);
     expect(res.body).toHaveProperty("error", "Access Denied");
   });
 
-  it("should return 401 when token is invalid", async () => {
+  it("returns error when token is invalid", async () => {
     const res = await request(app)
       .get("/api/project")
-      .set("Authorization", `Bearer faketoken123`);
+      .set("Authorization", "Bearer faketoken123");
 
     expect(res.statusCode).toBe(401);
     expect(res.body).toHaveProperty("error", "Invalid Token");
   });
 });
 
-describe("POST /api/project/create", () => {
+describe("Create Project", () => {
   let token;
 
   beforeAll(async () => {
@@ -61,8 +60,7 @@ describe("POST /api/project/create", () => {
     endDate: "2025-06-01",
   };
 
-  // ✅ Success Case
-  it("should create project with 201 status", async () => {
+  it("creates project successfully", async () => {
     const res = await request(app)
       .post("/api/project/create")
       .set("Authorization", `Bearer ${token}`)
@@ -74,8 +72,7 @@ describe("POST /api/project/create", () => {
     expect(res.body.result).toHaveProperty("newBudget");
   });
 
-  // Missing fields
-  it("should return 400 if required fields are missing", async () => {
+  it("returns error if required fields are missing", async () => {
     const { projectName, ...partialPayload } = validPayload;
 
     const res = await request(app)
@@ -87,8 +84,7 @@ describe("POST /api/project/create", () => {
     expect(res.body).toHaveProperty("message", "All fields are required");
   });
 
-  // Invalid date format
-  it("should return 400 if dates are invalid", async () => {
+  it("returns error for invalid date format", async () => {
     const res = await request(app)
       .post("/api/project/create")
       .set("Authorization", `Bearer ${token}`)
@@ -98,8 +94,7 @@ describe("POST /api/project/create", () => {
     expect(res.body).toHaveProperty("message", "Invalid date format");
   });
 
-  // Invalid budgetAmount (not a number)
-  it("should return 400 if budgetAmount is not a number", async () => {
+  it("returns error if budgetAmount is not a number", async () => {
     const res = await request(app)
       .post("/api/project/create")
       .set("Authorization", `Bearer ${token}`)
@@ -109,15 +104,12 @@ describe("POST /api/project/create", () => {
     expect(res.body).toHaveProperty("message", "Invalid project value");
   });
 
-  // Duplicate project name
-  it("should return 400 if project name already exists", async () => {
-    // First create the project
+  it("returns error if project name already exists", async () => {
     await request(app)
       .post("/api/project/create")
       .set("Authorization", `Bearer ${token}`)
       .send(validPayload);
 
-    // Try again with the same name
     const res = await request(app)
       .post("/api/project/create")
       .set("Authorization", `Bearer ${token}`)
@@ -127,9 +119,7 @@ describe("POST /api/project/create", () => {
     expect(res.body).toHaveProperty("message", "Project already exists!");
   });
 
-  // Invalid role (not builder)
-  it("should return 403 if user is not builder", async () => {
-    // Login as non-builder
+  it("returns error if user is not builder", async () => {
     const loginRes = await request(app).post("/api/user/login").send({
       email: "sujal@gmail.com",
       password: "123",
@@ -146,8 +136,7 @@ describe("POST /api/project/create", () => {
     expect(res.body).toHaveProperty("message", "User not valid!");
   });
 
-  // No token
-  it("should return 401 if no token is provided", async () => {
+  it("returns error if no token is provided", async () => {
     const res = await request(app)
       .post("/api/project/create")
       .send(validPayload);
@@ -155,8 +144,7 @@ describe("POST /api/project/create", () => {
     expect(res.statusCode).toBe(401);
   });
 
-  // Invalid token
-  it("should return 401 if token is invalid", async () => {
+  it("returns error if token is invalid", async () => {
     const res = await request(app)
       .post("/api/project/create")
       .set("Authorization", "Bearer faketoken123")
@@ -166,30 +154,27 @@ describe("POST /api/project/create", () => {
   });
 });
 
-//test of product by id
-describe("GET /user/project/id", () => {
-  // ✅ Valid project ID
-  it("should return success and project data when valid project ID is provided", async () => {
+describe("Project by ID", () => {
+  it("returns project data for valid ID", async () => {
     const res = await request(app)
-      .get(`/api/user/singleProject?projectId=${1}`);
+      .post("/api/singleProject")
+      .query({ id: 1 });
 
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("project");
-    expect(res.body.project).toHaveProperty("id", projectId);
   });
 
-  // Missing project ID
-  it("should return error when project ID is not provided", async () => {
-    const res = await request(app).get("/api/user/project");
+  it("returns error if project ID is missing", async () => {
+    const res = await request(app).post("/api/singleProject");
 
     expect(res.statusCode).toBe(400);
     expect(res.body).toHaveProperty("message", "Project id is required");
   });
 
-  // Invalid project ID (not in DB)
-  it("should return error when project is not found", async () => {
+  it("returns error if project is not found", async () => {
     const res = await request(app)
-      .get("/api/user/project").query({projectId:123});
+      .post("/api/singleProject")
+      .query({ id: 9999 });
 
     expect(res.statusCode).toBe(404);
     expect(res.body).toHaveProperty("message", "Project not found");

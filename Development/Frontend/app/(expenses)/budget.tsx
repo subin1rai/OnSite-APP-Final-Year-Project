@@ -26,7 +26,7 @@ const Budget = () => {
   const { selectedProject } = useProjectStore();
   // Use the budget store from Zustand
   const { budget, setBudget } = useBudgetStore();
-
+  const isAndroid = Platform.OS === "android";
   const [activeTab, setActiveTab] = useState<TabName>("Expense");
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -40,8 +40,11 @@ const Budget = () => {
   const fetchBudget = async () => {
     try {
       if (!selectedProject) return;
-      const response = await apiHandler.get(`/project/${selectedProject.id}/budget`);
-      if (!response || !response.data) throw new Error("Failed to fetch budget");
+      const response = await apiHandler.get(
+        `/project/${selectedProject.id}/budget`
+      );
+      if (!response || !response.data)
+        throw new Error("Failed to fetch budget");
       // Store the fetched budget in Zustand
       setBudget(response.data);
     } catch (error) {
@@ -50,6 +53,11 @@ const Budget = () => {
       setIsLoading(false);
     }
   };
+  const totalBudget = budget?.budgets[0]?.amount || 0;
+  const inHandAmount = budget?.budgets[0]?.inHand || 0;
+  const expensesAmount = totalBudget - inHandAmount;
+  const spentPercentage =
+    totalBudget > 0 ? Math.round((expensesAmount / totalBudget) * 100) : 0;
 
   const checkTokenAndFetchData = async () => {
     const isExpired = await AuthService.isTokenExpired();
@@ -63,17 +71,6 @@ const Budget = () => {
   const handleTabChange = (tabName: TabName) => {
     setActiveTab(tabName);
   };
-
-  // Uncomment and use this if you want to support pull-to-refresh
-  // const onRefresh = useCallback(async () => {
-  //   setRefreshing(true);
-  //   try {
-  //     await checkTokenAndFetchData();
-  //     await fetchBudget();
-  //   } finally {
-  //     setRefreshing(false);
-  //   }
-  // }, [selectedProject]);
 
   if (isLoading) {
     return (
@@ -90,123 +87,239 @@ const Budget = () => {
   return (
     <SafeAreaView className="bg-[#ffb133]">
       <View>
-      <View className="bg-[#ffb133] h-[180px] w-full z-0 flex">
-          <View className="flex-row justify-between mx-4 items-center">
-            <Ionicons name="arrow-back" size={24} color="white" />
+        <View
+          className={`bg-[#ffb133] h-[180px] w-full z-0 flex ${
+            isAndroid ? "mt-10" : ""
+          }`}
+        >
+          <View className={`flex-row justify-between mx-4 items-center ${isAndroid ? "mb-4":""}`}>
+           <TouchableOpacity onPress={() => router.back()}>
+                      <Ionicons name="arrow-back" size={24} color="white" />
+                    </TouchableOpacity>
             <Text className="text-2xl text-white font-semibold tracking-wider">
               Budget
             </Text>
-            <Image
-              source={images.imageProfile}
-              className="w-10 h-10 rounded-full"
-            />
+            <View />
           </View>
-          {budget && (
-            <BlurView
-              className="z-10 w-[91%] h-[173px] mt-5 mx-auto rounded-lg border border-neutral-200/25"
+
+          {budget &&
+            (isAndroid ? (
+              <View
+                className="bg-white w-[91%] mx-auto rounded-2xl p-5"
+                style={{
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.15,
+                  shadowRadius: 6,
+                  elevation: 8,
+                }}
+              >
+                {/* Header with Owner Name and Budget Icon */}
+                <View className="flex-row justify-between items-center mb-4">
+                  <Text
+                    className={`font-bold text-gray-800 ${
+                      isAndroid ? "text-xl" : "text-2xl"
+                    }`}
+                  >
+                    {budget.ownerName}
+                  </Text>
+                  <View className="bg-[#ffb133] p-2 rounded-full">
+                    <Ionicons name="wallet" size={20} color="white" />
+                  </View>
+                </View>
+
+                {/* Budget Progress */}
+                <View className="mb-4">
+                  <View className="flex-row justify-between mb-2">
+                    <Text className="text-gray-600 text-sm">
+                      Budget Utilization
+                    </Text>
+                    <Text className="font-bold text-gray-800">
+                      {spentPercentage}%
+                    </Text>
+                  </View>
+                  <View className="bg-gray-200 rounded-full h-2 overflow-hidden">
+                    <View
+                      className="bg-[#ffb133] h-full"
+                      style={{ width: `${spentPercentage}%` }}
+                    />
+                  </View>
+                </View>
+
+                {/* Budget Metrics */}
+                <View className="flex-row justify-between">
+                  {/* Total Budget */}
+                  <View className="items-center flex-1 p-2 bg-gray-50 rounded-xl">
+                    <Text className="text-xs text-gray-600 mb-1">
+                      Total Budget
+                    </Text>
+                    <Text
+                      className={`font-bold text-[#C17800] ${
+                        isAndroid ? "text-base" : "text-lg"
+                      }`}
+                    >
+                      {formatCurrency(totalBudget)}
+                    </Text>
+                  </View>
+
+                  {/* Budget In Hand */}
+                  <View className="items-center flex-1 p-2 bg-gray-50 rounded-xl mx-2">
+                    <Text className="text-xs text-gray-600 mb-1">
+                      Remaining
+                    </Text>
+                    <Text
+                      className={`font-bold text-[#079907] ${
+                        isAndroid ? "text-base" : "text-lg"
+                      }`}
+                    >
+                      {formatCurrency(inHandAmount)}
+                    </Text>
+                  </View>
+
+                  {/* Expenses */}
+                  <View className="items-center flex-1 p-2 bg-gray-50 rounded-xl">
+                    <Text className="text-xs text-gray-600 mb-1">Expenses</Text>
+                    <Text
+                      className={`font-bold text-[#FF3B30] ${
+                        isAndroid ? "text-base" : "text-lg"
+                      }`}
+                    >
+                      {formatCurrency(expensesAmount)}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            ) : (
+              <BlurView
+              className="z-10 w-[91%] mt-5 mx-auto rounded-2xl border border-neutral-200/25 overflow-hidden"
               style={{
                 shadowColor: "#000",
                 shadowOffset: { width: 0, height: 5 },
                 shadowOpacity: 0.1,
                 shadowRadius: 10,
-                elevation: Platform.OS === "android" ? 0 : 5,
-                overflow: "hidden",
+                elevation: 5,
               }}
               tint="light"
               intensity={80}
             >
-              <View className="px-4 flex gap-4 mt-4">
-                <Text className="text-3xl font-semibold text-white">
-                  {budget.ownerName}
-                </Text>
-                <View className="flex flex-row justify-between">
-                  <View>
-                    <Text className="font-medium text-2xl text-white">
-                      Budget
-                    </Text>
-                    <Text className="font-medium text-2xl text-[#C17800]">
-                      {formatCurrency(budget.budgets[0]?.amount || 0)}
-                    </Text>
-                  </View>
-                  <View>
-                    <Text className="font-medium text-2xl text-white">
-                      Budget In Hand
-                    </Text>
-                    <Text className="font-medium text-2xl text-[#079907]">
-                      {formatCurrency(budget.budgets[0]?.inHand || 0)}
-                    </Text>
+              <View className="p-5">
+                {/* Header with Owner Name and Budget Icon */}
+                <View className="flex-row justify-between items-center mb-4">
+                  <Text 
+                    className={`font-bold text-white ${
+                      isAndroid ? "text-xl" : "text-2xl"
+                    }`}
+                  >
+                    {budget.ownerName}
+                  </Text>
+                  <View className="bg-white/20 p-2 rounded-full">
+                    <Ionicons name="wallet" size={20} color="white" />
                   </View>
                 </View>
-
-                <View className="flex flex-row justify-between">
-                  <View>
-                    <Text className="font-medium text-2xl text-white">
-                      Expenses
-                    </Text>
-                    <Text className="font-medium text-2xl text-[#FF3B30]">
-                      {formatCurrency(
-                        (budget.budgets[0]?.amount || 0) - (budget.budgets[0]?.inHand || 0)
-                      )}
+        
+                {/* Budget Progress */}
+                <View className="mb-4">
+                  <View className="flex-row justify-between mb-2">
+                    <Text className="text-black text-base">Budget Utilization</Text>
+                    <Text className="font-bold text-black">
+                      {spentPercentage}%
                     </Text>
                   </View>
-                  <View>
-                    <Text className="font-medium text-2xl text-white">
-                      Remain Amount
+                  <View className="bg-black rounded-full h-2 overflow-hidden">
+                    <View 
+                      className="bg-white h-full" 
+                      style={{ width: `${spentPercentage}%` }}
+                    />
+                  </View>
+                </View>
+        
+                {/* Budget Metrics */}
+                <View className="flex-row justify-between">
+                  {/* Total Budget */}
+                  <View className="items-center flex-1 p-2 bg-white/10 rounded-xl">
+                    <Text className="text-xs text-black mb-1">Total Budget</Text>
+                    <Text 
+                      className={`font-bold text-[#C17800] ${
+                        isAndroid ? "text-base" : "text-lg"
+                      }`}
+                    >
+                      {formatCurrency(totalBudget)}
                     </Text>
-                    <Text className="font-medium text-2xl text-[#FF9500]">
-                      {formatCurrency(budget.budgets[0]?.inHand || 0)}
+                  </View>
+        
+                  {/* Budget In Hand */}
+                  <View className="items-center flex-1 p-2 bg-white/10 rounded-xl mx-2">
+                    <Text className="text-xs text-black mb-1">Remaining</Text>
+                    <Text 
+                      className={`font-bold text-[#079907] ${
+                        isAndroid ? "text-base" : "text-lg"
+                      }`}
+                    >
+                      {formatCurrency(inHandAmount)}
+                    </Text>
+                  </View>
+        
+                  {/* Expenses */}
+                  <View className="items-center flex-1 p-2 bg-white/10 rounded-xl">
+                    <Text className="text-xs text-black mb-1">Expenses</Text>
+                    <Text 
+                      className={`font-bold text-[#FF3B30] ${
+                        isAndroid ? "text-base" : "text-lg"
+                      }`}
+                    >
+                      {formatCurrency(expensesAmount)}
                     </Text>
                   </View>
                 </View>
               </View>
             </BlurView>
-          )}
+            ))}
 
           {/* Custom Tabs Navigation */}
-          <View className="flex flex-row mt-4">
-            <TouchableOpacity
-              onPress={() => handleTabChange("Expense")}
-              style={{
-                flex: 1,
-                paddingVertical: 10,
-                alignItems: "center",
-                borderBottomWidth: 2,
-                borderBottomColor:
-                  activeTab === "Expense" ? "#ffd700" : "#D9D9D9",
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontWeight: "500",
-                  color: activeTab === "Expense" ? "#FCA311" : "#3C3C43",
-                }}
-              >
-                Expense
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => handleTabChange("Vendors")}
-              style={{
-                flex: 1,
-                paddingVertical: 10,
-                alignItems: "center",
-                borderBottomWidth: 2,
-                borderBottomColor:
-                  activeTab === "Vendors" ? "#ffd700" : "#D9D9D9",
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontWeight: "500",
-                  color: activeTab === "Vendors" ? "#FCA311" : "#3C3C43",
-                }}
-              >
-                Vendors
-              </Text>
-            </TouchableOpacity>
-          </View>
+<View 
+  className="flex-row mx-4 bg-gray-100 rounded-full p-1 mt-4"
+  style={{
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  }}
+>
+  <TouchableOpacity
+    onPress={() => handleTabChange("Expense")}
+    className={`flex-1 items-center justify-center py-3 rounded-full ${
+      activeTab === "Expense" ? "bg-white" : "bg-transparent"
+    }`}
+  >
+    <Text
+      style={{
+        fontSize: 14,
+        fontWeight: Platform.OS === 'ios' ? '500' : '500',
+        color: activeTab === "Expense" ? "black" : "gray",
+      }}
+    >
+      Expense
+    </Text>
+  </TouchableOpacity>
+  <TouchableOpacity
+    onPress={() => handleTabChange("Vendors")}
+    className={`flex-1 items-center justify-center py-3 rounded-full ${
+      activeTab === "Vendors" ? "bg-white" : "bg-transparent"
+    }`}
+  >
+    <Text
+      style={{
+
+        fontSize: 14,
+        fontWeight: Platform.OS === 'ios' ? '500' : '500',
+        color: activeTab === "Vendors" ? "black" : "#3C3C43",
+      }}
+    >
+      Vendors
+    </Text>
+  </TouchableOpacity>
+</View>
 
           {/* Content based on Active Tab */}
           <View className="p-0 m-2 h-[500px]">
@@ -214,13 +327,6 @@ const Budget = () => {
           </View>
         </View>
       </View>
-      {/* Uncomment below if you want pull-to-refresh support */}
-      {/* <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          tintColor="#FCA311"
-          colors={["#FCA311"]}
-        /> */}
     </SafeAreaView>
   );
 };

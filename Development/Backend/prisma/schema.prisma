@@ -58,6 +58,7 @@ model Project {
   status         String          @default("onGoing")
   builderId      Int
   clientId       Int?
+  isVisible     Boolean?
   client         User?           @relation("ClientRelation", fields: [clientId], references: [id])
   clientName     String?
   builder        User            @relation("BuilderRelation", fields: [builderId], references: [id])
@@ -90,6 +91,7 @@ model Worker {
   designation    String?
   salary         String?
   builderId      Int
+  isVisible     Boolean?
   builder        User            @relation(fields: [builderId], references: [id])
   projectWorkers ProjectWorker[]
   Payment        Payment[]

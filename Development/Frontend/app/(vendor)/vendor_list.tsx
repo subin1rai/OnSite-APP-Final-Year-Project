@@ -50,11 +50,11 @@ const VendorList = () => {
       <SafeAreaView className="bg-[#ffb133]">
         <View
           className="bg-[#ffb133] flex-row justify-between mt-16 items-center px-4 pb-[10px]"
-          style={{ marginTop: Platform.OS === "ios" ? 60 : StatusBar.currentHeight }}
+          style={{ marginTop: Platform.OS === "ios" ? 60 : 4 }}
         ><TouchableOpacity onPress={() => router.back()}>
                   <Ionicons name="arrow-back" size={24} color="white" />
                   </TouchableOpacity> 
-          <Text className="text-white text-2xl font-medium tracking-widest">Vendors</Text>
+          <Text className="text-white text-xl font-medium tracking-widest">Vendors</Text>
           <TouchableOpacity onPress={openBottomSheet}>
             <Ionicons name="add" size={24} color="white" />
           </TouchableOpacity>

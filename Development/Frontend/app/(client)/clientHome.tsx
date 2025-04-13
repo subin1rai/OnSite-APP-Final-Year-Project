@@ -8,6 +8,7 @@ import {
   ScrollView,
   Image,
   RefreshControl,
+  TextInput,
 } from "react-native";
 import { useRouter } from "expo-router";
 import AuthService from "@/context/AuthContext";
@@ -43,13 +44,27 @@ interface Project {
   status: string;
   budgets: Budget[];
 }
+interface User {
+  shareid: number;
+}
 
 const clientHome = () => {
   const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const fetchUser = async () => {
+    const token = await SecureStore.getItemAsync("AccessToken");
+    const response = await apiHandler.get("/user/getUser", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    setUser(response.data.user);
+  };
 
   const fetchDetails = async () => {
     try {
@@ -62,13 +77,18 @@ const clientHome = () => {
       });
 
       const { projects } = response.data;
-      useProjectStore.getState().setSelectedProject(projects[0]);
-      setProjects(projects);
       if (projects && projects.length > 0) {
+        useProjectStore.getState().setSelectedProject(projects[0]);
+        setProjects(projects);
         setActiveProject(projects[0]);
+      } else {
+        setProjects([]);
+        setActiveProject(null);
       }
     } catch (error) {
       console.error("Error fetching client projects:", error);
+      setProjects([]);
+      setActiveProject(null);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -82,6 +102,8 @@ const clientHome = () => {
 
   useEffect(() => {
     fetchDetails();
+    fetchUser();
+    console.log(user);
   }, []);
 
   const formatDate = (dateString: string) => {
@@ -264,10 +286,64 @@ const clientHome = () => {
     );
   }
 
+  if (!projects || projects.length === 0) {
+    return (
+      <View className="flex-1 bg-gray-50">
+        {/* Header for Empty State */}
+        <View className="px-4 pt-12 pb-2">
+          <View className="flex-row justify-between items-center">
+            <View>
+              <Text className="text-xl font-bold">My Projects</Text>
+              <Text className="text-gray-700">Welcome to Construction App</Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => router.push("../(notification)/notification")}
+            >
+              <Image source={icons.bell} className="w-8 h-8" />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Empty State Content */}
+        <View className="flex-1 justify-center items-center px-6">
+          <View className="bg-gray-100 w-full rounded-2xl p-8 items-center">
+            {/* Sad Face Icon */}
+            <View className="w-20 h-20 rounded-full bg-orange-100 justify-center items-center mb-6">
+              <Ionicons name="sad-outline" size={40} color="#f97316" />
+            </View>
+
+            {/* No Projects Message */}
+            <Text className="text-2xl font-bold text-gray-800 mb-4 text-center">
+              No active projects yet!
+            </Text>
+
+            <Text className="text-gray-600 text-center mb-6">
+              Start by creating or joining a project to begin managing your
+              construction progress.
+            </Text>
+
+            <Text className="text-gray-600 text-center mb-8">
+              Pro Tip: You can invite others using your share ID.
+            </Text>
+
+            <Text className="text-black pb-2 font-semibold text-lg">
+              Invite Code
+            </Text>
+            <TouchableOpacity className="bg-[#ffb133] w-full py-3 rounded-xl items-center mb-6">
+              <Text className="text-white font-semibold text-2xl tracking-tighter">
+                {user?.shareid}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View className="flex-1 bg-gray-50">
       {/* Header */}
-      <View className=" px-4 pt-12 pb-2">
+      <View className="px-4 pt-12 pb-2">
         <View className="flex-row justify-between items-center">
           <View>
             <Text className="text-xl font-bold">My Projects</Text>
@@ -283,21 +359,33 @@ const clientHome = () => {
         </View>
       </View>
 
-      <ScrollView 
+      <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl 
-            refreshing={refreshing} 
+          <RefreshControl
+            refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={['#FCA311']} 
+            colors={["#FCA311"]}
             tintColor="#FCA311"
           />
         }
       >
+        {/* Projects Horizontal List */}
+        <View className="mt-4">
+          <FlatList
+            data={projects}
+            renderItem={renderProjectCard}
+            keyExtractor={(item) => item.id.toString()}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingLeft: 16, paddingRight: 6 }}
+          />
+        </View>
+
         {/* Active Project Details */}
         {activeProject && (
           <View className="mt-6 px-4">
-            <View className="bg-white rounded-lg  p-4 mb-4">
+            <View className="bg-white rounded-lg p-4 mb-4">
               <View className="flex-row justify-between items-center mb-3">
                 <View className="flex-row items-center">
                   <View className="w-10 h-10 rounded-full bg-yellow-100 items-center justify-center mr-3">
@@ -372,7 +460,7 @@ const clientHome = () => {
               </View>
             </View>
 
-            <View className="bg-white rounded-lg  p-4 mb-6">
+            <View className="bg-white rounded-lg p-4 mb-6">
               <Text className="font-bold text-lg mb-3">Financial Summary</Text>
 
               {activeProject.budgets && activeProject.budgets.length > 0 && (
@@ -414,22 +502,6 @@ const clientHome = () => {
                       Rs. {activeProject.budgets[0].inHand}
                     </Text>
                   </View>
-
-                  {/* <View className="flex-row justify-between items-center">
-                    <View className="flex-row items-center">
-                      <View className="w-8 h-8 rounded-full bg-purple-100 items-center justify-center mr-2">
-                        <Ionicons
-                          name="calendar-outline"
-                          size={16}
-                          color="#8b5cf6"
-                        />
-                      </View>
-                      <Text>Days Remaining</Text>
-                    </View>
-                    <Text className="font-bold">
-                      {calculateDaysRemaining(activeProject.endDate)}
-                    </Text>
-                  </View> */}
                 </View>
               )}
             </View>

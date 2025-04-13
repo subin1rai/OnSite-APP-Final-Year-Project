@@ -21,7 +21,6 @@ const createProject = async (req, res) => {
       !startDate ||
       !endDate
     ) {
-     
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -40,7 +39,6 @@ const createProject = async (req, res) => {
     if (user.role !== "builder") {
       return res.status(403).json({ message: "User not valid!" });
     }
-
 
     // Check if project with the same name already exists
     const project = await prisma.project.findFirst({
@@ -61,6 +59,7 @@ const createProject = async (req, res) => {
           startDate: new Date(startDate),
           endDate: new Date(endDate),
           status: "onGoing",
+          isVisible: true,
         },
       });
 
@@ -94,6 +93,7 @@ const getProject = async (req, res) => {
     const project = await prisma.project.findMany({
       where: {
         builderId: user.userId,
+        isVisible: true,
       },
       include: {
         projectWorkers: {
@@ -103,6 +103,8 @@ const getProject = async (req, res) => {
         },
       },
     });
+    if(!project) return res.status(404).json({message:"Project not found"});
+
     return res.status(200).json(project);
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });
@@ -112,14 +114,12 @@ const getProject = async (req, res) => {
 const projectById = async (req, res) => {
   try {
     const projectId = req.query?.id;
-    
     if (!projectId) {
       return res.status(400).json({ message: "Project id is required" });
     }
 
-
     const projectData = await prisma.project.findFirst({
-      where: { id: parseInt(projectId) },
+      where: { id: parseInt(projectId), isVisible: true },
       include: {
         budgets: true,
         projectWorkers: {
@@ -155,6 +155,7 @@ const projectById = async (req, res) => {
           id: pw.worker.id,
           projectWorkerId: pw.id,
           name: pw.worker.name,
+          isVisible:pw.worker.isVisible,
           contact: pw.worker.contact,
           profile: pw.worker.profile,
           designation: pw.worker.designation,
@@ -186,6 +187,7 @@ const addWorkerToProject = async (req, res) => {
     return res.status(500).json({ error: "Internal Server error" });
   }
 };
+
 const shareProject = async (req, res) => {
   try {
     const username = req.user.username;
@@ -209,7 +211,7 @@ const shareProject = async (req, res) => {
 
     // Validate project
     const project = await prisma.project.findUnique({
-      where: { id: parseInt(projectId) },
+      where: { id: parseInt(projectId), isVisible: true },
     });
 
     if (!project) {
@@ -238,7 +240,6 @@ const shareProject = async (req, res) => {
           message,
         },
       }),
-
     ]);
 
     // Send push notification outside transaction
@@ -264,7 +265,7 @@ const projectDetails = async (req, res) => {
       return res.status(400).json({ message: "Project ID is required" });
     }
     const project = await prisma.project.findFirst({
-      where: { id: parseInt(projectId) },
+      where: { id: parseInt(projectId), isVisible: true },
       include: {
         client: true,
       },
@@ -279,9 +280,10 @@ const projectDetails = async (req, res) => {
 const updateStatus = async (req, res) => {
   try {
     const { projectId, status } = req.body;
-    console.log(projectId, status);
     if (!projectId || !status) {
-      return res.status(400).json({ message: "Project ID and status are required" });
+      return res
+        .status(400)
+        .json({ message: "Project ID and status are required" });
     }
     const project = await prisma.project.findFirst({
       where: { id: parseInt(projectId) },
@@ -298,7 +300,39 @@ const updateStatus = async (req, res) => {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
+
+const deleteProject = async (req, res) => {
+  try {
+    const { projectId } = req.body;
+
+    if (!projectId)
+      return res.status(400).json({ error: "Project Id not found" });
+    const projectData = await prisma.project.findFirst({
+      where: {
+        id: projectId,
+        isVisible: true
+      },
+    });
+
+    if (!projectData)
+      return res.status(400).json({ error: "Project data not found" });
+
+    const result = await prisma.project.update({
+      where: {
+        id: projectData.id,
+      },
+      data:{
+        isVisible:false
+      }
+    });
+
+    return res.status(200).json({ message: "Project deleted successfully !" });
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 module.exports = {
   createProject,
@@ -307,5 +341,6 @@ module.exports = {
   projectById,
   shareProject,
   projectDetails,
-  updateStatus
+  updateStatus,
+  deleteProject,
 };

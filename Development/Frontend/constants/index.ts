@@ -48,6 +48,7 @@ import dropdown from "@/assets/icons/dropdown.png";
 import house from "@/assets/images/modern-house.png";
 import engineer from "@/assets/icons/engineer.png";
 import builder from "@/assets/icons/builder.png";
+import fingerprint from "@/assets/icons/fingerprint.png";
 import trash from "@/assets/icons/delete.png";
 import todo from "@/assets/icons/todo.png";
 import Chatamico from "@/assets/icons/Chat-amico.png";
@@ -63,6 +64,7 @@ export const images = {
 
 export const icons = {
     arrowDown,
+    fingerprint,
     todo,
     house,
     Chatamico,

@@ -58,6 +58,7 @@ router.post("/singleProject", projectController.projectById);
 router.put("/shareProject", authMiddleware(), projectController.shareProject);
 router.post("/projectDetails", projectController.projectDetails);
 router.post("/updateStatus", projectController.updateStatus);
+router.put("/projectDelete", projectController.deleteProject);
 
 // Budget routes
 router.get("/project/:id/budget", budgetController.getBudget);
@@ -85,6 +86,7 @@ router.post(
 );
 router.get("/worker", authMiddleware(), workerController.allWorkers);
 router.post("/workerDetails", authMiddleware(), workerController.workerDetails);
+router.put("/removeWorker", workerController.removeWorker);
 
 //vendor route
 router.get("/vendor", authMiddleware(), vendorController.getAllVendors);
