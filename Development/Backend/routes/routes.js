@@ -58,6 +58,7 @@ router.post("/singleProject", projectController.projectById);
 router.put("/shareProject", authMiddleware(), projectController.shareProject);
 router.post("/projectDetails", projectController.projectDetails);
 router.post("/updateStatus", projectController.updateStatus);
+router.put("/projectDelete", projectController.deleteProject);
 
 // Budget routes
 router.get("/project/:id/budget", budgetController.getBudget);

@@ -22,8 +22,7 @@ const clientData = async (req, res) => {
       include: {
         budgets: {
             include: {
-        Transaction: true,
-        
+        Transaction: true
             },
         },}
     });
