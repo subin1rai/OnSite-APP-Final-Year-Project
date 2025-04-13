@@ -52,10 +52,6 @@ export default function RootLayout() {
       const role = decoded?.role;
       const userId = decoded?.userId;
 
-      // if (userId) {
-      //   setUserId(userId.toString());
-      // }
-
       setIsAuthenticated(true);
 
       if (role === "client") {

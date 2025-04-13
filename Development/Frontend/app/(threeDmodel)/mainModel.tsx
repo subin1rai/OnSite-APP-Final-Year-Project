@@ -96,13 +96,13 @@ const handleModelClick = (selectedModelData: any) => {
         <View
           className="bg-[#ffb133] flex-row justify-between mt-16 items-center px-4 pb-[10px]"
           style={{
-            marginTop: Platform.OS === "ios" ? 60 : StatusBar.currentHeight,
+            marginTop: Platform.OS === "ios" ? 60 : 4,
           }}
         >
           <TouchableOpacity onPress={() => router.back()}>
             <Ionicons name="arrow-back" size={24} color="white" />
           </TouchableOpacity>
-          <Text className="text-white text-2xl font-medium tracking-widest">
+          <Text className="text-white text-xl font-medium tracking-widest">
             3D Model
           </Text>
           {role === "builder" ? (

@@ -357,14 +357,7 @@ const Profile = () => {
         backdropComponent={renderBackdrop}
         handleIndicatorStyle={{ backgroundColor: "#FCAC29", width: 50 }}
         backgroundStyle={{ backgroundColor: "white" }}
-        style={{ 
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 0,
-            height: -3,
-          },
-          shadowOpacity: 0.27,
-          shadowRadius: 4.65,
+        style={{
           elevation: 6,
         }}
       >

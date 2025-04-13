@@ -18,6 +18,7 @@ interface WorkerStore {
   workers: Worker[];
   fetchWorkers: () => Promise<void>;
   addWorker: (newWorker: Worker) => void;
+  removeWorker: (workerId: number) => void;
 }
 
 //Zustand Store with Persistence
@@ -45,6 +46,13 @@ export const useWorkerStore = create<WorkerStore>()(
       // Add Worker to State
       addWorker: (newWorker) => {
         set((state) => ({ workers: [newWorker, ...state.workers] }));
+      },
+      
+      // Remove Worker from State
+      removeWorker: (workerId) => {
+        set((state) => ({
+          workers: state.workers.filter(worker => worker.id !== workerId)
+        }));
       },
     }),
     { name: "worker-storage" }

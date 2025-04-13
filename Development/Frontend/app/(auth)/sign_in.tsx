@@ -1,108 +1,119 @@
-// Import required components and libraries
-import CustomButton from "@/Components/CustomButton";
-import InputField from "@/Components/InputField";
-import { icons, images } from "@/constants";
-import { Link } from "expo-router";
-import { useState } from "react";
-import { Image, ScrollView, Text, View, Alert } from "react-native";
+import {
+  ImageBackground,
+  ScrollView,
+  Text,
+  View,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { useRouter } from "expo-router";
-import { user_login } from "@/context/user_api";
+import { useState } from "react";
+import { icons, images } from "@/constants";
+import InputField from "@/Components/InputField";
+import CustomButton from "@/Components/CustomButton";
 import * as SecureStore from "expo-secure-store";
+import { user_login } from "@/context/user_api";
 
 const SignIn = () => {
   const router = useRouter();
-  
-  // State to manage form data
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
-  
-  // Handle sign in button press
+  const [form, setForm] = useState({ email: "", password: "" });
+
   const onSignInPress = async () => {
-    // Validate form fields
     if (!form.email || !form.password) {
-      Alert.alert("Error", "Please fill in all fields");
+      alert("Please fill in all fields");
       return;
     }
-    
     try {
       const result = await user_login(form.email, form.password);
-      if (result?.status == 200) {
+      if (result?.status === 200) {
         await SecureStore.setItemAsync("AccessToken", result.token);
         if (result.user.role === "client") {
           router.replace("../(client)/clientHome");
-        }
-        else{
+        } else {
           router.replace("../(tabs)/home");
         }
       } else {
-        Alert.alert("Error", "Invalid credentials");
+        alert("Invalid credentials");
       }
     } catch (error) {
-      console.error(error);
-      Alert.alert("Error", "Login failed. Please try again.");
+      alert("Login failed");
     }
   };
 
   return (
-    <ScrollView className="flex-1 bg-white">
-      <View className="flex-1 bg-white">
-        {/* Header section with background image */}
-        <View className="relative w-full h-[250px]">
-          <Image
-            source={images.construction}
-            className="z-0 w-full h-[250px]"
-          />
-          <Text className="text-2xl font-bold text-white absolute bottom-5 left-5">
-            welcome
+    <ScrollView
+      className="flex-1 bg-white"
+      bounces={false}
+      showsVerticalScrollIndicator={false}
+    >
+      <ImageBackground
+        source={images.construction}
+        style={{ height: 250, width: "100%" }}
+      ></ImageBackground>
+
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        className="px-4 pt-4 pb-12 bg-white rounded-t-3xl -mt-6"
+      >
+        <View className="flex-1 justify-end  pb-2">
+          <Text className="text-black text-3xl font-bold">Welcome</Text>
+          <Text className="text-gray-500 text-base mt-1">
+            Please sign in to continue
           </Text>
         </View>
+        <InputField
+          label="Email"
+          placeholder="Enter email"
+          icon={icons.email}
+          value={form.email}
+          onChangeText={(value: string) => setForm({ ...form, email: value })}
+        />
+        <InputField
+          label="Password"
+          placeholder="Enter password"
+          icon={icons.lock}
+          secureTextEntry={true}
+          value={form.password}
+          onChangeText={(value: string) =>
+            setForm({ ...form, password: value })
+          }
+        />
+        <TouchableOpacity
+          className="self-end mt-2"
+          onPress={() => {
+            router.push("/(auth)/forgetPassword");
+          }}
+        >
+          <Text className="text-[#ffb133] font-medium">Forgot password?</Text>
+        </TouchableOpacity>
 
-        {/* Form section */}
-        <View className="p-5">
-          {/* Email input field */}
-          <InputField
-            label="Email"
-            placeholder="Enter email"
-            placeholderTextColor="gray"
-            icon={icons.email}
-            value={form.email}
-            onChangeText={(value: any) => setForm({ ...form, email: value })}
-          />
-          {/* Password input field */}
-          <InputField
-            label="Password"
-            placeholder="Enter password"
-            placeholderTextColor="gray"
-            secureTextEntry={true}
-            icon={icons.lock}
-            value={form.password}
-            onChangeText={(value: any) => setForm({ ...form, password: value })}
-          />
+        <CustomButton
+          title="Sign Up"
+          onPress={onSignInPress}
+          className="mt-6"
+        />
 
-          {/* Sign in button */}
-          <CustomButton
-            title="Log In"
-            onPress={onSignInPress}
-            className="mt-6"
-          />
-          {/* Divider with "Or" text */}
-          <View className="flex flex-row justify-center items-center mt-4 gap-x-3">
-            <View className="flex-1 h-[1px] bg-general-100" />
-            <Text className="text-lg">Or</Text>
-            <View className="flex-1 h-[1px] bg-general-100" />
-          </View>
-          {/* Link to sign up page */}
-          <Link
-            href="/(auth)/sign_up"
-            className="text-lg text-center text-general-200 mt-10"
-          >
-            <Text>Don't have an account?</Text>
-            <Text className="text-yellow-500"> Sign Up</Text>
-          </Link>
+        {/* OR Divider */}
+        <View className="flex-row items-center justify-center mt-6 gap-3">
+          <View className="h-px bg-gray-300 flex-1" />
+          <Text className="text-gray-500 text-base">Or</Text>
+          <View className="h-px bg-gray-300 flex-1" />
         </View>
-      </View>
+
+        {/* Link */}
+        <TouchableOpacity
+          onPress={() => router.replace("/(auth)/sign_up")}
+          className="flex-row justify-center mt-4"
+        >
+          <Text className="text-gray-500 text-base">
+            Don’t have an account?
+          </Text>
+          <Text className="text-yellow-500 text-base ml-1 font-medium">
+            Sign in
+          </Text>
+        </TouchableOpacity>
+      </KeyboardAvoidingView>
     </ScrollView>
   );
 };
