@@ -96,14 +96,15 @@ const ChangePassword = () => {
         >
           <View className="flex-1 px-6 pt-16 pb-8 items-center mt-24">
             {/* Lock Icon */}
-            <View className="w-20 h-20 bg-orange-200 p-4 rounded-full justify-center items-center mb-8">
-              <Image source={icons.fingerprint} className="w-10 h-10" />
-            </View>
-
-            {/* Title */}
-            <Text className="text-2xl font-bold text-gray-900 mb-2">
-              Set new password
-            </Text>
+                    {/* Email Icon */}
+                    <View className="w-24 h-24 bg-blue-100 rounded-full justify-center items-center mb-8 mt-12">
+                      <Image source={icons.fingerprint} className="w-12 h-12" />
+                    </View>
+          
+                    {/* Title */}
+                    <Text className="text-2xl font-semibold text-gray-900 mb-4">
+                      Set New password
+                    </Text>
 
             {/* Subtitle */}
             <Text className="text-gray-500 text-center mb-8">
