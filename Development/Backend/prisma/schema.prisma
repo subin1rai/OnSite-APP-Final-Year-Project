@@ -238,6 +238,5 @@ model notification {
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
   message   String
-  // isRead    Boolean? @default(false)
   createdAt DateTime @default(now())
 }

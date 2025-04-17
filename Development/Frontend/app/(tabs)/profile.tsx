@@ -48,7 +48,7 @@ const Profile = () => {
 
   // Bottom sheet reference and snap points
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = ["85%"]; // Increased height for better visibility
+  const snapPoints = ["70%"]; // Increased height for better visibility
 
   // Handle opening and closing the bottom sheet
   const handleOpenEmergency = () => {

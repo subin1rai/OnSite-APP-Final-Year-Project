@@ -11,9 +11,12 @@ const signUp = async (req, res) => {
     if (!name || !email || !password || !confirmPassword) {
       return res.status(400).json({ message: "All fields are required" });
     }
-
+    
     if (password !== confirmPassword) {
       return res.status(400).json({ message: "Password didn't match !" });
+    }
+    if(!validator.isStrongPassword(password)) {
+      return res.status(400).json({ message: "Password must be  strong !" });
     }
 
     const existingUser = await prisma.user.findFirst({
@@ -166,7 +169,7 @@ const root = async (req, res) => {
 const requestOTP = async (req, res) => {
   try {
     const { email } = req.body;
-   console.log(email)
+   console.log(email);
     const user = await prisma.user.findUnique({
       where: {
         email: email,
