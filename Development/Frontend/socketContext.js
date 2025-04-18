@@ -19,7 +19,6 @@ export const SocketProvider = ({ children }) => {
       try {
         const token = await SecureStore.getItemAsync("AccessToken");
         if (!token) {
-          console.error("No access token found");
           return;
         }
 
@@ -35,19 +34,17 @@ export const SocketProvider = ({ children }) => {
         console.log("Extracted UserId:", decoded.userId);
 
         // Initialize Socket Connection
-        const socket = io("https://e6d4-202-51-86-227.ngrok-free.app", {
+        const socket = io("https://6168-2400-1a00-bd11-a92b-e8ac-ae98-1927-4d6.ngrok-free.app", {
           query: {
             userId: decoded.userId,
           },
         });
-
         setSocket(socket);
     return () => socket.close();
       } catch (error) {
         console.error("Error initializing socket:", error);
       }
     };
-
     initializeSocket();
   }, []);
 

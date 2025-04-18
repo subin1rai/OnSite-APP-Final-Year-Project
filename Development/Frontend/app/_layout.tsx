@@ -53,7 +53,6 @@ export default function RootLayout() {
       const userId = decoded?.userId;
 
       setIsAuthenticated(true);
-
       if (role === "client") {
         setTimeout(() => {
           router.replace("/(client)/clientHome");

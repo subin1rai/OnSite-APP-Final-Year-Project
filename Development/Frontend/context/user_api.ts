@@ -9,7 +9,6 @@ export const user_login = async (email: string, password: string) => {
     });
     return response.data;
   } catch (error) {
-    console.error(error);
     return {
       status: 400,
       message: "Login failed."
@@ -27,7 +26,6 @@ export const signUp_user =async (name: string, email: string, password: string, 
       });
       return response.data;
     } catch (error) {
-      console.error(error);
       return {
           status: 400,
           message: "Register failed."

@@ -59,8 +59,6 @@ const FormInput = ({
   </View>
 );
 
-
-
 const CreateProject = () => {
   const [startDate, setStartDate] = useState(dayjs());
   const [endDate, setEndDate] = useState(dayjs().add(30, "day"));
@@ -71,7 +69,7 @@ const CreateProject = () => {
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = ["75%"];
-  
+
   // Add state for prediction results
   const [predictionValue, setPredictionValue] = useState(0);
   const [buildingSummary, setBuildingSummary] = useState<{
@@ -104,28 +102,37 @@ const CreateProject = () => {
   // Open BottomSheet
   const openBottomSheet = () => {
     setIsBottomSheetOpen(true);
-    setTimeout(() => bottomSheetRef.current?.snapToIndex(0), 10); 
+    setTimeout(() => bottomSheetRef.current?.snapToIndex(0), 10);
   };
 
   // Close BottomSheet
   const handleClosePress = () => {
     bottomSheetRef.current?.close();
-    setTimeout(() => setIsBottomSheetOpen(false), 300); 
+    setTimeout(() => setIsBottomSheetOpen(false), 300);
   };
 
   // Handle prediction results from ConstructionPredictions
-  const handlePredictionComplete = (value: number, summary: { houseType: string; materialQuality: string; totalArea: number; bedrooms: number; bathrooms: number }) => {
+  const handlePredictionComplete = (
+    value: number,
+    summary: {
+      houseType: string;
+      materialQuality: string;
+      totalArea: number;
+      bedrooms: number;
+      bathrooms: number;
+    }
+  ) => {
     setPredictionValue(value);
     setBuildingSummary(summary);
     setShowPrediction(true);
-    handleClosePress(); 
+    handleClosePress();
   };
 
   // Apply the predicted amount to the budget
   const applyToBudget = () => {
-    setForm(prev => ({
+    setForm((prev) => ({
       ...prev,
-      budgetAmount: predictionValue.toString()
+      budgetAmount: predictionValue.toString(),
     }));
   };
 
@@ -147,7 +154,10 @@ const CreateProject = () => {
 
   const validateStep1 = () => {
     if (!form.projectName || !form.location || !form.area) {
-      Alert.alert("Missing Information", "Please fill in project name, address, and area.");
+      Alert.alert(
+        "Missing Information",
+        "Please fill in project name, address, and area."
+      );
       return false;
     }
     return true;
@@ -175,7 +185,10 @@ const CreateProject = () => {
       !form.startDate ||
       !form.endDate
     ) {
-      Alert.alert("Incomplete Form", "Please fill in all fields before submitting.");
+      Alert.alert(
+        "Incomplete Form",
+        "Please fill in all fields before submitting."
+      );
       return;
     }
 
@@ -250,7 +263,9 @@ const CreateProject = () => {
           <View className="flex-1 px-6 py-6">
             {currentStep === 1 && (
               <>
-                <Text className="text-xl font-bold text-gray-800 mb-6">Project Information</Text>
+                <Text className="text-xl font-bold text-gray-800 mb-6">
+                  Project Information
+                </Text>
 
                 <FormInput
                   label="Project Name"
@@ -278,15 +293,23 @@ const CreateProject = () => {
                 />
 
                 <View className="mb-5">
-                  <Text className="text-gray-700 font-medium mb-2 text-base">Project Timeline</Text>
+                  <Text className="text-gray-700 font-medium mb-2 text-base">
+                    Project Timeline
+                  </Text>
                   <View className="flex-row justify-between">
                     <TouchableOpacity
                       className="flex-1 mr-2 flex-row items-center border border-gray-200 bg-white rounded-xl px-4 py-3 shadow-sm"
                       onPress={() => setOpenStartPicker(true)}
                     >
-                      <Ionicons name="calendar-outline" size={20} color="#FCA311" />
+                      <Ionicons
+                        name="calendar-outline"
+                        size={20}
+                        color="#FCA311"
+                      />
                       <View className="ml-3">
-                        <Text className="text-xs text-gray-500">Start Date</Text>
+                        <Text className="text-xs text-gray-500">
+                          Start Date
+                        </Text>
                         <Text className="text-gray-800">
                           {startDate.format("MMM DD, YYYY")}
                         </Text>
@@ -297,7 +320,11 @@ const CreateProject = () => {
                       className="flex-1 ml-2 flex-row items-center border border-gray-200 bg-white rounded-xl px-4 py-3 shadow-sm"
                       onPress={() => setOpenEndPicker(true)}
                     >
-                      <Ionicons name="calendar-outline" size={20} color="#FCA311" />
+                      <Ionicons
+                        name="calendar-outline"
+                        size={20}
+                        color="#FCA311"
+                      />
                       <View className="ml-3">
                         <Text className="text-xs text-gray-500">End Date</Text>
                         <Text className="text-gray-800">
@@ -312,7 +339,9 @@ const CreateProject = () => {
 
             {currentStep === 2 && (
               <>
-                <Text className="text-xl font-bold text-gray-800 mb-6">Client & Budget Details</Text>
+                <Text className="text-xl font-bold text-gray-800 mb-6">
+                  Client & Budget Details
+                </Text>
 
                 <FormInput
                   label="Client Name"
@@ -332,24 +361,33 @@ const CreateProject = () => {
                 />
 
                 <View className="mt-4 p-4 bg-blue-50 rounded-xl border border-blue-100">
-                  <Text className="text-blue-800 font-medium">Project Summary</Text>
+                  <Text className="text-blue-800 font-medium">
+                    Project Summary
+                  </Text>
                   <View className="mt-2">
                     <View className="flex-row justify-between py-1">
                       <Text className="text-gray-600">Project:</Text>
-                      <Text className="text-gray-800 font-medium">{form.projectName}</Text>
+                      <Text className="text-gray-800 font-medium">
+                        {form.projectName}
+                      </Text>
                     </View>
                     <View className="flex-row justify-between py-1">
                       <Text className="text-gray-600">Location:</Text>
-                      <Text className="text-gray-800 font-medium">{form.location}</Text>
+                      <Text className="text-gray-800 font-medium">
+                        {form.location}
+                      </Text>
                     </View>
                     <View className="flex-row justify-between py-1">
                       <Text className="text-gray-600">Area:</Text>
-                      <Text className="text-gray-800 font-medium">{form.area} sq ft</Text>
+                      <Text className="text-gray-800 font-medium">
+                        {form.area} sq ft
+                      </Text>
                     </View>
                     <View className="flex-row justify-between py-1">
                       <Text className="text-gray-600">Timeline:</Text>
                       <Text className="text-gray-800 font-medium">
-                        {startDate.format("MMM DD")} - {endDate.format("MMM DD, YYYY")}
+                        {startDate.format("MMM DD")} -{" "}
+                        {endDate.format("MMM DD, YYYY")}
                       </Text>
                     </View>
                   </View>
@@ -360,83 +398,122 @@ const CreateProject = () => {
                   <View className="mt-4 p-4 bg-yellow-50 rounded-xl ">
                     <View className="flex-row justify-between items-center mb-2">
                       <View className="flex-row items-center">
-                        <Ionicons name="calculator-outline" size={18} color="#D97706" />
-                        <Text className="text-yellow-700 font-medium ml-2">Construction Cost Estimate</Text>
+                        <Ionicons
+                          name="calculator-outline"
+                          size={18}
+                          color="#D97706"
+                        />
+                        <Text className="text-yellow-700 font-medium ml-2">
+                          Construction Cost Estimate
+                        </Text>
                       </View>
-                      <TouchableOpacity onPress={() => setShowPrediction(false)}>
-                        <Ionicons name="close-circle-outline" size={22} color="#D97706" />
+                      <TouchableOpacity
+                        onPress={() => setShowPrediction(false)}
+                      >
+                        <Ionicons
+                          name="close-circle-outline"
+                          size={22}
+                          color="#D97706"
+                        />
                       </TouchableOpacity>
                     </View>
-                    
+
                     <View className="items-center  py-2 border-y border-yellow-100">
-                      <Text className="text-2xl font-bold text-yellow-600">{formatNumber(predictionValue)}</Text>
+                      <Text className="text-2xl font-bold text-yellow-600">
+                        {formatNumber(predictionValue)}
+                      </Text>
                     </View>
-                    
+
                     <View className="mb-3">
-                      <Text className="text-xs text-yellow-700 mb-1">Based on:</Text>
+                      <Text className="text-xs text-yellow-700 mb-1">
+                        Based on:
+                      </Text>
                       <View className="flex-row flex-wrap justify-between">
                         <View className="flex-row flex-wrap  mr-4 mb-1">
-                          <Text className="text-xs text-yellow-800 font-medium">Type:</Text>
-                          <Text className="text-xs text-yellow-700 ml-1">{buildingSummary.houseType}</Text>
+                          <Text className="text-xs text-yellow-800 font-medium">
+                            Type:
+                          </Text>
+                          <Text className="text-xs text-yellow-700 ml-1">
+                            {buildingSummary.houseType}
+                          </Text>
                         </View>
                         <View className="flex-row mr-4 mb-1">
-                          <Text className="text-xs text-yellow-800 font-medium">Quality:</Text>
-                          <Text className="text-xs text-yellow-700 ml-1">{buildingSummary.materialQuality}</Text>
+                          <Text className="text-xs text-yellow-800 font-medium">
+                            Quality:
+                          </Text>
+                          <Text className="text-xs text-yellow-700 ml-1">
+                            {buildingSummary.materialQuality}
+                          </Text>
                         </View>
                         <View className="flex-row mr-4 mb-1">
-                          <Text className="text-xs text-yellow-800 font-medium">Total Area:</Text>
-                          <Text className="text-xs text-yellow-700 ml-1">{buildingSummary.totalArea} sq ft</Text>
+                          <Text className="text-xs text-yellow-800 font-medium">
+                            Total Area:
+                          </Text>
+                          <Text className="text-xs text-yellow-700 ml-1">
+                            {buildingSummary.totalArea} sq ft
+                          </Text>
                         </View>
                         <View className="flex-row mr-4 mb-1">
-                          <Text className="text-xs text-yellow-800 font-medium">Rooms:</Text>
-                          <Text className="text-xs text-yellow-700 ml-1">{buildingSummary.bedrooms}B/{buildingSummary.bathrooms}B</Text>
+                          <Text className="text-xs text-yellow-800 font-medium">
+                            Rooms:
+                          </Text>
+                          <Text className="text-xs text-yellow-700 ml-1">
+                            {buildingSummary.bedrooms}B/
+                            {buildingSummary.bathrooms}B
+                          </Text>
                         </View>
                       </View>
                     </View>
-                    
-                    {/* <TouchableOpacity 
-                      onPress={applyToBudget}
-                      className="bg-[#FCA311] py-2 rounded-lg items-center"
-                    >
-                      <Text className="text-white font-medium text-sm">Apply to Budget</Text>
-                    </TouchableOpacity> */}
                   </View>
                 )}
-
                 <TouchableOpacity
                   className="mt-4 py-3 bg-gray-100 rounded-xl border border-gray-200 flex-row justify-center items-center"
                   onPress={openBottomSheet}
                 >
-                  <Ionicons name="calculator-outline" size={20} color="#4B5563" />
+                  <Ionicons
+                    name="calculator-outline"
+                    size={20}
+                    color="#4B5563"
+                  />
                   <Text className="text-gray-700 font-medium ml-2">
-                    {showPrediction ? "Recalculate Construction Costs" : "Predict Construction Costs"} →
+                    {showPrediction
+                      ? "Recalculate Construction Costs"
+                      : "Predict Construction Costs"}{" "}
+                    →
                   </Text>
                 </TouchableOpacity>
               </>
             )}
-
             <View className="flex-row mt-6">
               {currentStep > 1 && (
                 <TouchableOpacity
                   onPress={prevStep}
                   className="flex-1 mr-2 py-4 rounded-xl border border-gray-300 bg-white"
                 >
-                  <Text className="text-center text-gray-700 font-semibold">Back</Text>
+                  <Text className="text-center text-gray-700 font-semibold">
+                    Back
+                  </Text>
                 </TouchableOpacity>
               )}
 
               {currentStep < totalSteps ? (
                 <TouchableOpacity
                   onPress={nextStep}
-                  className={`flex-1 ${currentStep > 1 ? "ml-2" : ""} py-4 rounded-xl bg-[#FCA311]`}
+                  className={`flex-1 ${
+                    currentStep > 1 ? "ml-2" : ""
+                  } py-4 rounded-xl bg-[#FCA311]`}
                 >
-                  <Text className="text-center text-white font-semibold">Next</Text>
+                  <Text className="text-center text-white font-semibold">
+                    Next
+                  </Text>
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity
                   onPress={handleSubmit}
                   disabled={loading}
-                  className={`flex-1 ${currentStep > 1 ? "ml-2" : ""} py-4 rounded-xl ${
+                  className={`flex-1 ${
+                    currentStep > 1 ? "ml-2" : ""
+                  } py-4 rounded-xl ${
                     loading ? "bg-gray-400" : "bg-[#FCA311]"
                   }`}
                 >
@@ -448,14 +525,16 @@ const CreateProject = () => {
             </View>
           </View>
         </ScrollView>
-        
+
         {/* Date Picker Modals */}
         <Modal visible={openStartPicker} transparent animationType="fade">
           <TouchableWithoutFeedback onPress={() => setOpenStartPicker(false)}>
             <View className="flex-1 justify-center bg-black/50">
               <View className="bg-white mx-4 rounded-2xl">
                 <View className="flex-row justify-between items-center p-4 border-b border-gray-200">
-                  <Text className="text-lg font-semibold text-gray-800">Select Start Date</Text>
+                  <Text className="text-lg font-semibold text-gray-800">
+                    Select Start Date
+                  </Text>
                   <TouchableOpacity onPress={() => setOpenStartPicker(false)}>
                     <Ionicons name="close" size={24} color="#64748B" />
                   </TouchableOpacity>
@@ -469,13 +548,15 @@ const CreateProject = () => {
             </View>
           </TouchableWithoutFeedback>
         </Modal>
-        
+
         <Modal visible={openEndPicker} transparent animationType="fade">
           <TouchableWithoutFeedback onPress={() => setOpenEndPicker(false)}>
             <View className="flex-1 justify-center bg-black/50">
               <View className="bg-white mx-4 rounded-2xl">
                 <View className="flex-row justify-between items-center p-4 border-b border-gray-200">
-                  <Text className="text-lg font-semibold text-gray-800">Select End Date</Text>
+                  <Text className="text-lg font-semibold text-gray-800">
+                    Select End Date
+                  </Text>
                   <TouchableOpacity onPress={() => setOpenEndPicker(false)}>
                     <Ionicons name="close" size={24} color="#64748B" />
                   </TouchableOpacity>
@@ -490,19 +571,23 @@ const CreateProject = () => {
             </View>
           </TouchableWithoutFeedback>
         </Modal>
-        
+
         {/* BottomSheet */}
-        <BottomSheet 
-          ref={bottomSheetRef} 
-          index={-1}  
-          snapPoints={snapPoints} 
-          enablePanDownToClose={true} 
+        <BottomSheet
+          ref={bottomSheetRef}
+          index={-1}
+          snapPoints={snapPoints}
+          enablePanDownToClose={true}
           onClose={handleClosePress}
-          handleIndicatorStyle={{ backgroundColor: '#999', width: 40, height: 4 }}
-          backgroundStyle={{ backgroundColor: '#f5f5f5' }}
+          handleIndicatorStyle={{
+            backgroundColor: "#999",
+            width: 40,
+            height: 4,
+          }}
+          backgroundStyle={{ backgroundColor: "#f5f5f5" }}
         >
           <BottomSheetView style={{ flex: 1 }}>
-            <ConstructionPredictions 
+            <ConstructionPredictions
               onPredictionComplete={handlePredictionComplete}
               initialArea={form.area}
               initialLocation={form.location}

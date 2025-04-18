@@ -135,7 +135,7 @@ const ForgotPassword = () => {
 
                 {/* Back to Login */}
                 <TouchableOpacity 
-                  onPress={() => router.push('/(auth)/sign_in')}
+                  onPress={() => router.replace('/(auth)/sign_in')}
                   className="flex-row items-center"
                 >
                   <Text className="text-gray-600 text-base">← Back to log in</Text>

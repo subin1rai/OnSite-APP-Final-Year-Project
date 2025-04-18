@@ -30,10 +30,10 @@ model User {
   Requestfrom      Request[]     @relation("RequestFrom")
   Requestuser      Request[]     @relation("RequestUser")
 
-  Project       Project[]      @relation("BuilderRelation")
-  clientProject Project[]      @relation("ClientRelation")
-  notification  notification[]
-  company       company[]
+  Project          Project[]     @relation("BuilderRelation")
+  clientProject    Project[]     @relation("ClientRelation")
+  notification     notification[]
+  company          company[]
 }
 
 model company {
@@ -43,7 +43,7 @@ model company {
   contact     String?
   companyName String?
   builderId   Int
-  builder     User     @relation(fields: [builderId], references: [id])
+  builder     User     @relation(fields: [builderId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -58,10 +58,10 @@ model Project {
   status         String          @default("onGoing")
   builderId      Int
   clientId       Int?
-  isVisible     Boolean?
-  client         User?           @relation("ClientRelation", fields: [clientId], references: [id])
+  isVisible      Boolean?
+  client         User?           @relation("ClientRelation", fields: [clientId], references: [id], onDelete: Cascade)
   clientName     String?
-  builder        User            @relation("BuilderRelation", fields: [builderId], references: [id])
+  builder        User            @relation("BuilderRelation", fields: [builderId], references: [id], onDelete: Cascade)
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   budgets        Budget[]
@@ -80,7 +80,7 @@ model Task {
   createdAt   DateTime @default(now())
   isVisible   Boolean?
   projectid   Int
-  project     Project  @relation(fields: [projectid], references: [id])
+  project     Project  @relation(fields: [projectid], references: [id], onDelete: Cascade)
 }
 
 model Worker {
@@ -91,18 +91,18 @@ model Worker {
   designation    String?
   salary         String?
   builderId      Int
-  isVisible     Boolean?
-  builder        User            @relation(fields: [builderId], references: [id])
+  isVisible      Boolean?
+  builder        User            @relation(fields: [builderId], references: [id], onDelete: Cascade)
   projectWorkers ProjectWorker[]
   Payment        Payment[]
 }
 
 model ProjectWorker {
   id         Int          @id @default(autoincrement())
-  project    Project      @relation(fields: [projectId], references: [id])
   projectId  Int
-  worker     Worker       @relation(fields: [workerId], references: [id])
+  project    Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
   workerId   Int
+  worker     Worker       @relation(fields: [workerId], references: [id], onDelete: Cascade)
   createdAt  DateTime     @default(now())
   attendance Attendance[]
 }
@@ -114,7 +114,7 @@ model Attendance {
   status          String
   shifts          Float?
   paymentStatus   String?
-  projectWorker   ProjectWorker @relation(fields: [projectWorkerId], references: [id])
+  projectWorker   ProjectWorker @relation(fields: [projectWorkerId], references: [id], onDelete: Cascade)
 }
 
 model Budget {
@@ -122,10 +122,9 @@ model Budget {
   amount    Float
   inHand    Float?
   projectId Int
-  project   Project  @relation(fields: [projectId], references: [id])
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
   Transaction Transaction[]
 }
 
@@ -138,7 +137,7 @@ model Vendor {
   profile      String?
   companyName  String?
   builderId    Int
-  builder      User          @relation(fields: [builderId], references: [id])
+  builder      User          @relation(fields: [builderId], references: [id], onDelete: Cascade)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   transactions Transaction[]
@@ -151,9 +150,9 @@ model Transaction {
   note      String?
   category  String?
   vendorId  Int?
-  vendor    Vendor?  @relation(fields: [vendorId], references: [id])
+  vendor    Vendor?  @relation(fields: [vendorId], references: [id], onDelete: Cascade)
   budgetId  Int
-  budget    Budget   @relation(fields: [budgetId], references: [id])
+  budget    Budget   @relation(fields: [budgetId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 }
 
@@ -163,32 +162,31 @@ model threeDModel {
   modelUrl  String
   image     String
   userId    Int
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   projectId Int
-  project   Project  @relation(fields: [projectId], references: [id])
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 }
 
 model Request {
   id        Int      @id @default(autoincrement())
   fromId    Int
-  from      User     @relation("RequestFrom", fields: [fromId], references: [id])
+  from      User     @relation("RequestFrom", fields: [fromId], references: [id], onDelete: Cascade)
   message   String
   status    status   @default(pending)
   userId    Int
-  user      User     @relation("RequestUser", fields: [userId], references: [id])
+  user      User     @relation("RequestUser", fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  User User[]
+  User      User[]
 }
 
 model Message {
   id         Int      @id @default(autoincrement())
   senderId   Int
-  sender     User     @relation("Sender", fields: [senderId], references: [id])
+  sender     User     @relation("Sender", fields: [senderId], references: [id], onDelete: Cascade)
   receiverId Int
-  receiver   User     @relation("Receiver", fields: [receiverId], references: [id])
+  receiver   User     @relation("Receiver", fields: [receiverId], references: [id], onDelete: Cascade)
   message    String?
   timeStamp  DateTime @default(now())
   createdAt  DateTime @default(now())
@@ -206,9 +204,9 @@ model Payment {
   transactionId String?
   pidx          String?
   workerId      Int
-  worker        Worker        @relation(fields: [workerId], references: [id])
+  worker        Worker        @relation(fields: [workerId], references: [id], onDelete: Cascade)
   projectId     Int
-  project       Project       @relation(fields: [projectId], references: [id])
+  project       Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
   month         String
   year          Int
   totalSalary   Float
@@ -224,7 +222,7 @@ model DocumentFiles {
   file      String?
   projectId Int
   isVisible Boolean?
-  project   Project  @relation(fields: [projectId], references: [id])
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
 enum PaymentStatus {
@@ -236,7 +234,7 @@ enum PaymentStatus {
 model notification {
   id        Int      @id @default(autoincrement())
   userId    Int
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   message   String
   createdAt DateTime @default(now())
 }

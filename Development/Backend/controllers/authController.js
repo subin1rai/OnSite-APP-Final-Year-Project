@@ -15,9 +15,6 @@ const signUp = async (req, res) => {
     if (password !== confirmPassword) {
       return res.status(400).json({ message: "Password didn't match !" });
     }
-    if(!validator.isStrongPassword(password)) {
-      return res.status(400).json({ message: "Password must be  strong !" });
-    }
 
     const existingUser = await prisma.user.findFirst({
       where: {
@@ -27,6 +24,10 @@ const signUp = async (req, res) => {
 
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
+    }
+
+    if(!validator.isStrongPassword(password)) {
+      return res.status(400).json({ message: "Password must be  strong !" });
     }
 
     const salt = 10;
@@ -169,8 +170,8 @@ const root = async (req, res) => {
 const requestOTP = async (req, res) => {
   try {
     const { email } = req.body;
-   console.log(email);
-    const user = await prisma.user.findUnique({
+ 
+    const user = await prisma.user.findFirst({
       where: {
         email: email,
       },
@@ -210,7 +211,6 @@ const requestOTP = async (req, res) => {
     }, 360000);
 
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -219,7 +219,7 @@ const verifyOTP = async (req, res) => {
   try {
     const { email, otp } = req.body;
     console.log(req.body);
-    const user = await prisma.user.findUnique({
+    const user = await prisma.user.findFirst({
       where: {
         email: email,
       },

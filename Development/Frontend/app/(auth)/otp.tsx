@@ -207,13 +207,6 @@ const VerificationCode = () => {
             </TouchableOpacity>
           </View>
 
-          {/* Back to Login */}
-          <TouchableOpacity
-            className="mt-4"
-            onPress={() => router.replace("/(auth)/sign_in")}
-          >
-            <Text className="text-gray-500 text-base">← Back to log in</Text>
-          </TouchableOpacity>
         </View>
 
         {/* Custom Success Modal */}

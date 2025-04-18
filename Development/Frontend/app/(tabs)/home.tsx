@@ -1,13 +1,4 @@
-import {
-  FlatList,
-  Image,
-  SafeAreaView,
-  Text,
-  TouchableOpacity,
-  View,
-  RefreshControl,
-  StyleSheet,
-} from "react-native";
+import {FlatList,Image,SafeAreaView,Text,TouchableOpacity,View,RefreshControl,StyleSheet,} from "react-native";
 import { useRouter } from "expo-router";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { icons, images } from "@/constants";
@@ -90,12 +81,11 @@ const Home = () => {
           const progress = Math.round((completed / (tasks.length || 1)) * 100);
           setProjectProgress(proj.id, progress);
         } catch (err) {
-          console.error("Failed to fetch tasks for project", proj.id);
           setProjectProgress(proj.id, 0);
         }
       }
     } catch (error) {
-      console.error("Error fetching projects:", error);
+      return true
     } finally {
       setLoading(false);
     }
@@ -132,10 +122,8 @@ const Home = () => {
     return "Good Night";
   };
 
-  // Update project list when selectedProject changes (to reflect status changes)
   useEffect(() => {
     if (selectedProject && project.length > 0) {
-      // Find the project in the list and update it with the new status
       const updatedProjects = project.map((proj) =>
         proj.id === selectedProject.id
           ? { ...proj, status: selectedProject.status }

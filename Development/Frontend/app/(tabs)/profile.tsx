@@ -1,4 +1,3 @@
-import CustomButton from "@/Components/CustomButton";
 import {
   Image,
   SafeAreaView,
@@ -132,7 +131,7 @@ const Profile = () => {
   };
 
   const prepareAmbulanceData = () => {
-    // This is the static data from your file, formatted into proper objects
+    // This is the static data from file, formatted into proper objects
     const rawData = [
       { name: "Nepal Ambulance Service", phone: "01-4427833,102", location: "Ghattekulo Marg, Kathmandu", district: "Kathmandu" },
       { name: "Akhil Nepal Chiya Majdur Sangh", phone: "9814952000", location: "Jhapa", district: "Jhapa" },
@@ -182,7 +181,7 @@ const Profile = () => {
     
     setAmbulanceServices(rawData);
     
-    // Extract unique districts and add "All" option at the beginning
+    // Extract unique districts and add "All" option 
     const uniqueDistricts = ["All", ...Array.from(new Set(rawData.map(item => item.district))).sort()];
     setDistricts(uniqueDistricts);
   };
@@ -192,7 +191,7 @@ const Profile = () => {
     // Split multiple phone numbers and take the first one
     const firstNumber = phoneNumber.split(',')[0].trim();
     
-    // Check if the platform supports tel: links
+    // Check if the platform supports tel
     Linking.canOpenURL(`tel:${firstNumber}`)
       .then(supported => {
         if (supported) {

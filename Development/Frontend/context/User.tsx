@@ -18,7 +18,7 @@ const useUser = () => {
         setUser(decodedToken);
       }
     } catch (error) {
-      console.error("Error decoding token:", error);
+     
       setUser(null);
     }
   };

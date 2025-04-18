@@ -1,12 +1,4 @@
-import {
-  ImageBackground,
-  ScrollView,
-  Text,
-  View,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
+import {ImageBackground,ScrollView,Text,View,TouchableOpacity,KeyboardAvoidingView,Platform} from "react-native";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { icons, images } from "@/constants";
