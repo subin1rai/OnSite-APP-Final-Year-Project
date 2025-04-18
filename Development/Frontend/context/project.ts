@@ -12,8 +12,7 @@ export const all_project = async () => {
     const response = await apiHandler.get("/project", { headers });
       return response.data;
   } catch (error: any) {
-    console.error("Error message:", error.message);
-   
+    return true;
   }
 };
 export const single_project = async (id: string) => {
@@ -26,9 +25,8 @@ export const single_project = async (id: string) => {
     };
 
     const response = await apiHandler.post(`/singleProject?id=${id}`, {}, { headers });
-    console.log("singleProject", response);
     return response.data;
   } catch (error: any) {
-    console.error("Error message:", error.message);
+    return true;
   }
 };

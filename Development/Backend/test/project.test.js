@@ -4,16 +4,14 @@ const prisma = require("../utils/prisma");
 
 describe("Project Details", () => {
   let token;
-
   beforeAll(async () => {
     const loginRes = await request(app).post("/api/user/login").send({
       email: "test@gmail.com",
       password: "123",
     });
-
     token = loginRes.body.token;
   });
-
+  
   it("returns project list when token is valid", async () => {
     const res = await request(app)
       .get("/api/project")
@@ -41,6 +39,7 @@ describe("Project Details", () => {
 
 describe("Create Project", () => {
   let token;
+  let createdProjectId; 
 
   beforeAll(async () => {
     const loginRes = await request(app).post("/api/user/login").send({
@@ -52,8 +51,8 @@ describe("Create Project", () => {
   });
 
   const validPayload = {
-    projectName: "Test Project",
-    ownerName: "John Doe",
+    projectName: "Test Project2",
+    ownerName: "test",
     budgetAmount: 50000,
     location: "Kathmandu",
     startDate: "2025-05-01",
@@ -70,6 +69,8 @@ describe("Create Project", () => {
     expect(res.body).toHaveProperty("message", "Project created successfully");
     expect(res.body.result).toHaveProperty("newProject");
     expect(res.body.result).toHaveProperty("newBudget");
+
+    createdProjectId = res.body.result.newProject.id;
   });
 
   it("returns error if required fields are missing", async () => {
@@ -151,6 +152,18 @@ describe("Create Project", () => {
       .send(validPayload);
 
     expect(res.statusCode).toBe(401);
+  });
+
+  afterAll(async () => {
+    try {
+      if (createdProjectId) {
+        await prisma.project.delete({
+          where: { id: createdProjectId },
+        });
+      }
+    } catch (err) {
+      console.warn("Project cleanup failed:", err.message);
+    }
   });
 });
 

@@ -3,31 +3,13 @@ const { notificationService } = require("./notificationController.js");
 
 const createProject = async (req, res) => {
   try {
-    const {
-      projectName,
-      ownerName,
-      budgetAmount,
-      location,
-      startDate,
-      endDate,
-    } = req.body;
+    const {projectName,ownerName,budgetAmount,location,startDate,endDate} = req.body;
     const user = req.user;
 
-    if (
-      !projectName ||
-      !ownerName ||
-      !budgetAmount ||
-      !location ||
-      !startDate ||
-      !endDate
-    ) {
+    if (!projectName ||!ownerName ||!budgetAmount ||!location ||!startDate ||!endDate) {
       return res.status(400).json({ message: "All fields are required" });
     }
-
-    if (
-      isNaN(new Date(startDate).getTime()) ||
-      isNaN(new Date(endDate).getTime())
-    ) {
+    if (isNaN(new Date(startDate).getTime()) ||isNaN(new Date(endDate).getTime())) {
       return res.status(400).json({ message: "Invalid date format" });
     }
 
@@ -35,7 +17,6 @@ const createProject = async (req, res) => {
     if (isNaN(budgetAmount)) {
       return res.status(400).json({ message: "Invalid project value" });
     }
-
     if (user.role !== "builder") {
       return res.status(403).json({ message: "User not valid!" });
     }
