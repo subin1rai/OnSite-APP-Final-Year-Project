@@ -11,7 +11,7 @@ describe("Project Details", () => {
     });
     token = loginRes.body.token;
   });
-  
+
   it("returns project list when token is valid", async () => {
     const res = await request(app)
       .get("/api/project")
@@ -39,7 +39,7 @@ describe("Project Details", () => {
 
 describe("Create Project", () => {
   let token;
-  let createdProjectId; 
+  let createdProjectId;
 
   beforeAll(async () => {
     const loginRes = await request(app).post("/api/user/login").send({
@@ -169,9 +169,7 @@ describe("Create Project", () => {
 
 describe("Project by ID", () => {
   it("returns project data for valid ID", async () => {
-    const res = await request(app)
-      .post("/api/singleProject")
-      .query({ id: 1 });
+    const res = await request(app).post("/api/singleProject").query({ id: 1 });
 
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("project");
@@ -191,5 +189,163 @@ describe("Project by ID", () => {
 
     expect(res.statusCode).toBe(404);
     expect(res.body).toHaveProperty("message", "Project not found");
+  });
+});
+
+describe("PUT /api/projectDelete", () => {
+  let builderToken;
+  let createdProjectId;
+
+  beforeAll(async () => {
+    const builderLogin = await request(app).post("/api/user/login").send({
+      email: "test@gmail.com",
+      password: "123",
+    });
+    builderToken = builderLogin.body.token;
+
+    // Create a project to delete
+    const res = await request(app)
+      .post("/api/project/create")
+      .set("Authorization", `Bearer ${builderToken}`)
+      .send({
+        projectName: "Project To Delete",
+        ownerName: "Builder",
+        budgetAmount: 15000,
+        location: "Bhaktapur",
+        startDate: "2025-06-01",
+        endDate: "2025-07-01",
+      });
+
+    createdProjectId = res.body.result.newProject.id;
+  });
+
+  it("should soft delete the project with valid ID", async () => {
+    const res = await request(app)
+      .put("/api/projectDelete")
+      .set("Authorization", `Bearer ${builderToken}`)
+      .send({ projectId: createdProjectId });
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty(
+      "message",
+      "Project deleted successfully !"
+    );
+
+    // Verify it's now invisible
+    const check = await prisma.project.findUnique({
+      where: { id: createdProjectId },
+    });
+
+    expect(check.isVisible).toBe(false);
+  });
+
+  it("should return 400 if projectId is missing", async () => {
+    const res = await request(app)
+      .put("/api/projectDelete")
+      .set("Authorization", `Bearer ${builderToken}`)
+      .send({});
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toHaveProperty("error", "Project Id not found");
+  });
+
+  it("should return 400 if project is already deleted or not found", async () => {
+    const res = await request(app)
+      .put("/api/projectDelete")
+      .set("Authorization", `Bearer ${builderToken}`)
+      .send({ projectId: createdProjectId });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toHaveProperty("error", "Project data not found");
+  });
+
+  afterAll(async () => {
+    await prisma.project.deleteMany({
+      where: { id: createdProjectId },
+    });
+  });
+});
+
+
+
+describe("POST /api/project/addWorker", () => {
+  let builderToken;
+  let createdProjectId;
+  let createdWorkerId;
+
+  beforeAll(async () => {
+    // Login as builder
+    const loginRes = await request(app).post("/api/user/login").send({
+      email: "test@gmail.com",
+      password: "123",
+    });
+    builderToken = loginRes.body.token;
+
+    // Create test project
+    const projectRes = await request(app)
+      .post("/api/project/create")
+      .set("Authorization", `Bearer ${builderToken}`)
+      .send({
+        projectName: "Worker Test Project",
+        ownerName: "Builder",
+        budgetAmount: 25000,
+        location: "Pokhara",
+        startDate: "2025-07-01",
+        endDate: "2025-08-01",
+      });
+
+    createdProjectId = projectRes.body.result.newProject.id;
+
+    createdWorkerId = 1;
+  });
+
+  it("should successfully add worker to project", async () => {
+    const res = await request(app)
+      .post("/api/project/addWorker")
+      .set("Authorization", `Bearer ${builderToken}`)
+      .send({
+        projectId: createdProjectId,
+        workerId: createdWorkerId,
+      });
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("projectId", createdProjectId);
+    expect(res.body).toHaveProperty("workerId", createdWorkerId);
+  });
+
+  it("should return 500 if workerId or projectId is missing", async () => {
+    const res = await request(app)
+      .post("/api/project/addWorker")
+      .set("Authorization", `Bearer ${builderToken}`)
+      .send({});
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toHaveProperty("message", "");
+  });
+
+  it("should return 500 for invalid IDs", async () => {
+    const res = await request(app)
+      .post("/api/project/addWorker")
+      .set("Authorization", `Bearer ${builderToken}`)
+      .send({
+        projectId: 999999,
+        workerId: 999999,
+      });
+
+    expect(res.statusCode).toBe(500);
+    expect(res.body).toHaveProperty("error", "Internal Server error");
+  });
+
+  afterAll(async () => {
+    await prisma.projectWorker.deleteMany({
+      where: {
+        projectId: createdProjectId,
+        workerId: createdWorkerId,
+      },
+    });
+
+    await prisma.project.deleteMany({
+      where: { id: createdProjectId },
+    });
   });
 });

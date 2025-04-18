@@ -154,7 +154,7 @@ const projectById = async (req, res) => {
 const addWorkerToProject = async (req, res) => {
   try {
     const { workerId, projectId } = req.body;
-
+    
     // Create a new join record in the ProjectWorker table
     const projectWorker = await prisma.projectWorker.create({
       data: {
