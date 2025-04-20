@@ -44,6 +44,7 @@ router.put("/projectDelete", projectController.deleteProject);
 router.get("/project/:id/budget", budgetController.getBudget);
 router.post("/budget/add-transaction",authMiddleware(),budgetController.addTransaction);
 router.post("/budget/transaction",authMiddleware(),budgetController.allTransaction);
+router.post("/budget/vendors",budgetController.vendorAmount);
 
 // Attendance routes
 router.post("/attendance", attendanceController.recordAttendance);

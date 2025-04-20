@@ -137,8 +137,68 @@ const allTransaction = async (req, res) => {
   }
 };
 
+const vendorAmount = async (req, res) => {
+  const { id } = req.body;
+
+  try {
+    const project = await prisma.project.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+      include: {
+        budgets: {
+          include: {
+            Transaction: {
+              include: {
+                vendor: true, 
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (
+      !project ||
+      !project.budgets.length ||
+      !project.budgets[0].Transaction 
+    ) {
+      return res.status(404).json({ message: "Vendor or transaction not found" });
+    }
+
+    const vendor = project.budgets[0].Transaction[0].vendor;
+
+    const totalAmount = await prisma.transaction.aggregate({
+      where: {
+        vendorId: vendor.id,
+      },
+      _sum: {
+        amount: true,
+      },
+    });
+
+    return res.status(200).json({
+      vendor: {
+        id: vendor.id,
+        name: vendor.VendorName,
+        email: vendor.email,
+        phone: vendor.phone
+      },
+      totalAmount: totalAmount._sum.amount || 0,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      error: "An error occurred while fetching vendor details.",
+    });
+  }
+};
+
+
+
 module.exports = {
   getBudget,
   addTransaction,
   allTransaction,
+  vendorAmount
 };
