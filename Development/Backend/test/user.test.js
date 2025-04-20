@@ -63,19 +63,17 @@ describe("POST /user/login", () => {
   });
 });
 
-describe("POST /user/signUp", () => {
+describe("User Register Endpoint Test", () => {
   const testEmail = "test122@gmail.com";
 
-  // ✅ Successful registration
-  it("should return 201 and user registered successfully", async () => {
+  // Successful registration
+  it("Test With valid details", async () => {
     const response = await request(app).post("/api/user/signUp").send({
       name: "Test",
       email: testEmail,
       password: "Subin@12",
       confirmPassword: "Subin@12",
     });
-
-    console.log(response.data);
     expect(response.statusCode).toBe(201);
     expect(response.body).toHaveProperty(
       "message",
@@ -84,7 +82,7 @@ describe("POST /user/signUp", () => {
   });
 
   // Missing fields
-  it("should return 400 when fields are missing", async () => {
+  it("Test with missing values", async () => {
     const response = await request(app).post("/api/user/signUp").send({
       email: "test12@gmail.com",
       password: "StrongPass12",
@@ -95,7 +93,7 @@ describe("POST /user/signUp", () => {
   });
 
   // Passwords don't match
-  it("should return 400 when passwords don't match", async () => {
+  it("Test with mismatch password", async () => {
     const response = await request(app).post("/api/user/signUp").send({
       name: "Test",
       email: "test12@gmail.com",
@@ -108,7 +106,7 @@ describe("POST /user/signUp", () => {
   });
 
   // Duplicate email
-  it("should return 400 when user already exists", async () => {
+  it("Test of using already registered email", async () => {
     const response = await request(app).post("/api/user/signUp").send({
       name: "Test",
       email: "test12@gmail.com",
