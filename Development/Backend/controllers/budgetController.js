@@ -3,9 +3,12 @@ const { notificationService } = require("./notificationController.js");
 
 const getBudget = async (req, res) => {
   const { id } = req.params;
+  console.log(id);
   try {
-    // Fetch the project with its related budgets
-    const project = await prisma.project.findUnique({
+    if (!id) {
+      return res.status(400).json({ message: "Project ID is required" });
+    }
+    const project = await prisma.project.findFirst({
       where: {
         id: parseInt(id),
       },
@@ -36,7 +39,6 @@ const getBudget = async (req, res) => {
 const addTransaction = async (req, res) => {
   const { budgetId, vendorId, note, amount, type, category } = req.body;
   const userId = req.user.userId;
-  console.log(userId);
   if (!budgetId || !amount || !type) {
     return res.status(400).json({ error: "Missing required fields" });
   }
@@ -110,7 +112,7 @@ const addTransaction = async (req, res) => {
 const allTransaction = async (req, res) => {
   try {
     const { budgetId } = req.body;
-    console.log(budgetId);
+    
     const transactions = await prisma.budget.findFirst({
       where: {
         id: parseInt(budgetId),
@@ -129,10 +131,8 @@ const allTransaction = async (req, res) => {
       },
     });
 
-    console.log("All transactions:", transactions);
     return res.status(200).json({ message: "All transactions", transactions });
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ error: "Internal Server Error!" });
   }
 };

@@ -33,9 +33,7 @@ const UpdateWorkerSheet = ({ onClose }: UpdateWorkerSheetProps) => {
       if (!response || !response.data) {
         throw new Error("Failed to update attendance");
       }
-      // Refresh the global workers list
       await fetchWorkers();
-      // Close the bottom sheet
       onClose();
     } catch (error) {
       console.error("Error updating attendance:", error);
@@ -46,7 +44,7 @@ const UpdateWorkerSheet = ({ onClose }: UpdateWorkerSheetProps) => {
     <View className="px-4">
       <View className="my-3 flex-row justify-between items-center">
         <Text className="text-xl font-medium">Salary Amount</Text>
-        <Text className="text-xl font-medium">NRP. 1000</Text>
+        <Text className="text-xl font-medium">{selectedWorker?.salary}</Text>
       </View>
       <View className="border-b border-gray-300" />
       <Text className="mt-2 text-2xl font-semibold tracking-widest">Shift</Text>
