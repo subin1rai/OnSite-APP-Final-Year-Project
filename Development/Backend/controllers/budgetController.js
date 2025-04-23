@@ -140,6 +140,10 @@ const allTransaction = async (req, res) => {
 const vendorAmount = async (req, res) => {
   const { id } = req.body;
 
+  if (!id) {
+    return res.status(400).json({ message: "Project ID is required" });
+  }
+  
   try {
     const project = await prisma.project.findUnique({
       where: {
