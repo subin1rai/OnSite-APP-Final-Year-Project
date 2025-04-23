@@ -17,7 +17,6 @@ import DateTimePicker from "react-native-ui-datepicker";
 import dayjs from "dayjs";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
-import DatePicker from 'react-native-date-picker';
 import * as SecureStore from "expo-secure-store";
 import apiHandler from "@/context/ApiHandler";
 import { KeyboardTypeOptions } from "react-native";
@@ -526,81 +525,50 @@ const CreateProject = () => {
             </View>
           </View>
         </ScrollView>
+
         {/* Date Picker Modals */}
-        <Modal visible={openStartPicker} transparent animationType="fade">
-          <View className="flex-1 justify-center bg-black/50">
-            <TouchableWithoutFeedback onPress={() => {}}>
-              <View className="bg-white mx-4 rounded-2xl">
-                <View className="flex-row justify-between items-center p-4 border-b border-gray-200">
-                  <Text className="text-lg font-semibold text-gray-800">
-                    Select Start Date
-                  </Text>
-                  <TouchableOpacity onPress={() => setOpenStartPicker(false)}>
-                    <Ionicons name="close" size={24} color="#64748B" />
-                  </TouchableOpacity>
-                </View>
-
-                <DatePicker
+        <Modal visible={openStartPicker} transparent animationType="slide">
+          <TouchableWithoutFeedback onPress={() => setOpenStartPicker(false)}>
+            <View className="flex-1 justify-center items-center">
+              {/* Modal Content with Border and Shadow */}
+              <View className="bg-white p-5 rounded-lg w-11/12 border border-gray-300 shadow-lg">
+                <Text className="mb-4 text-lg font-semibold">
+                  Select Start Date
+                </Text>
+                <DateTimePicker
+                  mode="single"
                   date={startDate.toDate()}
-                  onDateChange={(date) => handleStartDateChange(dayjs(date))}
-                  mode="date"
+                  onChange={(params) => {
+                    if (params.date) {
+                      handleStartDateChange(dayjs(params.date));
+                    }
+                  }}
                 />
-
-                <View className="p-4 flex-row justify-end border-t border-gray-200">
-                  <TouchableOpacity
-                    onPress={() => setOpenStartPicker(false)}
-                    className="mr-3"
-                  >
-                    <Text className="text-gray-500 font-medium">Cancel</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => handleStartDateChange(startDate)}
-                    className="px-4 py-2 bg-[#FCA311] rounded-lg"
-                  >
-                    <Text className="text-white font-medium">Confirm</Text>
-                  </TouchableOpacity>
-                </View>
               </View>
-            </TouchableWithoutFeedback>
-          </View>
+            </View>
+          </TouchableWithoutFeedback>
         </Modal>
 
-        {/* // For the End Date Modal */}
-        <Modal visible={openEndPicker} transparent animationType="fade">
-          <View className="flex-1 justify-center bg-black/50">
-            <TouchableWithoutFeedback onPress={() => {}}>
-              <View className="bg-white mx-4 rounded-2xl">
-                <View className="flex-row justify-between items-center p-4 border-b border-gray-200">
-                  <Text className="text-lg font-semibold text-gray-800">
-                    Select End Date
-                  </Text>
-                  <TouchableOpacity onPress={() => setOpenEndPicker(false)}>
-                    <Ionicons name="close" size={24} color="#64748B" />
-                  </TouchableOpacity>
-                </View>
-                <DatePicker
+        <Modal visible={openEndPicker} transparent animationType="slide">
+          <TouchableWithoutFeedback onPress={() => setOpenEndPicker(false)}>
+            <View className="flex-1 justify-center items-center">
+              {/* Modal Content with Border and Shadow */}
+              <View className="bg-white p-5 rounded-lg w-11/12 border-2 border-gray-300 shadow-md">
+                <Text className="mb-4 text-lg font-semibold">
+                  Select End Date
+                </Text>
+                <DateTimePicker
+                  mode="single"
                   date={endDate.toDate()}
-                  onDateChange={(date) => handleEndDateChange(dayjs(date))}
-                  mode="date"
-                  minimumDate={startDate.toDate()}
+                  onChange={(params) => {
+                    if (params.date) {
+                      handleEndDateChange(dayjs(params.date));
+                    }
+                  }}
                 />
-                <View className="p-4 flex-row justify-end border-t border-gray-200">
-                  <TouchableOpacity
-                    onPress={() => setOpenEndPicker(false)}
-                    className="mr-3"
-                  >
-                    <Text className="text-gray-500 font-medium">Cancel</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => handleEndDateChange(endDate)}
-                    className="px-4 py-2 bg-[#FCA311] rounded-lg"
-                  >
-                    <Text className="text-white font-medium">Confirm</Text>
-                  </TouchableOpacity>
-                </View>
               </View>
-            </TouchableWithoutFeedback>
-          </View>
+            </View>
+          </TouchableWithoutFeedback>
         </Modal>
 
         {/* BottomSheet */}
