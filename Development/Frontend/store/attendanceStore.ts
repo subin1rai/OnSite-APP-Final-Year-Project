@@ -16,7 +16,8 @@ export interface Worker {
   contact: string;
   profile: string | null;
   designation: string;
-  isVisible: boolean; // ✅ lowercase boolean for correct type checking
+  isVisible: boolean; 
+  salary: string;
   projectWorkerId: number;
   attendance: AttendanceRecord[];
 }
@@ -46,15 +47,10 @@ export const useAttendanceStore = create<AttendanceStore>((set) => ({
     const result = await single_project(selectedProject.id.toString());
 
     if (result?.project?.worker) {
-      console.log("Raw workers:", result.project.worker); // 🔍 Debug incoming data
-
       const visibleWorkers = result.project.worker.filter(
         (w: Worker) =>
           w.isVisible === true
       );
-
-      console.log("Filtered visible workers:", visibleWorkers);
-
       set({ workers: visibleWorkers });
     } else {
       set({ workers: [] });

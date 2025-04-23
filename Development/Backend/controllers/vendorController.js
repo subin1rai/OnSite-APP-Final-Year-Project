@@ -3,7 +3,6 @@ const Tesseract = require("tesseract.js");
 const multer = require("multer");
 const cloudinary = require("../config/cloudinary");
 
-// Multer Configuration (stores image in memory)
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 

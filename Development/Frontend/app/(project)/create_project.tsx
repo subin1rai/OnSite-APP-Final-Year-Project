@@ -527,45 +527,44 @@ const CreateProject = () => {
         </ScrollView>
 
         {/* Date Picker Modals */}
-        <Modal visible={openStartPicker} transparent animationType="fade">
+        <Modal visible={openStartPicker} transparent animationType="slide">
           <TouchableWithoutFeedback onPress={() => setOpenStartPicker(false)}>
-            <View className="flex-1 justify-center bg-black/50">
-              <View className="bg-white mx-4 rounded-2xl">
-                <View className="flex-row justify-between items-center p-4 border-b border-gray-200">
-                  <Text className="text-lg font-semibold text-gray-800">
-                    Select Start Date
-                  </Text>
-                  <TouchableOpacity onPress={() => setOpenStartPicker(false)}>
-                    <Ionicons name="close" size={24} color="#64748B" />
-                  </TouchableOpacity>
-                </View>
+            <View className="flex-1 justify-center items-center">
+              {/* Modal Content with Border and Shadow */}
+              <View className="bg-white p-5 rounded-lg w-11/12 border border-gray-300 shadow-lg">
+                <Text className="mb-4 text-lg font-semibold">
+                  Select Start Date
+                </Text>
                 <DateTimePicker
-                  value={startDate}
-                  onValueChange={handleStartDateChange}
-                  mode="date"
+                  mode="single"
+                  date={startDate.toDate()}
+                  onChange={(params) => {
+                    if (params.date) {
+                      handleStartDateChange(dayjs(params.date));
+                    }
+                  }}
                 />
               </View>
             </View>
           </TouchableWithoutFeedback>
         </Modal>
 
-        <Modal visible={openEndPicker} transparent animationType="fade">
+        <Modal visible={openEndPicker} transparent animationType="slide">
           <TouchableWithoutFeedback onPress={() => setOpenEndPicker(false)}>
-            <View className="flex-1 justify-center bg-black/50">
-              <View className="bg-white mx-4 rounded-2xl">
-                <View className="flex-row justify-between items-center p-4 border-b border-gray-200">
-                  <Text className="text-lg font-semibold text-gray-800">
-                    Select End Date
-                  </Text>
-                  <TouchableOpacity onPress={() => setOpenEndPicker(false)}>
-                    <Ionicons name="close" size={24} color="#64748B" />
-                  </TouchableOpacity>
-                </View>
+            <View className="flex-1 justify-center items-center">
+              {/* Modal Content with Border and Shadow */}
+              <View className="bg-white p-5 rounded-lg w-11/12 border-2 border-gray-300 shadow-md">
+                <Text className="mb-4 text-lg font-semibold">
+                  Select End Date
+                </Text>
                 <DateTimePicker
-                  value={endDate}
-                  onValueChange={handleEndDateChange}
-                  mode="date"
-                  minDate={startDate}
+                  mode="single"
+                  date={endDate.toDate()}
+                  onChange={(params) => {
+                    if (params.date) {
+                      handleEndDateChange(dayjs(params.date));
+                    }
+                  }}
                 />
               </View>
             </View>

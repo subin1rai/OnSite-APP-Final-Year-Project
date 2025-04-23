@@ -2,195 +2,195 @@ const request = require("supertest");
 const app = require("../app");
 const prisma = require("../utils/prisma");
 
-// describe("Project Details", () => {
-//   let token;
-//   beforeAll(async () => {
-//     const loginRes = await request(app).post("/api/user/login").send({
-//       email: "test@gmail.com",
-//       password: "123",
-//     });
-//     token = loginRes.body.token;
-//   });
+describe("Project Details", () => {
+  let token;
+  beforeAll(async () => {
+    const loginRes = await request(app).post("/api/user/login").send({
+      email: "test@gmail.com",
+      password: "123",
+    });
+    token = loginRes.body.token;
+  });
 
-//   it("returns project list when token is valid", async () => {
-//     const res = await request(app)
-//       .get("/api/project")
-//       .set("Authorization", `Bearer ${token}`);
+  it("returns project list when token is valid", async () => {
+    const res = await request(app)
+      .get("/api/project")
+      .set("Authorization", `Bearer ${token}`);
 
-//     expect(res.statusCode).toBe(200);
-//   });
+    expect(res.statusCode).toBe(200);
+  });
 
-//   it("returns error when token is missing", async () => {
-//     const res = await request(app).get("/api/project");
+  it("returns error when token is missing", async () => {
+    const res = await request(app).get("/api/project");
 
-//     expect(res.statusCode).toBe(401);
-//     expect(res.body).toHaveProperty("error", "Access Denied");
-//   });
+    expect(res.statusCode).toBe(401);
+    expect(res.body).toHaveProperty("error", "Access Denied");
+  });
 
-//   it("returns error when token is invalid", async () => {
-//     const res = await request(app)
-//       .get("/api/project")
-//       .set("Authorization", "Bearer faketoken123");
+  it("returns error when token is invalid", async () => {
+    const res = await request(app)
+      .get("/api/project")
+      .set("Authorization", "Bearer faketoken123");
 
-//     expect(res.statusCode).toBe(401);
-//     expect(res.body).toHaveProperty("error", "Invalid Token");
-//   });
-// });
+    expect(res.statusCode).toBe(401);
+    expect(res.body).toHaveProperty("error", "Invalid Token");
+  });
+});
 
-// describe("Create Project endpoint", () => {
-//   let token;
-//   let createdProjectId;
+describe("Create Project endpoint", () => {
+  let token;
+  let createdProjectId;
 
-//   beforeAll(async () => {
-//     const loginRes = await request(app).post("/api/user/login").send({
-//       email: "test@gmail.com",
-//       password: "123",
-//     });
+  beforeAll(async () => {
+    const loginRes = await request(app).post("/api/user/login").send({
+      email: "test@gmail.com",
+      password: "123",
+    });
 
-//     token = loginRes.body.token;
-//   });
+    token = loginRes.body.token;
+  });
 
-//   const validPayload = {
-//     projectName: "Test Project2",
-//     ownerName: "test",
-//     budgetAmount: 50000,
-//     location: "Kathmandu",
-//     startDate: "2025-05-01",
-//     endDate: "2025-06-01",
-//   };
+  const validPayload = {
+    projectName: "Test Project2",
+    ownerName: "test",
+    budgetAmount: 50000,
+    location: "Kathmandu",
+    startDate: "2025-05-01",
+    endDate: "2025-06-01",
+  };
 
-//   it("creates project successfully with valid inputs", async () => {
-//     const res = await request(app)
-//       .post("/api/project/create")
-//       .set("Authorization", `Bearer ${token}`)
-//       .send(validPayload);
+  it("creates project successfully with valid inputs", async () => {
+    const res = await request(app)
+      .post("/api/project/create")
+      .set("Authorization", `Bearer ${token}`)
+      .send(validPayload);
 
-//     expect(res.statusCode).toBe(201);
-//     expect(res.body).toHaveProperty("message", "Project created successfully");
-//     expect(res.body.result).toHaveProperty("newProject");
-//     expect(res.body.result).toHaveProperty("newBudget");
+    expect(res.statusCode).toBe(201);
+    expect(res.body).toHaveProperty("message", "Project created successfully");
+    expect(res.body.result).toHaveProperty("newProject");
+    expect(res.body.result).toHaveProperty("newBudget");
 
-//     createdProjectId = res.body.result.newProject.id;
-//   });
+    createdProjectId = res.body.result.newProject.id;
+  });
 
-//   it("returns error if required fields are missing", async () => {
-//     const { projectName, ...partialPayload } = validPayload;
+  it("returns error if required fields are missing", async () => {
+    const { projectName, ...partialPayload } = validPayload;
 
-//     const res = await request(app)
-//       .post("/api/project/create")
-//       .set("Authorization", `Bearer ${token}`)
-//       .send(partialPayload);
+    const res = await request(app)
+      .post("/api/project/create")
+      .set("Authorization", `Bearer ${token}`)
+      .send(partialPayload);
 
-//     expect(res.statusCode).toBe(400);
-//     expect(res.body).toHaveProperty("message", "All fields are required");
-//   });
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toHaveProperty("message", "All fields are required");
+  });
 
-//   it("returns error for invalid date format", async () => {
-//     const res = await request(app)
-//       .post("/api/project/create")
-//       .set("Authorization", `Bearer ${token}`)
-//       .send({ ...validPayload, startDate: "invalid-date" });
+  it("returns error for invalid date format", async () => {
+    const res = await request(app)
+      .post("/api/project/create")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ ...validPayload, startDate: "invalid-date" });
 
-//     expect(res.statusCode).toBe(400);
-//     expect(res.body).toHaveProperty("message", "Invalid date format");
-//   });
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toHaveProperty("message", "Invalid date format");
+  });
 
-//   it("returns error if budgetAmount is not a number", async () => {
-//     const res = await request(app)
-//       .post("/api/project/create")
-//       .set("Authorization", `Bearer ${token}`)
-//       .send({ ...validPayload, budgetAmount: "abc" });
+  it("returns error if budgetAmount is not a number", async () => {
+    const res = await request(app)
+      .post("/api/project/create")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ ...validPayload, budgetAmount: "abc" });
 
-//     expect(res.statusCode).toBe(400);
-//     expect(res.body).toHaveProperty("message", "Invalid project value");
-//   });
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toHaveProperty("message", "Invalid project value");
+  });
 
-//   it("returns error if project name already exists", async () => {
-//     await request(app)
-//       .post("/api/project/create")
-//       .set("Authorization", `Bearer ${token}`)
-//       .send(validPayload);
+  it("returns error if project name already exists", async () => {
+    await request(app)
+      .post("/api/project/create")
+      .set("Authorization", `Bearer ${token}`)
+      .send(validPayload);
 
-//     const res = await request(app)
-//       .post("/api/project/create")
-//       .set("Authorization", `Bearer ${token}`)
-//       .send(validPayload);
+    const res = await request(app)
+      .post("/api/project/create")
+      .set("Authorization", `Bearer ${token}`)
+      .send(validPayload);
 
-//     expect(res.statusCode).toBe(400);
-//     expect(res.body).toHaveProperty("message", "Project already exists!");
-//   });
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toHaveProperty("message", "Project already exists!");
+  });
 
-//   it("returns error if user is not builder", async () => {
-//     const loginRes = await request(app).post("/api/user/login").send({
-//       email: "sujal@gmail.com",
-//       password: "123",
-//     });
+  it("returns error if user is not builder", async () => {
+    const loginRes = await request(app).post("/api/user/login").send({
+      email: "sujal@gmail.com",
+      password: "123",
+    });
 
-//     const fakeToken = loginRes.body.token;
+    const fakeToken = loginRes.body.token;
 
-//     const res = await request(app)
-//       .post("/api/project/create")
-//       .set("Authorization", `Bearer ${fakeToken}`)
-//       .send(validPayload);
+    const res = await request(app)
+      .post("/api/project/create")
+      .set("Authorization", `Bearer ${fakeToken}`)
+      .send(validPayload);
 
-//     expect(res.statusCode).toBe(403);
-//     expect(res.body).toHaveProperty("message", "User not valid!");
-//   });
+    expect(res.statusCode).toBe(403);
+    expect(res.body).toHaveProperty("message", "User not valid!");
+  });
 
-//   it("returns error if no token is provided", async () => {
-//     const res = await request(app)
-//       .post("/api/project/create")
-//       .send(validPayload);
+  it("returns error if no token is provided", async () => {
+    const res = await request(app)
+      .post("/api/project/create")
+      .send(validPayload);
 
-//     expect(res.statusCode).toBe(401);
-//   });
+    expect(res.statusCode).toBe(401);
+  });
 
-//   it("returns error if token is invalid", async () => {
-//     const res = await request(app)
-//       .post("/api/project/create")
-//       .set("Authorization", "Bearer faketoken123")
-//       .send(validPayload);
+  it("returns error if token is invalid", async () => {
+    const res = await request(app)
+      .post("/api/project/create")
+      .set("Authorization", "Bearer faketoken123")
+      .send(validPayload);
 
-//     expect(res.statusCode).toBe(401);
-//   });
+    expect(res.statusCode).toBe(401);
+  });
 
-//   afterAll(async () => {
-//     try {
-//       if (createdProjectId) {
-//         await prisma.project.delete({
-//           where: { id: createdProjectId },
-//         });
-//       }
-//     } catch (err) {
-//       console.warn("Project cleanup failed:", err.message);
-//     }
-//   });
-// });
+  afterAll(async () => {
+    try {
+      if (createdProjectId) {
+        await prisma.project.delete({
+          where: { id: createdProjectId },
+        });
+      }
+    } catch (err) {
+      console.warn("Project cleanup failed:", err.message);
+    }
+  });
+});
 
-// describe("Project by ID", () => {
-//   it("returns project data for valid ID", async () => {
-//     const res = await request(app).post("/api/singleProject").query({ id: 1 });
+describe("Project by ID", () => {
+  it("returns project data for valid ID", async () => {
+    const res = await request(app).post("/api/singleProject").query({ id: 1 });
 
-//     expect(res.statusCode).toBe(200);
-//     expect(res.body).toHaveProperty("project");
-//   });
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("project");
+  });
 
-//   it("returns error if project ID is missing", async () => {
-//     const res = await request(app).post("/api/singleProject");
+  it("returns error if project ID is missing", async () => {
+    const res = await request(app).post("/api/singleProject");
 
-//     expect(res.statusCode).toBe(400);
-//     expect(res.body).toHaveProperty("message", "Project id is required");
-//   });
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toHaveProperty("message", "Project id is required");
+  });
 
-//   it("returns error if project is not found", async () => {
-//     const res = await request(app)
-//       .post("/api/singleProject")
-//       .query({ id: 9999 });
+  it("returns error if project is not found", async () => {
+    const res = await request(app)
+      .post("/api/singleProject")
+      .query({ id: 9999 });
 
-//     expect(res.statusCode).toBe(404);
-//     expect(res.body).toHaveProperty("message", "Project not found");
-//   });
-// });
+    expect(res.statusCode).toBe(404);
+    expect(res.body).toHaveProperty("message", "Project not found");
+  });
+});
 
 describe("Delete poject test", () => {
   let builderToken;
@@ -267,84 +267,84 @@ describe("Delete poject test", () => {
 });
 
 
-// describe("POST /api/project/addWorker", () => {
-//   let builderToken;
-//   let createdProjectId;
-//   let createdWorkerId;
+describe("POST /api/project/addWorker", () => {
+  let builderToken;
+  let createdProjectId;
+  let createdWorkerId;
 
-//   beforeAll(async () => {
-//     // Login as builder
-//     const loginRes = await request(app).post("/api/user/login").send({
-//       email: "test@gmail.com",
-//       password: "123",
-//     });
-//     builderToken = loginRes.body.token;
+  beforeAll(async () => {
+    // Login as builder
+    const loginRes = await request(app).post("/api/user/login").send({
+      email: "test@gmail.com",
+      password: "123",
+    });
+    builderToken = loginRes.body.token;
 
-//     // Create test project
-//     const projectRes = await request(app)
-//       .post("/api/project/create")
-//       .set("Authorization", `Bearer ${builderToken}`)
-//       .send({
-//         projectName: "Worker Test Project",
-//         ownerName: "Builder",
-//         budgetAmount: 25000,
-//         location: "Pokhara",
-//         startDate: "2025-07-01",
-//         endDate: "2025-08-01",
-//       });
+    // Create test project
+    const projectRes = await request(app)
+      .post("/api/project/create")
+      .set("Authorization", `Bearer ${builderToken}`)
+      .send({
+        projectName: "Worker Test Project",
+        ownerName: "Builder",
+        budgetAmount: 25000,
+        location: "Pokhara",
+        startDate: "2025-07-01",
+        endDate: "2025-08-01",
+      });
 
-//     createdProjectId = projectRes.body.result.newProject.id;
+    createdProjectId = projectRes.body.result.newProject.id;
 
-//     createdWorkerId = 1;
-//   });
+    createdWorkerId = 1;
+  });
 
-//   it("should successfully add worker to project", async () => {
-//     const res = await request(app)
-//       .post("/api/project/addWorker")
-//       .set("Authorization", `Bearer ${builderToken}`)
-//       .send({
-//         projectId: createdProjectId,
-//         workerId: createdWorkerId,
-//       });
+  it("should successfully add worker to project", async () => {
+    const res = await request(app)
+      .post("/api/project/addWorker")
+      .set("Authorization", `Bearer ${builderToken}`)
+      .send({
+        projectId: createdProjectId,
+        workerId: createdWorkerId,
+      });
 
-//     expect(res.statusCode).toBe(200);
-//     expect(res.body).toHaveProperty("projectId", createdProjectId);
-//     expect(res.body).toHaveProperty("workerId", createdWorkerId);
-//   });
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("projectId", createdProjectId);
+    expect(res.body).toHaveProperty("workerId", createdWorkerId);
+  });
 
-//   it("should return 500 if workerId or projectId is missing", async () => {
-//     const res = await request(app)
-//       .post("/api/project/addWorker")
-//       .set("Authorization", `Bearer ${builderToken}`)
-//       .send({});
+  it("should return 500 if workerId or projectId is missing", async () => {
+    const res = await request(app)
+      .post("/api/project/addWorker")
+      .set("Authorization", `Bearer ${builderToken}`)
+      .send({});
 
-//     expect(res.statusCode).toBe(400);
-//     expect(res.body).toHaveProperty("message", "");
-//   });
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toHaveProperty("message", "");
+  });
 
-//   it("should return 500 for invalid IDs", async () => {
-//     const res = await request(app)
-//       .post("/api/project/addWorker")
-//       .set("Authorization", `Bearer ${builderToken}`)
-//       .send({
-//         projectId: 999999,
-//         workerId: 999999,
-//       });
+  it("should return 500 for invalid IDs", async () => {
+    const res = await request(app)
+      .post("/api/project/addWorker")
+      .set("Authorization", `Bearer ${builderToken}`)
+      .send({
+        projectId: 999999,
+        workerId: 999999,
+      });
 
-//     expect(res.statusCode).toBe(500);
-//     expect(res.body).toHaveProperty("error", "Internal Server error");
-//   });
+    expect(res.statusCode).toBe(500);
+    expect(res.body).toHaveProperty("error", "Internal Server error");
+  });
 
-//   afterAll(async () => {
-//     await prisma.projectWorker.deleteMany({
-//       where: {
-//         projectId: createdProjectId,
-//         workerId: createdWorkerId,
-//       },
-//     });
+  afterAll(async () => {
+    await prisma.projectWorker.deleteMany({
+      where: {
+        projectId: createdProjectId,
+        workerId: createdWorkerId,
+      },
+    });
 
-//     await prisma.project.deleteMany({
-//       where: { id: createdProjectId },
-//     });
-//   });
-// });
+    await prisma.project.deleteMany({
+      where: { id: createdProjectId },
+    });
+  });
+});

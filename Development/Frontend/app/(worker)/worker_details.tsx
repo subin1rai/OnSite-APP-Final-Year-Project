@@ -276,7 +276,7 @@ const WorkerDetails = () => {
                 </Text>
                 <View className="flex-row mt-2 items-center gap-2">
                   <Text className="text-gray-700">Payment:</Text>
-                  <Text className="p-1 bg-red-300 rounded-md px-2 text-white">
+                  <Text className="p-1 bg-[#FCA311] rounded-md px-3 PY-2 text-lg font-medium text-white">
                     {item.paymentStatus}
                   </Text>
                 </View>
@@ -308,10 +308,17 @@ const WorkerDetails = () => {
 
 
       {/* Payment Button */}
-      <View className="mx-4">
-        <TouchableOpacity onPress={makePayment} className="w-full items-center p-4 bg-[#FCAC29] rounded-lg">
-          <Text className="font-semibold text-xl text-white">Make Payment</Text>
-        </TouchableOpacity>
+        <View className="mx-4">
+        {workerData?.attendanceByMonth[selectedMonth]?.some(
+          record => record.paymentStatus === "pending"
+        ) && (
+          <TouchableOpacity 
+            onPress={makePayment} 
+            className="w-full items-center p-4 bg-[#FCAC29] rounded-lg"
+          >
+            <Text className="font-semibold text-xl text-white">Make Payment</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </SafeAreaView>
   );
