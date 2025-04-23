@@ -17,6 +17,7 @@ import DateTimePicker from "react-native-ui-datepicker";
 import dayjs from "dayjs";
 import { router } from "expo-router";
 import Toast from "react-native-toast-message";
+import DatePicker from 'react-native-date-picker';
 import * as SecureStore from "expo-secure-store";
 import apiHandler from "@/context/ApiHandler";
 import { KeyboardTypeOptions } from "react-native";
@@ -525,11 +526,10 @@ const CreateProject = () => {
             </View>
           </View>
         </ScrollView>
-
         {/* Date Picker Modals */}
         <Modal visible={openStartPicker} transparent animationType="fade">
-          <TouchableWithoutFeedback onPress={() => setOpenStartPicker(false)}>
-            <View className="flex-1 justify-center bg-black/50">
+          <View className="flex-1 justify-center bg-black/50">
+            <TouchableWithoutFeedback onPress={() => {}}>
               <View className="bg-white mx-4 rounded-2xl">
                 <View className="flex-row justify-between items-center p-4 border-b border-gray-200">
                   <Text className="text-lg font-semibold text-gray-800">
@@ -539,19 +539,36 @@ const CreateProject = () => {
                     <Ionicons name="close" size={24} color="#64748B" />
                   </TouchableOpacity>
                 </View>
-                <DateTimePicker
-                  value={startDate}
-                  onValueChange={handleStartDateChange}
+
+                <DatePicker
+                  date={startDate.toDate()}
+                  onDateChange={(date) => handleStartDateChange(dayjs(date))}
                   mode="date"
                 />
+
+                <View className="p-4 flex-row justify-end border-t border-gray-200">
+                  <TouchableOpacity
+                    onPress={() => setOpenStartPicker(false)}
+                    className="mr-3"
+                  >
+                    <Text className="text-gray-500 font-medium">Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => handleStartDateChange(startDate)}
+                    className="px-4 py-2 bg-[#FCA311] rounded-lg"
+                  >
+                    <Text className="text-white font-medium">Confirm</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          </TouchableWithoutFeedback>
+            </TouchableWithoutFeedback>
+          </View>
         </Modal>
 
+        {/* // For the End Date Modal */}
         <Modal visible={openEndPicker} transparent animationType="fade">
-          <TouchableWithoutFeedback onPress={() => setOpenEndPicker(false)}>
-            <View className="flex-1 justify-center bg-black/50">
+          <View className="flex-1 justify-center bg-black/50">
+            <TouchableWithoutFeedback onPress={() => {}}>
               <View className="bg-white mx-4 rounded-2xl">
                 <View className="flex-row justify-between items-center p-4 border-b border-gray-200">
                   <Text className="text-lg font-semibold text-gray-800">
@@ -561,15 +578,29 @@ const CreateProject = () => {
                     <Ionicons name="close" size={24} color="#64748B" />
                   </TouchableOpacity>
                 </View>
-                <DateTimePicker
-                  value={endDate}
-                  onValueChange={handleEndDateChange}
+                <DatePicker
+                  date={endDate.toDate()}
+                  onDateChange={(date) => handleEndDateChange(dayjs(date))}
                   mode="date"
-                  minDate={startDate}
+                  minimumDate={startDate.toDate()}
                 />
+                <View className="p-4 flex-row justify-end border-t border-gray-200">
+                  <TouchableOpacity
+                    onPress={() => setOpenEndPicker(false)}
+                    className="mr-3"
+                  >
+                    <Text className="text-gray-500 font-medium">Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => handleEndDateChange(endDate)}
+                    className="px-4 py-2 bg-[#FCA311] rounded-lg"
+                  >
+                    <Text className="text-white font-medium">Confirm</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          </TouchableWithoutFeedback>
+            </TouchableWithoutFeedback>
+          </View>
         </Modal>
 
         {/* BottomSheet */}
