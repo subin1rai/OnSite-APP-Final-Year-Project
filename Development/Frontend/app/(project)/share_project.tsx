@@ -200,7 +200,7 @@ const ShareProject = () => {
                     <View className="flex-row items-center mt-auto mb-6">
                         <Ionicons name="information-circle-outline" size={18} color="#6B7280" />
                         <Text className="text-gray-500 text-sm ml-2">
-                            You can find invitation codes in your team settings
+                            You can find invitation codes in clide side home page
                         </Text>
                     </View>
                 </View>

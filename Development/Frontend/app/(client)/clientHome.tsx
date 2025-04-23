@@ -277,6 +277,8 @@ const clientHome = () => {
     );
   };
 
+
+  // Check if loading is true and show loading indicator
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center bg-gray-50">
