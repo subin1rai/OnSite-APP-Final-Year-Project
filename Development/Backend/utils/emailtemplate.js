@@ -125,7 +125,7 @@ const generatePasswordResetTemplate = (otp) => {
             <p class="help">If you didn't request a password reset, you can safely ignore this email. Your account security is important to us.</p>
             
             <div class="footer">
-              <p>© ${new Date().getFullYear()} Your App Name. All rights reserved.</p>
+              <p>© ${new Date().getFullYear()} OnSite App. All rights reserved.</p>
             </div>
           </div>
         </div>

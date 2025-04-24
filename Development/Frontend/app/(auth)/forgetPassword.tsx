@@ -149,8 +149,8 @@ const ForgotPassword = () => {
       {/* Custom Success Modal */}
       <SuccessModal
         visible={successModalVisible}
-        title="Reset Instructions Sent"
-        message="We've sent password reset instructions to your email."
+        title="Reset OTP Sent"
+        message="We've sent OTP to your email."
         onClose={handleSuccessModalClose}
       />
 

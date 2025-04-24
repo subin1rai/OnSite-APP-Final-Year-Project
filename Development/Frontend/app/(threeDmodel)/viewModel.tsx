@@ -17,26 +17,10 @@ const ViewModel = () => {
 
   return (
     <View style={styles.container}>
-    <WebView
-  originWhitelist={['*']}
-  source={{
-    html: `
-      <html>
-        <body style="margin:0; padding:0; text-align:center;">
-         
-          <iframe 
-            src="${selectedModel.modelUrl}" 
-            width="100%" 
-            height="90%" 
-            style="border:none;">
-          </iframe>
-        </body>
-      </html>
-    `
-  }}
-  style={styles.webview}
-/>
-
+      <WebView
+        source={{ uri: selectedModel.modelUrl }} 
+        style={styles.webview}
+      />
     </View>
   );
 };

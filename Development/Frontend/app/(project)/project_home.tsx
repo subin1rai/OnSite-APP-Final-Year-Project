@@ -681,13 +681,15 @@ const Project_home = () => {
                 padding: 16,
               }}
             >
-              <View className="flex-row items-center justify-end mb-2 gap-1">
+              <View className="flex-row items-center justify-between mb-2 gap-1 items-center">
+                <Text className="text-[#4B5563] text-lg font-semibold">Tasks</Text>
                 <TouchableOpacity
                   onPress={() => router.push("/(project)/task")}
+                  className="flex-row items-center gap-2"
                 >
-                  <Text className="text-[#FCAC29]">View all</Text>
+                  <Text className="text-[#FCAC29] text-lg">View all</Text>
+                <Ionicons name="arrow-forward" color={"#FCAC29"} size={18} />
                 </TouchableOpacity>
-                <Ionicons name="arrow-forward" color={"#FCAC29"} />
               </View>
 
               {/* Task stats */}
