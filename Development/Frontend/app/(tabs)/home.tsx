@@ -247,9 +247,7 @@ const Home = () => {
         keyExtractor={(item: Project) => String(item.id)}
         renderItem={({ item, index }: { item: Project; index: number }) => {
           const isLastItem = index === project.length - 1;
-          // Check if this is the currently selected project
           const isSelected = selectedProject?.id === item.id;
-
           // Use the most up-to-date status
           const currentStatus = isSelected
             ? selectedProject.status

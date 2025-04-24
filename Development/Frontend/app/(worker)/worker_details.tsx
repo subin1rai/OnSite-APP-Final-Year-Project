@@ -14,6 +14,12 @@ import * as SecureStore from "expo-secure-store";
 import { useProjectStore } from "@/store/projectStore";
 import WebView from "react-native-webview";
 import { useRouter } from "expo-router"; 
+
+/**
+ * @information Only show payment button when the list has exactly 30 attendance records
+ * This is to ensure payments are only processed for complete monthly data
+ */
+
 const getCurrentMonthYear = () => {
   const date = new Date();
   const month = String(date.getMonth() + 1).padStart(2, "0"); 
@@ -223,6 +229,10 @@ const WorkerDetails = () => {
     );
   }
 
+  // Check if there are exactly 30 attendance records for the selected month
+  const attendanceRecords = workerData?.attendanceByMonth[selectedMonth] || [];
+  const hasThirtyRecords = attendanceRecords.length === 30;
+
   return (
     <SafeAreaView className="p-4 bg-white flex-1">
       {/* Worker Info */}
@@ -250,17 +260,23 @@ const WorkerDetails = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Summary Section (✅ Re-added) */}
+      {/* Summary Section */}
       <View className="flex-row justify-between bg-gray-100 p-4 rounded-lg mb-4 mx-4">
         <Text className="text-green-500">Present: {workerData?.summaryByMonth[selectedMonth]?.totalPresent || 0}</Text>
         <Text className="text-red-500">Absent: {workerData?.summaryByMonth[selectedMonth]?.totalAbsent || 0}</Text>
         <Text className="text-blue-500">Total Salary: ₹ {workerData?.salaryByMonth[selectedMonth]?.toFixed(2) || "0.00"}</Text>
       </View>
 
+      {/* Records Count Indicator */}
+      <View className="mx-4 mb-2">
+        <Text className="text-gray-500 text-center">
+          {attendanceRecords.length} days recorded {hasThirtyRecords ? '(Complete month)' : '(Incomplete month)'}
+        </Text>
+      </View>
 
       {/* Attendance List */}
       <FlatList
-        data={workerData?.attendanceByMonth[selectedMonth] || []}
+        data={attendanceRecords}
         keyExtractor={(item) => item.date}
         renderItem={({ item }) => (
           <View className="bg-gray-100 p-3 rounded-lg mb-3 mx-4">
@@ -306,18 +322,25 @@ const WorkerDetails = () => {
         )}
       />
 
-
-      {/* Payment Button */}
-        <View className="mx-4">
-        {workerData?.attendanceByMonth[selectedMonth]?.some(
-          record => record.paymentStatus === "pending"
-        ) && (
+      {/* Payment Button - Only show if there are exactly 30 records and at least one is pending */}
+      <View className="mx-4">
+        {hasThirtyRecords && 
+         attendanceRecords.some(record => record.paymentStatus === "pending") && (
           <TouchableOpacity 
             onPress={makePayment} 
             className="w-full items-center p-4 bg-[#FCAC29] rounded-lg"
           >
             <Text className="font-semibold text-xl text-white">Make Payment</Text>
           </TouchableOpacity>
+        )}
+        
+        {/* Show info message when payment not available */}
+        {!hasThirtyRecords && attendanceRecords.some(record => record.paymentStatus === "pending") && (
+          <View className="p-3 bg-gray-100 rounded-lg items-center">
+            <Text className="text-gray-600">
+              Payment available only for complete months (30 days)
+            </Text>
+          </View>
         )}
       </View>
     </SafeAreaView>

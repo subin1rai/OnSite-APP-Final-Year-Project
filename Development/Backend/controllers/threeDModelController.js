@@ -1,8 +1,6 @@
 const prisma = require("../utils/prisma");
 const cloudinary = require("../config/cloudinary");
 const multer = require("multer");
-
-// Multer Configuration (Memory Storage)
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
@@ -24,29 +22,53 @@ const addModel = async (req, res) => {
       return res.status(400).json({ message: "Model with the same name already exists" });
     }
 
-    // Upload preview image to Cloudinary
-    cloudinary.uploader.upload_stream({ folder: "uploads" }, async (error, result) => {
-      if (error) {
-        return res.status(500).json({ error: "Upload to Cloudinary failed" });
-      }
+    const uploadOptions = { 
+      folder: "uploads",
+      resource_type: "auto" 
+    };
 
-      // Save model in the database
-      const createModel = await prisma.threeDModel.create({
-        data: {
-          modelName: modelName,
-          modelUrl: modelUrl,
-          projectId: parseInt(projectId),
-          userId: parseInt(userId),
-          image: result.secure_url,
-        },
-      });
+    // Create a promise to handle the upload
+    const cloudinaryUpload = new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        uploadOptions,
+        (error, result) => {
+          if (error) {
+            console.error("Cloudinary upload error:", error);
+            reject(error);
+          } else {
+            resolve(result);
+          }
+        }
+      );
+      
+      // Write the buffer to the stream with proper encoding
+      uploadStream.write(req.file.buffer);
+      uploadStream.end();
+    });
 
-      return res.status(201).json({ message: "Model created successfully", model: createModel });
-    }).end(req.file.buffer);
+    // Wait for the upload to complete
+    const uploadResult = await cloudinaryUpload;
+
+    // Save model in the database
+    const createModel = await prisma.threeDModel.create({
+      data: {
+        modelName: modelName,
+        modelUrl: modelUrl,
+        projectId: parseInt(projectId),
+        userId: parseInt(userId),
+        image: uploadResult.secure_url,
+      },
+    });
+
+    return res.status(201).json({ message: "Model created successfully", model: createModel });
 
   } catch (error) {
-    console.log(error.message);
-    return res.status(500).json({ message: "Internal Server Error", error: error.message });
+    console.error("Error in addModel:", error);
+    return res.status(500).json({ 
+      message: "Internal Server Error", 
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 };
 

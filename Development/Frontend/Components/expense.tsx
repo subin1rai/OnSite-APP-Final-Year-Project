@@ -138,7 +138,7 @@ const Expense = () => {
           actions={[
             {
               text: "Add Transaction",
-              icon: require("@/assets/icons/ai.png"), 
+              icon: require("@/assets/icons/plus.png"), 
               name: "add_transaction",
             },
           ]}
