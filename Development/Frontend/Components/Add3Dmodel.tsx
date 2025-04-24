@@ -118,8 +118,8 @@ const Add3DModel: React.FC<Add3DModelProps> = ({ onModelAdded }) => {
       } else {
         Alert.alert("Error", "Failed to add 3D Model.");
       }
-    } catch (error) {
-      console.error("Upload Error:", error);
+    } catch (error: any) {
+      console.error("Upload Error:", error.response || error.message);
       Alert.alert("Error", "Something went wrong! Please check logs.");
     } finally {
       setUploading(false);

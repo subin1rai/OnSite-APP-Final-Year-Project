@@ -23,7 +23,7 @@ const ViewModel = () => {
     html: `
       <html>
         <body style="margin:0; padding:0; text-align:center;">
-          <h2>Viewing: Hello</h2>
+         
           <iframe 
             src="${selectedModel.modelUrl}" 
             width="100%" 

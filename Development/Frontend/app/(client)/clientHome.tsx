@@ -9,6 +9,7 @@ import {
   Image,
   RefreshControl,
   TextInput,
+  Dimensions,
 } from "react-native";
 import { useRouter } from "expo-router";
 import AuthService from "@/context/AuthContext";
@@ -55,6 +56,7 @@ const clientHome = () => {
   const [user, setUser] = useState<User | null>(null);
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const screenWidth = Dimensions.get('window').width;
   const fetchUser = async () => {
     const token = await SecureStore.getItemAsync("AccessToken");
     const response = await apiHandler.get("/user/getUser", {
@@ -223,7 +225,8 @@ const clientHome = () => {
     return (
       <TouchableOpacity
         onPress={() => setActiveProject(item)}
-        className={`p-4 mr-4 rounded-lg  w-72 ${
+        style={{ width: screenWidth * 0.85 }}
+        className={`p-4 mr-4 rounded-lg  ${
           isActive ? "bg-yellow-50 border-2 border-yellow-400" : "bg-white"
         }`}
       >
@@ -268,15 +271,11 @@ const clientHome = () => {
               Rs. {inHand}
             </Text>
           </View>
-          <View>
-            <Text className="text-xs text-gray-500">Days Left</Text>
-            <Text className="font-bold">{daysRemaining}</Text>
-          </View>
+        
         </View>
       </TouchableOpacity>
     );
   };
-
 
   // Check if loading is true and show loading indicator
   if (loading) {
@@ -372,8 +371,8 @@ const clientHome = () => {
           />
         }
       >
-        {/* Projects Horizontal List */}
-        <View className="mt-4">
+        {/* Projects Horizontal List - Fixed width to be fully responsive */}
+        <View className="mt-4 h-[200px] w-full">
           <FlatList
             data={projects}
             renderItem={renderProjectCard}
@@ -381,6 +380,7 @@ const clientHome = () => {
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ paddingLeft: 16, paddingRight: 6 }}
+            style={{ width: '100%' }}
           />
         </View>
 
