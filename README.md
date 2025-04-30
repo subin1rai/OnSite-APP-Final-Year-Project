@@ -1,6 +1,6 @@
 # 🏗️ OnSite – Smart Construction Management Platform
 
-**OnSite** is a mobile-first construction management solution designed to streamline project workflows, enhance worker coordination, and track progress in real time. From attendance logging to AI-powered cost predictions, OnSite empowers builders, workers, and logistics teams to collaborate seamlessly.
+**OnSite** is a mobile-first construction management solution designed to streamline project workflows, enhance worker coordination, and track progress in real time. From attendance logging to AI-powered cost predictions, OnSite empowers builders, workers teams to collaborate seamlessly.
 
 ![OnSite Screenshot](https://res.cloudinary.com/diag9maev/image/upload/v1745996970/iPhone_15_Pro_1_mknxcn.png)
 
