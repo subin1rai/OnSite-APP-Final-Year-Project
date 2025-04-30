@@ -8,16 +8,13 @@
 
 ## 🚀 Features
 
-- 👷‍♂️ **Role-Based Authentication** – Separate dashboards for builders, workers, and logistics partners.
+- 👷‍♂️ **Role-Based Authentication** – Separate dashboards for builders, workers.
 - 📆 **Attendance Tracking** – Mark and view daily worker attendance by project.
-- 💰 **Budget & Finance Management** – Track and categorize expenses and income.
+- 💰 **Budget & Finance Management** – Track and categorize expenses.
 - 💬 **Real-Time Chat** – Communicate instantly using Socket.IO-powered messaging.
-- 📍 **Live Location Sharing** – Toggleable live GPS tracking for logistics and field workers.
 - 🧠 **AI-Powered Price Estimation** – Predict project cost based on inputs like area and material preference.
 - 📄 **Project Reports** – Generate summaries of tasks, progress, budgets, and attendance.
-- 🚚 **Logistics Integration** – Assign and monitor deliveries via logistics partners.
 - 🔔 **Push Notifications** – Stay informed with in-app and push alerts.
-- 🧮 **Financial Calculator** – Visualize profit/loss through income and expense entries.
 - 💳 **Khalti Integration** – Top-up and transfer time credits with secure payment gateway.
 
 ---
