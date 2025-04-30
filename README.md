@@ -28,14 +28,14 @@
 - **NativeWind** – Tailwind-like styling for React Native
 
 ### 🧠 AI Layer
-- **Flask** – Python server handling AI predictions (cost estimator, crop diagnosis, etc.)
+- **Flask** – Python server handling AI predictions
+
 
 ### ⚙️ Backend – API Services
 - **Node.js + Express** – RESTful API server
 - **Prisma ORM** – MySQL database management and queries
 - **MySQL** – Relational database for structured data
 - **Socket.IO** – WebSocket-based real-time communication
-- **JWT** – JSON Web Token authentication
 
 
 
