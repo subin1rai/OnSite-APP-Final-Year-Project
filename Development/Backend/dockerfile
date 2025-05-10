@@ -1,0 +1,21 @@
+FROM node:18-slim
+
+# Install dependencies for bcrypt and Prisma engine
+RUN apt-get update && apt-get install -y \
+    python3 \
+    make \
+    g++ \
+    openssl \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+RUN npx prisma generate
+
+EXPOSE 3098
+CMD ["node", "index.js"]

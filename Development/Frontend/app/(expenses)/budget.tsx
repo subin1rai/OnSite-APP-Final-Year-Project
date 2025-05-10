@@ -1,13 +1,4 @@
-// @/screens/Budget.tsx (or wherever your Budget component is located)
-import {
-  Image,
-  SafeAreaView,
-  Text,
-  TouchableOpacity,
-  View,
-  Platform,
-  RefreshControl,
-} from "react-native";
+import { nImage,SafeAreaView,Text,TouchableOpacity,View,Platform,RefreshControl} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { images } from "@/constants";
