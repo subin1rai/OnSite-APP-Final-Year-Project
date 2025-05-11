@@ -1,21 +1,23 @@
-FROM node:18-slim
+# Step 1: Base image
+FROM node:18-alpine
 
-# Install dependencies for bcrypt and Prisma engine
-RUN apt-get update && apt-get install -y \
-    python3 \
-    make \
-    g++ \
-    openssl \
-    libssl-dev \
-    && rm -rf /var/lib/apt/lists/*
-
+# Step 2: Set working directory
 WORKDIR /app
 
+# Step 3: Copy package files
 COPY package*.json ./
+
+# Step 4: Install dependencies
 RUN npm install
 
+# Step 5: Copy the rest of the source code
 COPY . .
+
+# Step 6: Generate Prisma client
 RUN npx prisma generate
 
+# Step 7: Expose port (update if different)
 EXPOSE 3098
+
+# Step 8: Command to run your app
 CMD ["node", "index.js"]
