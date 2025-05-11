@@ -1,5 +1,8 @@
+const transporter = require("../config/nodemailer.js");
 const { initializeKhaltiPayment,verifyKhaltiPayment } = require("../controllers/Khalti");
+const { generatePaymentTemplate } = require("../utils/paymentTemplate.js");
 const prisma = require("../utils/prisma.js");
+const { notificationService } = require("./notificationController.js");
 
 async function initializePayment(req, res) {
     try {
@@ -58,7 +61,6 @@ async function initializePayment(req, res) {
         purchase_order_id,
         status
       } = req.query;
-      console.log(req.query);
       if (status !== "Completed") {
         return res.status(400).json({ success: false, message: "Payment not completed" });
       }
@@ -131,6 +133,12 @@ async function initializePayment(req, res) {
           budgets: true,
         },
       });
+
+      const builder = await prisma.user.findFirst({
+        where:{
+          id: project.builderId
+        }
+      })
       console.log(`Updated Attendance Count: ${project}`);
 
       //create a payment record in the transaction
@@ -148,12 +156,28 @@ async function initializePayment(req, res) {
       const worker = await prisma.worker.findFirst({
         where: { id: parseInt(workerId),isVisible:true },
       });
+
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: builder.email,
+        subject: "Payment Verification",
+        text: `Payment of ${month} of ${worker.name} has been paid.`,
+        html: generatePaymentTemplate({
+          workerName: worker.name,
+          month: month,
+          year: year,
+          amount: (parseFloat(total_amount)/100).toFixed(2),
+          projectName: project.name,
+          transactionId: transaction_id
+        })
+      };
+    await transporter.sendMail(mailOptions);
       
       const message = `Payment of ${month} of ${worker.name} has been paid.`;
 
-      const notification = await tx.notification.create({
+      const notification = await prisma.notification.create({
         data: {
-          userId: req.user.userId,
+          userId: builder.id,
           message,
         },
       });

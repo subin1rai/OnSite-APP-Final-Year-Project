@@ -75,7 +75,7 @@ const addModel = async (req, res) => {
 const getAllModel = async (req, res) => {
   try {
     const { projectId } = req.body;
-    console.log(projectId);
+
     if (!projectId) {
       return res.status(400).json({ message: "Project ID is required" });
     }
@@ -86,7 +86,6 @@ const getAllModel = async (req, res) => {
 
     return res.status(200).json({ message: "All models retrieved successfully", models });
   } catch (error) {
-    console.log(error.message);
     return res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 };

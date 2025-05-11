@@ -1,17 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  FlatList,
-  SafeAreaView,
-  Text,
-  TouchableOpacity,
-  View,
-  Pressable,
-  StatusBar,
-  Platform,
-  ActivityIndicator,
-  Alert,
-  Modal,
-} from "react-native";
+import {FlatList,SafeAreaView,Text,TouchableOpacity,View,Pressable,StatusBar,Platform,ActivityIndicator,Alert,Modal} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { router } from "expo-router";

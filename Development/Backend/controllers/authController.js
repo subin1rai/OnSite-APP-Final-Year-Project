@@ -1,5 +1,5 @@
 const prisma = require("../utils/prisma.js");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const transporter = require("../config/nodemailer.js");
 const validator = require("validator");
@@ -164,7 +164,7 @@ const logout = async (req, res) => {
 };
 
 const root = async (req, res) => {
-  res.status(200).json({ message: "Welcome to the API" });
+  res.status(200).json({ message: "Welcome to the API 👋🙏" });
 };
 
 const requestOTP = async (req, res) => {

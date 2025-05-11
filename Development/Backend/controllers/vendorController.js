@@ -23,8 +23,7 @@ const extractTextFromImage = async (imageBuffer) => {
   }
 };
 
-// Revised extraction logic using heuristics based on comma-splitting and company keywords
-const extractVendorDetails = (text) => {
+  const extractVendorDetails = (text) => {
   console.log("Original OCR Text:", text);
   // Normalize the text
   let normalizedText = text.replace(/\s+/g, ' ').trim();
@@ -43,7 +42,6 @@ const extractVendorDetails = (text) => {
   const contact = phoneMatch ? phoneMatch[0] : null;
   let website = websiteMatch ? websiteMatch[0] : null;
 
-  // Remove these known fields from text
   let remainingText = normalizedText;
   if (email) remainingText = remainingText.replace(email, '');
   if (contact) remainingText = remainingText.replace(contact, '');
@@ -62,7 +60,6 @@ const extractVendorDetails = (text) => {
   let vendorName = "";
   let address = "";
 
-  // Heuristic for companyName: select first segment that contains any company keyword
   for (let seg of segments) {
     const segUpper = seg.toUpperCase();
     if (companyKeywords.some(keyword => segUpper.includes(keyword))) {
@@ -74,7 +71,6 @@ const extractVendorDetails = (text) => {
   }
   console.log("Extracted Company Name:", companyName);
 
-  // Heuristic for vendorName: look for a segment that is all uppercase (and at least 2 words) that does NOT contain company keywords
   for (let seg of segments) {
     const segTrim = seg.trim();
     if (segTrim === segTrim.toUpperCase() && segTrim.split(" ").length >= 2) {
@@ -84,7 +80,6 @@ const extractVendorDetails = (text) => {
       }
     }
   }
-  // Fallback if vendorName is empty: choose the last segment if it appears name-like
   if (!vendorName && segments.length > 0) {
     let lastSeg = segments[segments.length - 1];
     if (lastSeg.split(" ").length >= 2) {
@@ -93,7 +88,6 @@ const extractVendorDetails = (text) => {
   }
   console.log("Extracted Vendor Name:", vendorName);
 
-  // Heuristic for address: select a segment (or parts of segments) that contain digits or resemble a location,
   // and that is not the company name or vendor name.
   for (let seg of segments) {
     if (seg !== companyName && seg !== vendorName && /\d/.test(seg)) {
@@ -101,7 +95,6 @@ const extractVendorDetails = (text) => {
       break;
     }
   }
-  // Fallback: if address is still empty, try using the segment after vendorName (if available)
   if (!address && segments.length >= 2) {
     const idx = segments.findIndex(seg => seg === vendorName);
     if (idx !== -1 && idx < segments.length - 1) {

@@ -17,7 +17,11 @@ import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import AddWorkers from "@/Components/AddWorkers";
 import { images } from "@/constants";
 import UpdateWorkerSheet from "@/Components/UpdateWorkerSheet";
-import { useAttendanceStore, AttendanceRecord, Worker } from "@/store/attendanceStore";
+import {
+  useAttendanceStore,
+  AttendanceRecord,
+  Worker,
+} from "@/store/attendanceStore";
 import apiHandler from "@/context/ApiHandler";
 
 const AttendanceHome = () => {
@@ -25,7 +29,7 @@ const AttendanceHome = () => {
   const [date, setDate] = useState(new Date());
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const { workers, fetchWorkers,setSelectedWorker} = useAttendanceStore();
+  const { workers, fetchWorkers, setSelectedWorker } = useAttendanceStore();
   const [isAddWorkerSheetOpen, setIsAddWorkerSheetOpen] = useState(false);
   const [isUpdateWorkerSheetOpen, setIsUpdateWorkerSheetOpen] = useState(false);
   const snapPoints = ["50%", "70%"];
@@ -151,15 +155,14 @@ const AttendanceHome = () => {
     useAttendanceStore.getState().setSelectedWorker(selectedWorker);
     handleUpdateWorkerOpen();
   };
-  const setWorkerClick =(worker: Worker) => {
-    setSelectedWorker(worker); 
+  const setWorkerClick = (worker: Worker) => {
+    setSelectedWorker(worker);
     router.push("/(worker)/worker_details");
   };
-  
 
   const renderWorker = ({ item }: { item: Worker }) => {
     const status = getAttendanceStatus(item);
-    
+
     const todayAttendanceRecord = item.attendance.find(
       (att) => formatDate(new Date(att.date)) === formatDate(date)
     );
@@ -167,16 +170,21 @@ const AttendanceHome = () => {
     return (
       <View>
         <View className="flex-row items-center justify-between px-4 mt-2">
-          <TouchableOpacity className="flex-row items-center gap-2"   onPress={() => setWorkerClick(item)} >
+          <TouchableOpacity
+            className="flex-row items-center gap-2"
+            onPress={() => setWorkerClick(item)}
+          >
             <View>
               <Image
                 className="w-8 h-8 rounded-full"
-                source={item.profile ? { uri: item.profile } : images.imageProfile}
+                source={
+                  item.profile ? { uri: item.profile } : images.imageProfile
+                }
               />
             </View>
             <View className="flex-row items-center">
               <Text>{item.name}</Text>
-              <Ionicons name="chevron-forward" size={24} color="#FDB43D"/>
+              <Ionicons name="chevron-forward" size={24} color="#FDB43D" />
             </View>
           </TouchableOpacity>
           {todayAttendanceRecord && (
@@ -189,7 +197,9 @@ const AttendanceHome = () => {
           <View className="flex-row items-center gap-2">
             <TouchableOpacity
               disabled={loading}
-              className={`border px-4 py-2 rounded-md ${status === "present" ? "bg-green-100" : ""}`}
+              className={`border px-4 py-2 rounded-md ${
+                status === "present" ? "bg-green-100" : ""
+              }`}
               style={{ borderColor: "#C2C2C2" }}
               onPress={() => recordAttendance(item.projectWorkerId, "present")}
             >
@@ -198,7 +208,9 @@ const AttendanceHome = () => {
 
             <TouchableOpacity
               disabled={loading}
-              className={`border px-4 py-2 rounded-md ${status === "absent" ? "bg-red-100" : ""}`}
+              className={`border px-4 py-2 rounded-md ${
+                status === "absent" ? "bg-red-100" : ""
+              }`}
               style={{ borderColor: "#C2C2C2" }}
               onPress={() => recordAttendance(item.projectWorkerId, "absent")}
             >
@@ -258,7 +270,9 @@ const AttendanceHome = () => {
           </Text>
           <View className="flex-row gap-2 items-center">
             <View className="w-4 h-4 bg-red-400 rounded-sm" />
-            <Text className="text-red-500 text-lg">{getAbsentCount()} Absent</Text>
+            <Text className="text-red-500 text-lg">
+              {getAbsentCount()} Absent
+            </Text>
           </View>
         </View>
       </View>
@@ -281,7 +295,12 @@ const AttendanceHome = () => {
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderWorker}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#FCA311" colors={["#FCA311"]} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#FCA311"
+            colors={["#FCA311"]}
+          />
         }
       />
 
@@ -295,7 +314,9 @@ const AttendanceHome = () => {
         containerStyle={{ zIndex: 20 }}
       >
         <BottomSheetView>
-          {isAddWorkerSheetOpen && <AddWorkers handleAddWorkerClose={handleAddWorkerClose} />}
+          {isAddWorkerSheetOpen && (
+            <AddWorkers handleAddWorkerClose={handleAddWorkerClose} />
+          )}
         </BottomSheetView>
       </BottomSheet>
 
@@ -309,7 +330,9 @@ const AttendanceHome = () => {
         containerStyle={{ zIndex: 20 }}
       >
         <BottomSheetView>
-          {isUpdateWorkerSheetOpen && <UpdateWorkerSheet onClose={handleUpdateWorkerClose} />}
+          {isUpdateWorkerSheetOpen && (
+            <UpdateWorkerSheet onClose={handleUpdateWorkerClose} />
+          )}
         </BottomSheetView>
       </BottomSheet>
     </SafeAreaView>

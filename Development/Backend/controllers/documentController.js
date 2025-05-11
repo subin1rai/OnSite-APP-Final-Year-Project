@@ -10,7 +10,9 @@ const uploadDocument = async (req, res) => {
       const fileUploadPromises = req.files.map(async (file) => {
         const uploadResult = await cloudinary.uploader.upload(file.path, {
           folder: "document_files",
+          resource_type: "auto"
         });
+        
         return prisma.documentFiles.create({
           data: {
             name: file.originalname,
@@ -29,7 +31,6 @@ const uploadDocument = async (req, res) => {
       data: createdFiles,
     });
   } catch (error) {
-    console.error(error);
     return res.status(500).json({
       success: false,
       message: "An error occurred during upload",
@@ -41,7 +42,9 @@ const uploadDocument = async (req, res) => {
 const getAllDocument = async (req, res) => {
   try {
     const { projectId } = req.body;
-    console.log(req.body);
+    if(!projectId) {
+      return res.status(400).json({ success: false, message: "Project ID is required" });
+    }
     const documents = await prisma.documentFiles.findMany({
       where: {
         projectId: parseInt(projectId),
@@ -62,28 +65,15 @@ const getAllDocument = async (req, res) => {
     });
   }
 };
+
+
+
 const deleteDocuments = async (req, res) => {
   try {
     const { fileIds } = req.body;
-    console.log(fileIds);
     if (!fileIds || fileIds.length === 0) {
       return res.status(400).json({ success: false, message: "No files selected for deletion." });
     }
-
-    // // Fetch the file URLs from the database
-    // const filesToDelete = await prisma.documentFiles.findMany({
-    //   where: {
-    //     id: { in: fileIds },
-    //   },
-    // });
-
-    // // Delete files from Cloudinary
-    // const cloudinaryDeletionPromises = filesToDelete.map(async (file) => {
-    //   const publicId = file.file.split("/").pop().split(".")[0]; 
-    //   await cloudinary.uploader.destroy(`document_files/${publicId}`);
-    // });
-
-    // await Promise.all(cloudinaryDeletionPromises);
 
     await prisma.documentFiles.updateMany({
       where: {
