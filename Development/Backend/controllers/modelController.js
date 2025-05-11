@@ -1,7 +1,7 @@
 const axios = require("axios");
 const predictModel = async (req, res) => {
     try {
-        const response = await axios.post("http://0.0.0.0:5000/predict", req.body);
+        const response = await axios.post("https://f2h32s33-5000.inc1.devtunnels.ms/predict", req.body);
         console.log(response);
         res.json(response.data);
     } catch (error) {
@@ -10,7 +10,7 @@ const predictModel = async (req, res) => {
 };
 const constructionModel = async (req, res) => {
     try {
-        const response = await axios.post("http://0.0.0.0:5000/constructionpredict", req.body);
+        const response = await axios.post("https://f2h32s33-5000.inc1.devtunnels.ms/constructionpredict", req.body);
         console.log(response);
         res.json(response.data);
     } catch (error) {
