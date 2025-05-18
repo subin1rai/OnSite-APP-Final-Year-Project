@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { FlatList, SafeAreaView, Text, TextInput, TouchableOpacity, View, Pressable, StatusBar, Platform, Image } from "react-native";
+import { FlatList, SafeAreaView, Text, TextInput, TouchableOpacity, View, Pressable, StatusBar, Platform, Image, Linking, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import MainVendor from "@/Components/MainVendor";
@@ -44,6 +44,26 @@ const VendorList = () => {
     handleClosePress();
   };
 
+  // Handle calling the vendor
+  const handleCallVendor = (phoneNumber: string) => {
+    // Split multiple phone numbers and take the first one
+    const firstNumber = phoneNumber.split(',')[0].trim();
+    
+    // Check if the platform supports tel
+    Linking.canOpenURL(`tel:${firstNumber}`)
+      .then(supported => {
+        if (supported) {
+          return Linking.openURL(`tel:${firstNumber}`);
+        } else {
+          Alert.alert('Phone Dialer Not Available', 'Your device does not support phone calls');
+        }
+      })
+      .catch(error => {
+        console.error('Error trying to call: ', error);
+        Alert.alert('Error', 'Could not make the call');
+      });
+  };
+    
   return (
     <View className="flex-1 bg-white">
       {/* Header */}
@@ -51,9 +71,10 @@ const VendorList = () => {
         <View
           className="bg-[#ffb133] flex-row justify-between mt-16 items-center px-4 pb-[10px]"
           style={{ marginTop: Platform.OS === "ios" ? 60 : 4 }}
-        ><TouchableOpacity onPress={() => router.back()}>
-                  <Ionicons name="arrow-back" size={24} color="white" />
-                  </TouchableOpacity> 
+        >
+          <TouchableOpacity onPress={() => router.back()}>
+            <Ionicons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity> 
           <Text className="text-white text-xl font-medium tracking-widest">Vendors</Text>
           <TouchableOpacity onPress={openBottomSheet}>
             <Ionicons name="add" size={24} color="white" />
@@ -83,16 +104,21 @@ const VendorList = () => {
         data={filteredVendors}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <View className="py-3 px-4 flex-row justify-between items-center mx-4 mt-3 bg-white rounded-md shadow-sm">
-            <View className="flex-row gap-4 items-center">
-              <Image source={{ uri: item.profile }} className="h-12 w-12 rounded-full" />
-              <View>
-                <Text className="text-[12px] text-gray-500">{item.companyName || "Vendor"}</Text>
-                <Text className="text-xl font-medium">{item.VendorName}</Text>
-                <Text className="text-sm text-gray-500">{item.contact}</Text>
+          <TouchableOpacity 
+            onPress={() => item.contact && handleCallVendor(item.contact)}
+            className="py-3 px-4 mx-4 mt-3 bg-white rounded-md shadow-sm"
+          >
+            <View className="flex-row justify-between items-center">
+              <View className="flex-row gap-4 items-center">
+                <Image source={{ uri: item.profile }} className="h-12 w-12 rounded-full" />
+                <View>
+                  <Text className="text-xl font-medium">{item.VendorName}</Text>
+                  <Text className="text-sm text-gray-500">{item.contact}</Text>
+                </View>
               </View>
+              {/* <Ionicons name="call" size={24} color="#ffb133" /> */}
             </View>
-          </View>
+          </TouchableOpacity>
         )}
       />
 

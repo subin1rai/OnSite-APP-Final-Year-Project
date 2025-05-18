@@ -193,7 +193,8 @@ const Profile = () => {
     // Check if the platform supports tel
     Linking.canOpenURL(`tel:${firstNumber}`)
       .then(supported => {
-        if (supported) {
+     
+       if (supported) {
           return Linking.openURL(`tel:${firstNumber}`);
         } else {
           Alert.alert('Phone Dialer Not Available', 'Your device does not support phone calls');
