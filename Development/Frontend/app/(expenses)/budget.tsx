@@ -1,4 +1,4 @@
-import { nImage,SafeAreaView,Text,TouchableOpacity,View,Platform,RefreshControl} from "react-native";
+import { SafeAreaView,Text,TouchableOpacity,View,Platform,RefreshControl} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { images } from "@/constants";
@@ -156,7 +156,7 @@ const Budget = () => {
                   {/* Budget In Hand */}
                   <View className="items-center flex-1 p-2 bg-gray-50 rounded-xl mx-2">
                     <Text className="text-xs text-gray-600 mb-1">
-                      Remaining
+                      In Hand
                     </Text>
                     <Text
                       className={`font-bold text-[#079907] ${
